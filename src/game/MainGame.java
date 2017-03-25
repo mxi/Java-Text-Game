@@ -184,8 +184,8 @@ public class MainGame {
 		Begin();
 	}
 		
-		public static void Begin() throws IOException
-		{
+	public static void Begin() throws IOException
+	{
 		Random rand = new Random();
 		char input;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
