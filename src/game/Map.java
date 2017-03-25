@@ -266,21 +266,22 @@ public class Map {
 	
 						I.x = Map.rand.nextInt(53) + 26;
 						I.y = Map.rand.nextInt(16) + 2;
-						if(rand.nextInt(3) + 1 <= 1)
+						if(rand.nextInt(1) + 1 <= 1)
 						{
 							I.ammo = false;
 							int ItemChoose = rand.nextInt(character.level * 5) + 1;
-							int ChooseTwo;
+							int Choose;
 							if(ItemChoose < 10 && ItemChoose > 0)
 							{
-								if(rand.nextInt(2) + 1 == 1)
+								Choose = rand.nextInt(4) + 1;
+								if(Choose == 1)
 								{
 									I.name = "club";
 									I.DMax = 4;
 									I.DMin = 1;
 									I.range = 1;
 									I.CarriedAmmo = 0;
-								}else{
+								}else if(Choose == 2){
 									I.name = "slingshot";
 									I.DMax = 2;
 									I.DMin = 1;
@@ -288,7 +289,18 @@ public class Map {
 									I.CarriedAmmo = 20;
 									I.ammoRarity = 1;
 									I.ammoWeight = 3;
-								} 
+								}else if(Choose == 3){
+									I.name = "leather";
+									I.ArmorBonus = 1 + character.dexterity / 2 - 5;
+									I.ArmorType = 'L';
+									I.Sheild = false;
+									I.IsArmor = true;
+								}else{
+									I.name = "leather";
+									I.ArmorBonus = 1;
+									I.Sheild = true;
+									I.IsArmor = true;
+								}
 							}else if(ItemChoose < 14 && ItemChoose >= 10)
 							{
 								I.name = "old knife";
@@ -522,20 +534,30 @@ public class Map {
 			MainGame.csi.print(0, 9, "Wis: " + character.wisdom);
 			MainGame.csi.print(0, 10, "Cha: " + character.charisma);
 			MainGame.csi.print(0, 11, character.xp + " xp out of " + (character.level * character.level * 100));
-			MainGame.csi.print(0, 13, "Armor: " + CharMove.Armor + " Type: " + CharMove.ArmorType);
-			MainGame.csi.print(0, 14, "ArmorBonus: " + CharMove.ArmorBonus + "");
-			MainGame.csi.print(0, 15, "Melee weapon:" + CharMove.curMweapon + "");
-			MainGame.csi.print(0, 16, "Range weapon:" + CharMove.curRweapon + "");
-			MainGame.csi.print(0, 17, "Ammo:" + CharMove.ammunition + " out of " + (character.strength * 10 / CharMove.ammoWeight) + "  ");
-			MainGame.csi.print(0, 20, "                                          ");
+			MainGame.csi.print(0, 13, "Armor: " + CharMove.Armor + "|Type: " + CharMove.ArmorType + "");
+			MainGame.csi.print(0, 14, "Sheild: " + CharMove.Sheild + "|bonus: " + CharMove.SheildBonus + "");
+			MainGame.csi.print(0, 15, "ArmorBonus: " + CharMove.ArmorBonus + "");
+			MainGame.csi.print(0, 16, "Melee weapon:" + CharMove.curMweapon);
+			MainGame.csi.print(0, 17, "Range weapon:" + CharMove.curRweapon);
+			MainGame.csi.print(0, 18, "Ammo:" + CharMove.ammunition + " out of " + (character.strength * 10 / CharMove.ammoWeight) + "  ");
+			if(CharMove.WeaponType == 'L')
+			{
+				MainGame.csi.print(0, 19, "Sheild is used");
+			}else{
+				MainGame.csi.print(0, 19, "Sheild is not used");
+			}
 			MainGame.csi.print(0, 21, "                                          ");
 			MainGame.csi.print(0, 22, "                                          ");
 			MainGame.csi.print(0, 23, "                                          ");
+			MainGame.csi.print(0, 24, "                                          ");
 			MainGame.csi.refresh();
 			CharMove.move();
 			EnemyAI.EnemyMove();
+			MainGame.csi.print(0, 13, "                         ");
+			MainGame.csi.print(0, 14, "                         ");
 			MainGame.csi.print(0, 15, "                         ");
 			MainGame.csi.print(0, 16, "                         ");
+			MainGame.csi.print(0, 17, "                         ");
 			/*
 			if(character.hp < 1)
 			{

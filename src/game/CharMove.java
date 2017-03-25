@@ -19,15 +19,20 @@ public class CharMove {
     public static int RDMin = 1;
     public static int Range = 2;
     public static char prevchar = ' ';
-    public static int ammunition = 20;
+    public static int ammunition = 0;
     public static int ammoRarity = 1;
     public static int ammoWeight = 3;
-    public static String Armor = "clothing";
-    public static char ArmorType = 'L';
+    public static char WeaponType = 'L';
+    
+    
     // L = light - add dex bonus - no str required
     // M = medium - add half dex bonus - 13 to 15 str required
     // H = heavy, add no dex bonus - > 15 str required
     public static int ArmorBonus = character.dexterity / 2 - 5;
+    public static String Armor = "clothing";
+    public static char ArmorType = 'L';
+    public static String Sheild = "none";
+    public static int SheildBonus = 0;
     
 	public static void move() throws IOException{
 
@@ -117,7 +122,7 @@ public class CharMove {
     			if(Map.Items[x].x == a && Map.Items[x].y == b)
     			{
 		    		Item I = Map.Items[x];
-		    		if(!I.ammo)
+		    		if(!I.ammo && !I.IsArmor)
 		    		{
 		    			int Holder;
 		    			String NameHolder;
@@ -134,7 +139,7 @@ public class CharMove {
 			    			Holder = I.DMin;
 			    			I.DMin = MDMin;
 			    			MDMin = Holder;
-				        	MainGame.csi.print(0, 20, "You got a " + curMweapon);
+				        	MainGame.csi.print(0, 21, "You got a " + curMweapon);
 			    		}else{
 			    			
 			    			NameHolder = I.name;
@@ -170,11 +175,11 @@ public class CharMove {
 			    				ammunition = character.strength * 10 / ammoWeight;
 			    			}
 			    			
-				        	MainGame.csi.print(0, 20, "You got a " + curRweapon);
+				        	MainGame.csi.print(0, 21, "You got a " + curRweapon);
 			    		}
 			        	MainGame.csi.refresh();
 			        	MainGame.csi.waitKey(1);
-		    		}else{
+		    		}else if(!I.IsArmor){
 		    			ammunition += I.CarriedAmmo;
 		    			I.CarriedAmmo = 0;
 		    			if(character.strength * 10 / ammoWeight < ammunition)
@@ -182,6 +187,38 @@ public class CharMove {
 		    				I.CarriedAmmo = ammunition - character.strength * 10 / ammoWeight;
 		    				ammunition = character.strength * 10 / ammoWeight;
 		    			}
+		    		}else{
+		    			int Holder;
+		    			char CharHolder;
+		    			String NameHolder;
+		    			if(I.Sheild)
+		    			{
+			    			NameHolder = I.name;
+			    			I.name = Sheild;
+			    			Sheild = NameHolder;
+	
+			    			Holder = I.ArmorBonus;
+			    			I.ArmorBonus = SheildBonus;
+			    			SheildBonus = Holder;
+			    			
+				        	MainGame.csi.print(0, 21, "You got a " + Sheild + " Sheild");
+		    			}else{
+			    			NameHolder = I.name;
+			    			I.name = Armor;
+			    			Armor = NameHolder;
+	
+			    			Holder = I.ArmorBonus;
+			    			I.ArmorBonus = ArmorBonus;
+			    			ArmorBonus = Holder;
+			    			
+			    			CharHolder = I.ArmorType;
+			    			I.ArmorType = ArmorType;
+			    			ArmorType = CharHolder;			 
+
+				        	MainGame.csi.print(0, 21, "You got " + Armor + " armor");
+		    			}
+			        	MainGame.csi.refresh();
+			        	MainGame.csi.waitKey(1);
 		    		}
 		    		break main;
     			}
