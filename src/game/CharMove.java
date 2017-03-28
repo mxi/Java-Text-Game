@@ -34,7 +34,7 @@ public class CharMove {
     public static String Sheild = "none";
     public static int SheildBonus = 0;
     
-	public static void move() throws IOException{
+	public static void move(){
 
 		//MainGame.csi.restore();
         MainGame.csi.print(a, b, "@", ConsoleSystemInterface.DARK_RED);
