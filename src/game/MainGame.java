@@ -10,6 +10,7 @@ import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
 public class MainGame {
+
     public static ConsoleSystemInterface csi;
     
     public static void GameOver() throws IOException

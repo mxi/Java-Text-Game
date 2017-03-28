@@ -31,9 +31,62 @@ public class CharMove {
     public static int ArmorBonus = character.dexterity / 2 - 5;
     public static String Armor = "clothing";
     public static char ArmorType = 'L';
-    public static String Sheild = "none";
-    public static int SheildBonus = 0;
-    
+
+    // Shield types: None, Leather, Wood, Bone
+    public static String Shield = "none";
+    public static int ShieldSize = 1; // Determines whether an enemy can hit or not. (1 - 10) (size limits may be adjusted).
+    public static int ShieldLevel = 0; // Level of damage absorption. (0 - 30) (level limits may be adjusted).
+
+	/**
+	 * Determines whether the character has a shield or not.
+	 * @return If it has a valid shield value it returns true.
+	 */
+    public static boolean hasShield() {
+    	return Shield.equals("none") || Shield.equals("leather") || Shield.equals("wood") || Shield.equals("bone");
+    	// TODO: When more shield are added, make sure to add them here!
+	}
+
+	/**
+	 * Calculates how much damage the shield absorbs.
+	 * (Not based on the amount of damage being given. Rather
+	 * it's based on the level of the shield and type).
+	 * @return How much the shield absorbs.
+	 */
+    public static int calculateShieldAbsorption() {
+		switch(Shield) {
+			case "none": // Absorption of "none" by default is 0 @ level 0.
+				return (int) Math.ceil(ShieldLevel * .05);
+			case "leather": // Absorption of "leather" by default is 1 @ level 0.
+				return (int) Math.ceil(ShieldLevel * .1) + 1;
+			case "wood": // Absorption of "wood" by default is 2 @ level 0.
+				return (int) Math.ceil(ShieldLevel * .15) + 2;
+			case "bone": // Absorption of "bone" by default is 3 @ level 0.
+				return (int) Math.ceil(ShieldLevel * .2) + 3;
+			default: // If there is no valid shield, no damage will be absorbed.
+				return 0;
+		}
+	}
+
+	/**
+	 * Checks whether the enemy is able to hit the character based on shield size.
+	 * @return If the random value is greater than that of (level * 3) then true.
+	 */
+	public static boolean doesShieldHit() {
+		return Map.rand.nextInt(101) >= (ShieldSize * 3);
+	}
+
+	/**
+	 * Sets a shield with specified parameters:
+	 * @param type Type of shield (see list above).
+	 * @param size Size of the shield.
+	 * @param level Level of the shield.
+	 */
+	public static void setShield(String type, int size, int level) {
+    	Shield = type;
+    	ShieldSize = size;
+    	ShieldLevel = level;
+	}
+
 	public static void move(){
 
 		//MainGame.csi.restore();
@@ -194,14 +247,14 @@ public class CharMove {
 		    			if(I.Sheild)
 		    			{
 			    			NameHolder = I.name;
-			    			I.name = Sheild;
-			    			Sheild = NameHolder;
+			    			I.name = Shield;
+			    			Shield = NameHolder;
 	
 			    			Holder = I.ArmorBonus;
-			    			I.ArmorBonus = SheildBonus;
-			    			SheildBonus = Holder;
+			    			I.ArmorBonus = ShieldSize;
+			    			ShieldSize = Holder;
 			    			
-				        	MainGame.csi.print(0, 21, "You got a " + Sheild + " Sheild");
+				        	MainGame.csi.print(0, 21, "You got a " + Shield + " sheild");
 		    			}else{
 			    			NameHolder = I.name;
 			    			I.name = Armor;

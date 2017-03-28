@@ -339,15 +339,17 @@ public class EnemyAI {
 					{
 						damage = 1;
 					}
-					if(damage <= 0)
-					{
-						damage = 1;
-					}
 					if(m.x < CharMove.a)
 					{
 						if(MainGame.csi.peekChar(m.x + 1, m.y) == '@')
 						{
-							character.hp = character.hp - damage;
+							int absorb = CharMove.calculateShieldAbsorption();
+
+							if(CharMove.doesShieldHit())
+								character.hp = character.hp - (damage - absorb < 0 ? 0 : damage - absorb);
+							if(character.hp <= 0)
+								// TODO: Death event (restart game maybe).
+
 							movesleft--;
 							MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
 							MainGame.csi.print(0, 21, "                                          ");

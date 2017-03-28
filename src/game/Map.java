@@ -301,7 +301,7 @@ public class Map {
 			MainGame.csi.print(0, 10, "Cha: " + character.charisma);
 			MainGame.csi.print(0, 11, character.xp + " xp out of " + (character.level * character.level * 100));
 			MainGame.csi.print(0, 13, "Armor: " + CharMove.Armor + "|Type: " + CharMove.ArmorType + "");
-			MainGame.csi.print(0, 14, "Sheild: " + CharMove.Sheild + "|bonus: " + CharMove.SheildBonus + "");
+			MainGame.csi.print(0, 14, "Sheild: " + CharMove.Shield + "|bonus: " + CharMove.ShieldSize + "");
 			MainGame.csi.print(0, 15, "ArmorBonus: " + CharMove.ArmorBonus + "");
 			MainGame.csi.print(0, 16, "Melee weapon:" + CharMove.curMweapon);
 			MainGame.csi.print(0, 17, "Range weapon:" + CharMove.curRweapon);
