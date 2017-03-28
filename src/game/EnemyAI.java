@@ -335,26 +335,33 @@ public class EnemyAI {
 				if(movesleft == 1)
 				{
 					int damage = Map.rand.nextInt(m.DMax - m.DMin + 1) - m.DMin;
-					if(damage <= 0)
+					int absorb = CharMove.calculateShieldAbsorption();
+					damage = (damage - absorb < 0 ? 0 : damage - absorb);
+					if(damage < 0)
 					{
-						damage = 1;
+						damage = 0;
 					}
 					if(m.x < CharMove.a)
 					{
 						if(MainGame.csi.peekChar(m.x + 1, m.y) == '@')
 						{
-							int absorb = CharMove.calculateShieldAbsorption();
 
 							if(CharMove.doesShieldHit())
-								character.hp = character.hp - (damage - absorb < 0 ? 0 : damage - absorb);
+							{
+								character.hp = character.hp - damage;
+								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
+								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}else{
+								MainGame.csi.print(0, 20, "You deflected the attack                  ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}
 							if(character.hp <= 0)
 								// TODO: Death event (restart game maybe).
 
 							movesleft--;
-							MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
-							MainGame.csi.print(0, 21, "                                          ");
-							MainGame.csi.refresh();
-							MainGame.csi.waitKey(1);
 						}else if(clear(m.x + 1, m.y))
 						{
 							char holder = MainGame.csi.peekChar(m.x + 1, m.y);
@@ -379,12 +386,23 @@ public class EnemyAI {
 					{
 						if(MainGame.csi.peekChar(m.x - 1, m.y) == '@')
 						{
-							character.hp = character.hp - damage;
+
+							if(CharMove.doesShieldHit())
+							{
+								character.hp = character.hp - damage;
+								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
+								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}else{
+								MainGame.csi.print(0, 20, "You deflected the attack                  ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}
+							if(character.hp <= 0)
+								// TODO: Death event (restart game maybe).
+
 							movesleft--;
-							MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
-							MainGame.csi.print(0, 21, "                                          ");
-							MainGame.csi.refresh();
-							MainGame.csi.waitKey(1);
 						}else if(clear(m.x - 1, m.y))
 						{
 							char holder = MainGame.csi.peekChar(m.x - 1, m.y);
@@ -410,20 +428,33 @@ public class EnemyAI {
 				if(movesleft == 1)
 				{
 					int damage = Map.rand.nextInt(m.DMax - m.DMin + 1) - m.DMin;
-					if(damage <= 0)
+					int absorb = CharMove.calculateShieldAbsorption();
+					damage = (damage - absorb < 0 ? 0 : damage - absorb);
+					if(damage < 0)
 					{
-						damage = 1;
+						damage = 0;
 					}
 					if(m.y < CharMove.b)
 					{
 						if(MainGame.csi.peekChar(m.x, m.y + 1) == '@')
 						{
-							character.hp = character.hp - damage;
+
+							if(CharMove.doesShieldHit())
+							{
+								character.hp = character.hp - damage;
+								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
+								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}else{
+								MainGame.csi.print(0, 20, "You deflected the attack                  ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}
+							if(character.hp <= 0)
+								// TODO: Death event (restart game maybe).
+
 							movesleft--;
-							MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
-							MainGame.csi.print(0, 21, "                                          ");
-							MainGame.csi.refresh();
-							MainGame.csi.waitKey(1);
 						}else if(clear(m.x, m.y + 1))
 						{
 							char holder = MainGame.csi.peekChar(m.x, m.y + 1);
@@ -448,12 +479,22 @@ public class EnemyAI {
 					{
 						if(MainGame.csi.peekChar(m.x, m.y - 1) == '@')
 						{
-							character.hp = character.hp - damage;
+							if(CharMove.doesShieldHit())
+							{
+								character.hp = character.hp - damage;
+								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
+								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}else{
+								MainGame.csi.print(0, 20, "You deflected the attack                  ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}
+							if(character.hp <= 0)
+								// TODO: Death event (restart game maybe).
+
 							movesleft--;
-							MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
-							MainGame.csi.print(0, 21, "                                          ");
-							MainGame.csi.refresh();
-							MainGame.csi.waitKey(1);
 						}else if(clear(m.x, m.y - 1))
 						{
 							char holder = MainGame.csi.peekChar(m.x, m.y - 1);
@@ -481,20 +522,33 @@ public class EnemyAI {
 				if(movesleft == 1)
 				{
 					int damage = Map.rand.nextInt(m.DMax - m.DMin + 1) - m.DMin;
-					if(damage <= 0)
+					int absorb = CharMove.calculateShieldAbsorption();
+					damage = (damage - absorb < 0 ? 0 : damage - absorb);
+					if(damage < 0)
 					{
-						damage = 1;
+						damage = 0;
 					}
 					if(m.y < CharMove.b)
 					{
 						if(MainGame.csi.peekChar(m.x, m.y + 1) == '@')
 						{
-							character.hp = character.hp - damage;
+
+							if(CharMove.doesShieldHit())
+							{
+								character.hp = character.hp - damage;
+								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
+								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}else{
+								MainGame.csi.print(0, 20, "You deflected the attack                  ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}
+							if(character.hp <= 0)
+								// TODO: Death event (restart game maybe).
+
 							movesleft--;
-							MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
-							MainGame.csi.print(0, 21, "                                          ");
-							MainGame.csi.refresh();
-							MainGame.csi.waitKey(1);
 						}else if(clear(m.x, m.y + 1))
 						{
 							char holder = MainGame.csi.peekChar(m.x, m.y + 1);
@@ -519,12 +573,22 @@ public class EnemyAI {
 					{
 						if(MainGame.csi.peekChar(m.x, m.y - 1) == '@')
 						{
-							character.hp = character.hp - damage;
+							if(CharMove.doesShieldHit())
+							{
+								character.hp = character.hp - damage;
+								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
+								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}else{
+								MainGame.csi.print(0, 20, "You deflected the attack                  ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}
+							if(character.hp <= 0)
+								// TODO: Death event (restart game maybe).
+
 							movesleft--;
-							MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
-							MainGame.csi.print(0, 21, "                                          ");
-							MainGame.csi.refresh();
-							MainGame.csi.waitKey(1);
 						}else if(clear(m.x, m.y - 1))
 						{
 							char holder = MainGame.csi.peekChar(m.x, m.y - 1);
@@ -549,20 +613,33 @@ public class EnemyAI {
 				}if(movesleft == 1)
 				{
 					int damage = Map.rand.nextInt(m.DMax - m.DMin + 1) - m.DMin;
-					if(damage <= 0)
+					int absorb = CharMove.calculateShieldAbsorption();
+					damage = (damage - absorb < 0 ? 0 : damage - absorb);
+					if(damage < 0)
 					{
-						damage = 1;
+						damage = 0;
 					}
 					if(m.x < CharMove.a)
 					{
 						if(MainGame.csi.peekChar(m.x + 1, m.y) == '@')
 						{
-							character.hp = character.hp - damage;
+
+							if(CharMove.doesShieldHit())
+							{
+								character.hp = character.hp - damage;
+								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
+								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}else{
+								MainGame.csi.print(0, 20, "You deflected the attack                  ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}
+							if(character.hp <= 0)
+								// TODO: Death event (restart game maybe).
+
 							movesleft--;
-							MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
-							MainGame.csi.print(0, 21, "                                          ");
-							MainGame.csi.refresh();
-							MainGame.csi.waitKey(1);
 						}else if(clear(m.x + 1, m.y))
 						{
 							char holder = MainGame.csi.peekChar(m.x + 1, m.y);
@@ -587,12 +664,22 @@ public class EnemyAI {
 					{
 						if(MainGame.csi.peekChar(m.x - 1, m.y) == '@')
 						{
-							character.hp = character.hp - damage;
+							if(CharMove.doesShieldHit())
+							{
+								character.hp = character.hp - damage;
+								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
+								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}else{
+								MainGame.csi.print(0, 20, "You deflected the attack                  ");
+								MainGame.csi.refresh();
+								MainGame.csi.waitKey(1);
+							}
+							if(character.hp <= 0)
+								// TODO: Death event (restart game maybe).
+
 							movesleft--;
-							MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
-							MainGame.csi.print(0, 21, "                                          ");
-							MainGame.csi.refresh();
-							MainGame.csi.waitKey(1);
 						}else if(clear(m.x - 1, m.y))
 						{
 							char holder = MainGame.csi.peekChar(m.x - 1, m.y);

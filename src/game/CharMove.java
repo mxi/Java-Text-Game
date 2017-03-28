@@ -251,7 +251,11 @@ public class CharMove {
 			    			Shield = NameHolder;
 	
 			    			Holder = I.ArmorBonus;
-			    			I.ArmorBonus = ShieldSize;
+			    			I.ArmorBonus = ShieldLevel;
+			    			ShieldLevel = Holder;
+			    			
+			    			Holder = I.SheildSize;
+			    			I.SheildSize = ShieldSize;
 			    			ShieldSize = Holder;
 			    			
 				        	MainGame.csi.print(0, 21, "You got a " + Shield + " sheild");
