@@ -62,13 +62,6 @@ public class EnemyAI {
 					        	break main;
 					        case CharKey.d:
 					        	character.dexterity++;
-					        	if(CharMove.ArmorType == 'L')
-					        	{
-					        		CharMove.ArmorBonus += character.dexterity / 2 - 5 - ((character.dexterity - 1) / 2 - 5);
-					        	}else if(CharMove.ArmorType == 'M')
-					        	{
-					        		CharMove.ArmorBonus += (character.dexterity / 2 - 5) / 2 - ((character.dexterity - 1) / 2 - 5) / 2;
-					        	}
 					        	break main;
 					        case CharKey.c:
 					        	character.constitution++;
@@ -334,8 +327,17 @@ public class EnemyAI {
 			{
 				if(movesleft == 1)
 				{
-					int damage = Map.rand.nextInt(m.DMax - m.DMin + 1) - m.DMin;
-					int absorb = CharMove.calculateShieldAbsorption();
+					int damage = Map.rand.nextInt(m.DMax - m.DMin) + m.DMin + 1;
+					int absorb = CharMove.calculateShieldAbsorption() + CharMove.ArmorBonus;
+
+	    			if(CharMove.ArmorType == 'L')
+	    			{
+	    				absorb += character.dexterity / 2 - 5;
+	    			}else if(CharMove.ArmorType == 'M')
+	    			{
+	    				absorb += (character.dexterity / 2 - 5) / 2;
+	    			}
+					
 					damage = (damage - absorb < 0 ? 0 : damage - absorb);
 					if(damage < 0)
 					{
@@ -351,6 +353,7 @@ public class EnemyAI {
 								character.hp = character.hp - damage;
 								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
 								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.print(0, 22, "                                          ");
 								MainGame.csi.refresh();
 								MainGame.csi.waitKey(1);
 							}else{
@@ -392,6 +395,7 @@ public class EnemyAI {
 								character.hp = character.hp - damage;
 								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
 								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.print(0, 22, "                                          ");
 								MainGame.csi.refresh();
 								MainGame.csi.waitKey(1);
 							}else{
@@ -427,8 +431,17 @@ public class EnemyAI {
 				}
 				if(movesleft == 1)
 				{
-					int damage = Map.rand.nextInt(m.DMax - m.DMin + 1) - m.DMin;
-					int absorb = CharMove.calculateShieldAbsorption();
+					int damage = Map.rand.nextInt(m.DMax - m.DMin) + m.DMin + 1;
+					int absorb = CharMove.calculateShieldAbsorption() + CharMove.ArmorBonus;
+					
+	    			if(CharMove.ArmorType == 'L')
+	    			{
+	    				absorb += character.dexterity / 2 - 5;
+	    			}else if(CharMove.ArmorType == 'M')
+	    			{
+	    				absorb += (character.dexterity / 2 - 5) / 2;
+	    			}
+					
 					damage = (damage - absorb < 0 ? 0 : damage - absorb);
 					if(damage < 0)
 					{
@@ -444,6 +457,7 @@ public class EnemyAI {
 								character.hp = character.hp - damage;
 								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
 								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.print(0, 22, "                                          ");
 								MainGame.csi.refresh();
 								MainGame.csi.waitKey(1);
 							}else{
@@ -484,6 +498,7 @@ public class EnemyAI {
 								character.hp = character.hp - damage;
 								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
 								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.print(0, 22, "                                          ");
 								MainGame.csi.refresh();
 								MainGame.csi.waitKey(1);
 							}else{
@@ -521,8 +536,17 @@ public class EnemyAI {
 				
 				if(movesleft == 1)
 				{
-					int damage = Map.rand.nextInt(m.DMax - m.DMin + 1) - m.DMin;
-					int absorb = CharMove.calculateShieldAbsorption();
+					int damage = Map.rand.nextInt(m.DMax - m.DMin) + m.DMin + 1;
+					int absorb = CharMove.calculateShieldAbsorption() + CharMove.ArmorBonus;
+					
+	    			if(CharMove.ArmorType == 'L')
+	    			{
+	    				absorb += character.dexterity / 2 - 5;
+	    			}else if(CharMove.ArmorType == 'M')
+	    			{
+	    				absorb += (character.dexterity / 2 - 5) / 2;
+	    			}
+					
 					damage = (damage - absorb < 0 ? 0 : damage - absorb);
 					if(damage < 0)
 					{
@@ -538,6 +562,7 @@ public class EnemyAI {
 								character.hp = character.hp - damage;
 								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
 								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.print(0, 22, "                                          ");
 								MainGame.csi.refresh();
 								MainGame.csi.waitKey(1);
 							}else{
@@ -578,6 +603,7 @@ public class EnemyAI {
 								character.hp = character.hp - damage;
 								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
 								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.print(0, 22, "                                          ");
 								MainGame.csi.refresh();
 								MainGame.csi.waitKey(1);
 							}else{
@@ -612,8 +638,17 @@ public class EnemyAI {
 					}
 				}if(movesleft == 1)
 				{
-					int damage = Map.rand.nextInt(m.DMax - m.DMin + 1) - m.DMin;
-					int absorb = CharMove.calculateShieldAbsorption();
+					int damage = Map.rand.nextInt(m.DMax - m.DMin) + m.DMin + 1;
+					int absorb = CharMove.calculateShieldAbsorption() + CharMove.ArmorBonus;
+					
+	    			if(CharMove.ArmorType == 'L')
+	    			{
+	    				absorb += character.dexterity / 2 - 5;
+	    			}else if(CharMove.ArmorType == 'M')
+	    			{
+	    				absorb += (character.dexterity / 2 - 5) / 2;
+	    			}
+					
 					damage = (damage - absorb < 0 ? 0 : damage - absorb);
 					if(damage < 0)
 					{
@@ -629,6 +664,7 @@ public class EnemyAI {
 								character.hp = character.hp - damage;
 								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
 								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.print(0, 22, "                                          ");
 								MainGame.csi.refresh();
 								MainGame.csi.waitKey(1);
 							}else{
@@ -669,6 +705,7 @@ public class EnemyAI {
 								character.hp = character.hp - damage;
 								MainGame.csi.print(0, 20, "Monster did " + damage + " damage         ");
 								MainGame.csi.print(0, 21, "                                          ");
+								MainGame.csi.print(0, 22, "                                          ");
 								MainGame.csi.refresh();
 								MainGame.csi.waitKey(1);
 							}else{

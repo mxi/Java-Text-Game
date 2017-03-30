@@ -207,11 +207,11 @@ public class Map {
 									I.ammoWeight = 3;
 								}else if(Choose == 3){
 									I.name = "leather";
-									I.ArmorBonus = 1 + character.dexterity / 2 - 5;
+									I.ArmorBonus = 1;
 									I.ArmorType = 'L';
 									I.Sheild = false;
 									I.IsArmor = true;
-								}else{
+								}else if(Choose == 4){
 									I.name = "leather";
 									I.ArmorBonus = 1;
 									I.SheildSize = 1;
@@ -220,21 +220,32 @@ public class Map {
 								}
 							}else if(ItemChoose < 14 && ItemChoose >= 10)
 							{
-								I.name = "old knife";
-								I.DMax = 4;
-								I.DMin = 2;
-								I.range = 1;
-								I.CarriedAmmo = 0;
+								Choose = rand.nextInt(2) + 1;
+								if(Choose == 1)
+								{
+									I.name = "old knife";
+									I.DMax = 4;
+									I.DMin = 2;
+									I.range = 1;
+									I.CarriedAmmo = 0;
+								}else if(Choose == 2){
+									I.name = "wood";
+									I.ArmorBonus = 1;
+									I.SheildSize = 4;
+									I.Sheild = true;
+									I.IsArmor = true;
+								}
 							}else if(/*ItemChoose < 20 && */ItemChoose >= 14)
 							{
-								if(rand.nextInt(2) + 1 == 1)
+								Choose = rand.nextInt(3) + 1;
+								if(Choose == 1)
 								{
 									I.name = "old sword";
 									I.DMax = 5;
 									I.DMin = 1;
 									I.range = 1;
 									I.CarriedAmmo = 0;
-								}else{
+								}else if(Choose == 2){
 									I.name = "old bow";
 									I.DMax = 4;
 									I.DMin = 2;
@@ -242,6 +253,12 @@ public class Map {
 									I.CarriedAmmo = 10;
 									I.ammoRarity = 5;
 									I.ammoWeight = 5;
+								}else if(Choose == 3){
+									I.name = "wood";
+									I.ArmorBonus = 1;
+									I.SheildSize = 4;
+									I.Sheild = true;
+									I.IsArmor = true;
 								}
 							}
 						}else{
