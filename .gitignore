@@ -5,3 +5,4 @@ src/game/.metadata/*
 out/*
 src/libjcsi.jar
 .idea/*
+/bin/
