@@ -178,15 +178,10 @@ public class MainGame {
 		csi.refresh();
 	}
 	
-<<<<<<< HEAD
-	//public static void main(String[] args)throws IOException{
-	//	Begin();
-	//}
-=======
+
 	public static void main(String[] args){
 		Begin();
 	}
->>>>>>> 9225ce728e6104e0d9e01451d4420436bb4da6a5
 		
 	public static void Begin()
 	{

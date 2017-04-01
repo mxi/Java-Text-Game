@@ -98,6 +98,14 @@ public class CharMove {
     		character.xp += 1000000;
     		EnemyAI.LevelUp();
         	break;
+        case CharKey.k:
+    		character.xp += 10000;
+    		EnemyAI.LevelUp();
+        	break;
+        case CharKey.j:
+    		character.xp += 1000;
+    		EnemyAI.LevelUp();
+        	break;
         case CharKey.ENTER:
     		EnemyAI.curE = 0;
     		a = 26;

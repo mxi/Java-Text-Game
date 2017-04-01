@@ -230,7 +230,16 @@ public class Map {
 									I.DMin = 2;
 									I.range = 1;
 									I.CarriedAmmo = 0;
-								}else if(Choose == 2){
+								}if(Choose == 2)
+								{
+									I.name = "thrw knife";
+									I.DMax = 5;
+									I.DMin = 3;
+									I.range = 2;
+									I.CarriedAmmo = 3;
+									I.ammoRarity = 10;
+									I.ammoWeight = 7;
+								}else if(Choose == 3){
 									I.name = "wood";
 									I.ArmorBonus = 1;
 									I.SheildSize = 4;
