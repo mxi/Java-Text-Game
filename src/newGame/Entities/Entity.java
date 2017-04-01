@@ -5,11 +5,13 @@ public class Entity {
     private String name;
     private int x;
     private int y;
+    private int health;
     private int level;
 
-    public Entity(String iname, int ilevel) {
+    public Entity(String iname, int ihealth, int ilevel) {
         name = iname;
         level = ilevel;
+        health = ihealth;
         x = 0;
         y = 0;
     }

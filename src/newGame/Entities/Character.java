@@ -1,7 +1,5 @@
 package newGame.Entities;
 
-import sz.csi.ConsoleSystemInterface;
-
 public class Character extends Entity {
 
     private CharacterType type;
@@ -24,6 +22,30 @@ public class Character extends Entity {
             WisdomBonus = wisdom + 100;
             IntelligenceBonus = intelligence + 100;
             CharismaBonus = charisma + 100;
+        }
+
+        public int calcNewHealth(int ihealth) {
+            return (int) (ihealth * (HealthBonus / 100.0));
+        }
+
+        public int calcNewStrength(int istrength) {
+            return (int) (istrength * (StrengthBonus / 100.0));
+        }
+
+        public int calcNewDexterity(int idexterity) {
+            return (int) (idexterity * (DexterityBonus / 100.0));
+        }
+
+        public int calcNewWisdom(int iwisdom) {
+            return (int) (iwisdom * (WisdomBonus / 100.0));
+        }
+
+        public int calcNewIntelligence(int iintelligence) {
+            return (int) (iintelligence * (IntelligenceBonus / 100.0));
+        }
+
+        public int calcNewCharisma(int ichrasima) {
+            return (int) (ichrasima * (CharismaBonus / 100.0));
         }
     }
 
