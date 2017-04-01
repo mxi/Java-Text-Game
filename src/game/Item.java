@@ -15,6 +15,7 @@ public class Item {
 	
 	public int ArmorBonus;
 	public char ArmorType;
+	public int SheildSize;
 	public boolean Sheild;
 	public boolean IsArmor;
 }

@@ -28,13 +28,13 @@ public class CharMove {
     // L = light - add dex bonus - no str required
     // M = medium - add half dex bonus - 13 to 15 str required
     // H = heavy, add no dex bonus - > 15 str required
-    public static int ArmorBonus = character.dexterity / 2 - 5;
+    public static int ArmorBonus = 0;
     public static String Armor = "clothing";
     public static char ArmorType = 'L';
 
     // Shield types: None, Leather, Wood, Bone
     public static String Shield = "none";
-    public static int ShieldSize = 1; // Determines whether an enemy can hit or not. (1 - 10) (size limits may be adjusted).
+    public static int ShieldSize = 0; // Determines whether an enemy can hit or not. (1 - 10) (size limits may be adjusted) (start at zero for no shield).
     public static int ShieldLevel = 0; // Level of damage absorption. (0 - 30) (level limits may be adjusted).
 
 	/**
@@ -66,7 +66,7 @@ public class CharMove {
 				return 0;
 		}
 	}
-
+   
 	/**
 	 * Checks whether the enemy is able to hit the character based on shield size.
 	 * @return If the random value is greater than that of (level * 3) then true.
@@ -87,7 +87,7 @@ public class CharMove {
     	ShieldLevel = level;
 	}
 
-	public static void move() throws IOException{
+	public static void move(){
 
 		//MainGame.csi.restore();
         MainGame.csi.print(a, b, "@", ConsoleSystemInterface.DARK_RED);
@@ -95,7 +95,7 @@ public class CharMove {
     	int key = MainGame.csi.inkey().code;
         switch (key){
         case CharKey.l:
-    		character.xp += 1000;
+    		character.xp += 1000000;
     		EnemyAI.LevelUp();
         	break;
         case CharKey.ENTER:
@@ -251,7 +251,11 @@ public class CharMove {
 			    			Shield = NameHolder;
 	
 			    			Holder = I.ArmorBonus;
-			    			I.ArmorBonus = ShieldSize;
+			    			I.ArmorBonus = ShieldLevel;
+			    			ShieldLevel = Holder;
+			    			
+			    			Holder = I.SheildSize;
+			    			I.SheildSize = ShieldSize;
 			    			ShieldSize = Holder;
 			    			
 				        	MainGame.csi.print(0, 21, "You got a " + Shield + " sheild");
@@ -266,7 +270,7 @@ public class CharMove {
 			    			
 			    			CharHolder = I.ArmorType;
 			    			I.ArmorType = ArmorType;
-			    			ArmorType = CharHolder;			 
+			    			ArmorType = CharHolder;
 
 				        	MainGame.csi.print(0, 21, "You got " + Armor + " armor");
 		    			}

@@ -33,13 +33,10 @@ public class MainGame {
     	}
     }
     
-	public static void Startup() throws IOException
+	public static void Startup()
 	{
 
 		csi = new WSwingConsoleInterface();
-		String input;
-		input = "1";
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		//class choosing
 		
@@ -181,16 +178,18 @@ public class MainGame {
 		csi.refresh();
 	}
 	
+<<<<<<< HEAD
 	//public static void main(String[] args)throws IOException{
 	//	Begin();
 	//}
+=======
+	public static void main(String[] args){
+		Begin();
+	}
+>>>>>>> 9225ce728e6104e0d9e01451d4420436bb4da6a5
 		
-	public static void Begin() throws IOException
+	public static void Begin()
 	{
-		Random rand = new Random();
-		char input;
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		Map.CurRoom = Map.RoomIdentify(Map.RoomID);
 		Startup(); 
 		character.hp += (int) character.constitution / 2 - 5;
 		character.maxhp = character.hp;
