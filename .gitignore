@@ -1,0 +1,8 @@
+Java Text Game.iml
+.metadata/*
+src/.metadata/*
+src/game/.metadata/*
+out/*
+src/libjcsi.jar
+.idea/*
+/bin/

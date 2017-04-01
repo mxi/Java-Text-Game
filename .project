@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
+<<<<<<< HEAD
 	<name>Santiago Zapata</name>
+=======
+	<name>Roguelike</name>
+>>>>>>> 26ade0ff42ffa6a6729fefb9a0c2b6e88477982a
 	<comment></comment>
 	<projects>
 	</projects>
