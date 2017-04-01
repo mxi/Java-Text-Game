@@ -95,7 +95,7 @@ public class CharMove {
     	int key = MainGame.csi.inkey().code;
         switch (key){
         case CharKey.l:
-    		character.xp += 1000;
+    		character.xp += 1000000;
     		EnemyAI.LevelUp();
         	break;
         case CharKey.ENTER:

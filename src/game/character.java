@@ -13,9 +13,6 @@ public class character {
 	static String charclass = "";
 	static String race = "";
 	
-	static int speed = 30;
-	static int initiative = 0;
-	
 	static int hp;
 	static int maxhp;
 	static int hitdie;

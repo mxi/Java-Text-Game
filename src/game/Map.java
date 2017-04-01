@@ -5,8 +5,10 @@ import java.util.Random;
 import sz.csi.ConsoleSystemInterface;
 
 /*
+	LEVEL MAX = 100
 
-	text: 18 - 23
+
+	text: 20 - 23
 	
 	
 	Dungeon sizes:
@@ -342,6 +344,7 @@ public class Map {
 			MainGame.csi.print(0, 15, "                         ");
 			MainGame.csi.print(0, 16, "                         ");
 			MainGame.csi.print(0, 17, "                         ");
+			MainGame.csi.print(0, 11, "                         ");
 			/*
 			if(character.hp < 1)
 			{
