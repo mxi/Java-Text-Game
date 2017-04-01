@@ -181,9 +181,9 @@ public class MainGame {
 		csi.refresh();
 	}
 	
-	public static void main(String[] args)throws IOException{
-		Begin();
-	}
+	//public static void main(String[] args)throws IOException{
+	//	Begin();
+	//}
 		
 	public static void Begin() throws IOException
 	{
