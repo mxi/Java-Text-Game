@@ -5,7 +5,7 @@ import sz.csi.wswing.WSwingConsoleInterface;
 
 public class MainGame {
 
-	public static ConsoleSystemInterface csi;
+    public static ConsoleSystemInterface csi;
 
     public static void main(String[] args) {
         new MainGame();
