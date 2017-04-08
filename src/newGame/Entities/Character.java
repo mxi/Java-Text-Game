@@ -10,7 +10,7 @@ public class Character extends Entity {
     private final int MAX_INVENTORY_SPACE = 60;
     private final int MIN_INVENTORY_SPACE = 5;
 
-    private CharacterType type;
+    private Type type;
     private List<? extends Item> invItems;
     private Item[] hotbar;
     private Shield shield;
@@ -22,7 +22,7 @@ public class Character extends Entity {
     private int intelligence;
     private int charisma;
     private int color;
-    public enum CharacterType {
+    public enum Type {
         Fighter("Fighter", 20, 100, -15, 0, -15, 0),
         Ranger("Ranger", 0, 0, 25, 5, 0, 0),
         Wizard("Wizard", -50, -50, 0, 15, 15, 5);
@@ -35,7 +35,7 @@ public class Character extends Entity {
         public int IntelligenceBonus;
         public int CharismaBonus;
 
-        CharacterType(String type, int health, int strength, int dexterity, int wisdom, int intelligence, int charisma) {
+        Type(String type, int health, int strength, int dexterity, int wisdom, int intelligence, int charisma) {
             Type = type;
             HealthBonus = health + 100;
             StrengthBonus = strength + 100;
@@ -111,7 +111,7 @@ public class Character extends Entity {
         }
     }
 
-    public Character(String iname, CharacterType itype, int icolor, int ilevel) {
+    public Character(String iname, Type itype, int icolor, int ilevel) {
         super(iname, itype.calcNewHealth(100), ilevel);
         invItems = new ArrayList<>();
         hotbar = new Item[3];
@@ -124,6 +124,14 @@ public class Character extends Entity {
         charisma = itype.calcNewCharisma(100);
         color = icolor;
         type = itype;
+    }
+
+    public Type getType() {
+        return this.type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public List<? extends Item> getInvetoryItems() {
