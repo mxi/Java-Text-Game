@@ -23,11 +23,13 @@ public class MainGame {
         random = new Random();
         csi = new WSwingConsoleInterface();
 
+        // Character & Game initialization:
         Character character = new Character("John", Character.Type.Fighter, ConsoleSystemInterface.CYAN, 1);
         character.setMaxXY(69, 15);
         character.setPosition(1, 1);
         character.setMaxHealth(20);
 
+        // Main game loop:
         while(true) {
             csi.print(character.getX(), character.getY(), "@", character.getColor());
             // 0 = Down
