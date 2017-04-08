@@ -26,7 +26,7 @@ public class Map {
 	static final int MAX_ITEMS = 15;
 	static Item Items[] = new Item[MAX_ITEMS];
 	static int curI = 0;
-	
+
 	static Random rand = new Random();
 	
 	static int RoomX = 25;

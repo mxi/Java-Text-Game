@@ -1,5 +1,6 @@
 package newGame;
 
+import newGame.Entities.EntityAttributes;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
@@ -24,7 +25,7 @@ public class MainGame {
         csi = new WSwingConsoleInterface();
 
         // Character & Game initialization:
-        Character character = new Character("John", Character.Type.Fighter, ConsoleSystemInterface.CYAN, 1);
+        Character character = new Character("John", EntityAttributes.CharacterType.Fighter, ConsoleSystemInterface.CYAN, 1);
         character.setMaxXY(69, 15);
         character.setPosition(1, 1);
         character.setMaxHealth(20);
