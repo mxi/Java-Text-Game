@@ -1,7 +1,8 @@
 package newGame;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Map {
 	
@@ -9,22 +10,26 @@ public class Map {
 	private final int DUNGEON_TOP = 3;
 	private final int DUNGEON_RIGHT_MAX = 79;
 	private final int DUNGEON_BOTTOM = 18;
+	private int curX;
+	private int curY;
+	private Random rand = new Random();
 	
-	public static class Room
+	public class Room
 	{
-		public int Xsize;
-		public int Ysize;
-		public int X;
-		public int Y;
+		public int Xsize = rand.nextInt(11) + 5;
+		public int Ysize = rand.nextInt(11) + 5;
+		// min sizes are 4, and max sizes are 15 by 15
+		public int X = curX;
+		public int Y = curY;
 		// the x and y cords are found in the top left corner
 	}
 	
-	public static class Hallway
+	public class Hallway
 	{
 		public int length;
 	}
 	
-	public static class Tile
+	public class Tile
 	{
 		public char TileType; //X: wall, _: empty, |: door, $: treasure, P: player, M: monster
 		public char TileVisibility; //V: visible, P: seen before, but out of sight, I: haven't seen before
@@ -32,14 +37,21 @@ public class Map {
 		public int TileY;
 	}
 	
-	private Map()
+	public Map()
 	{
+		curX = rand.nextInt(69) + 11;
+		curY = rand.nextInt(15) + 4;
 		List<Room> rooms = new ArrayList<>();
 		List<Hallway> hallways = new ArrayList<>();
 		List<Tile> Tiles = new ArrayList<>();
-		for(Boolean ReachedBorder = false; !ReachedBorder ;)
+		int curRoom = 0;
+		int curHall = 0;
+		int curTile = 0;
+		for(;;)
 		{
-			
+			Room r = new Room();
+			rooms.add(r);
+			if(r.Xsize + curX >= DUNGEON_RIGHT_MAX)
 		}
 	}
 }

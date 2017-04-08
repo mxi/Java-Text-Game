@@ -20,9 +20,7 @@ public class MainGame {
     private MainGame() {
         random = new Random();
         csi = new WSwingConsoleInterface();
-        csi.print(1, 1, "Reverted back to CSI");
-        int input = csi.inkey().code;
-        csi.print(1, 2, "You pressed " + input);
+        new Map();
         csi.refresh();
         csi.waitKey(10);
     }
