@@ -3,8 +3,11 @@ package newGame;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
+import java.util.Random;
+
 public class MainGame {
 
+    public static Random random;
     public static ConsoleSystemInterface csi;
 
     public static void main(String[] args) {
@@ -12,8 +15,7 @@ public class MainGame {
     }
 
     private MainGame() {
+        random = new Random();
         csi = new WSwingConsoleInterface();
-        csi.print(1, 1, "Reverted back to CSI");
     }
-
 }

@@ -1,10 +1,7 @@
 package game;
 
-import java.io.IOException;
-
 import sz.csi.CharKey;
 import sz.csi.ConsoleSystemInterface;
-import sz.csi.wswing.WSwingConsoleInterface;
 
 public class CharMove {
 
