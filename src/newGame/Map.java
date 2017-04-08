@@ -52,6 +52,9 @@ public class Map {
 			Room r = new Room();
 			rooms.add(r);
 			if(r.Xsize + curX >= DUNGEON_RIGHT_MAX)
+			{
+				
+			}
 		}
 	}
 }

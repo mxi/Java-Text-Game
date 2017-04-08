@@ -6,7 +6,11 @@ public class Entity {
     private static final int expUntilLevelup = 1024;
 
     private String name;
+    private int minX;
+    private int maxX;
     private int x;
+    private int minY;
+    private int maxY;
     private int y;
     private int maxHealth;
     private int initialHealth;
@@ -38,6 +42,48 @@ public class Entity {
         this.y = y;
     }
 
+    public void setMinXY(int x, int y) {
+        this.minX = x;
+        this.minY = y;
+    }
+
+    public void setMaxXY(int x, int y) {
+        this.maxX = x;
+        this.maxY = y;
+    }
+
+    public int getMinX() {
+        return minX;
+    }
+
+    public void setMinX(int minX) {
+        this.minX = minX;
+    }
+
+    public int getMaxX() {
+        return maxX;
+    }
+
+    public void setMaxX(int maxX) {
+        this.maxX = maxX;
+    }
+
+    public int getMinY() {
+        return minY;
+    }
+
+    public void setMinY(int minY) {
+        this.minY = minY;
+    }
+
+    public int getMaxY() {
+        return maxY;
+    }
+
+    public void setMaxY(int maxY) {
+        this.maxY = maxY;
+    }
+
     public int getX() {
         return x;
     }
@@ -46,12 +92,28 @@ public class Entity {
         this.x = x;
     }
 
+    public void moveLeft() {
+        this.x = this.x - 1 < this.minX ? this.minX : this.x - 1;
+    }
+
+    public void moveRight() {
+        this.x = this.x + 1 > this.maxX ? this.maxX : this.x + 1;
+    }
+
     public int getY() {
         return y;
     }
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public void moveDown() {
+        this.y = this.y - 1 < this.minY ? this.minY : this.y - 1;
+    }
+
+    public void moveUp() {
+        this.y = this.y + 1 > this.maxY ? this.maxY : this.y + 1;
     }
 
     public int getExp() {
