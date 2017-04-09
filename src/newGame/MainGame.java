@@ -1,10 +1,9 @@
 package newGame;
 
+import newGame.Entities.Character;
 import newGame.Entities.EntityAttributes;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
-
-import newGame.Entities.Character;
 
 import java.util.Random;
 

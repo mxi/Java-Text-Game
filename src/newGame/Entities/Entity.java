@@ -29,6 +29,10 @@ public class Entity {
         y = 0;
     }
 
+    public double distance(int x, int y) {
+        return Math.sqrt( Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2) );
+    }
+
     public String getName() {
         return name;
     }

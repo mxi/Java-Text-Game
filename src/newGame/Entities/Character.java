@@ -166,4 +166,9 @@ public class Character extends Entity {
     public String getTypeAsString() {
         return type.Type;
     }
+
+    @Override
+    public void damage(int amount) {
+        setHealth(getHealth() - shield.calcNewDamage(amount));
+    }
 }

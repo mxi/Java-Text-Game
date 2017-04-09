@@ -1,6 +1,6 @@
 package newGame.Entities;
 
-public class Item extends Entity {
+public abstract class Item extends Entity {
 
     public static int HP_INCREASE_ON_UPGRADE = 5;
     public static int HP_RES_INCREASE_ON_UPGRADE = 2;
@@ -17,7 +17,7 @@ public class Item extends Entity {
 
     public Item(String iname, int idurability, int idegradation, int ihousing, int ilevel) {
         super(iname, idurability * (HP_INCREASE_ON_UPGRADE * ilevel), ilevel);
-        housingSpace = ihousing;
+        housingSpace = ihousing + ilevel;
         housingSpaceBonus = 0;
 
         healthBonus = 0;
@@ -86,7 +86,10 @@ public class Item extends Entity {
         setMaxHealth(getMaxHealth() + HP_INCREASE_ON_UPGRADE);
         setHealthBonus(healthBonus + HP_RES_INCREASE_ON_UPGRADE);
         setHousingSpace(housingSpace + HOUSING_SPACE_INCREASE_ON_UPGRADE);
+        onUpgrade();
     }
+
+    protected abstract void onUpgrade();
 
     // -- Private Methods
 
