@@ -1,5 +1,7 @@
 package newGame.Entities;
 
+import newGame.MainGame;
+
 public class Entity {
 
     private static final int maxLevel = 30;
@@ -17,6 +19,7 @@ public class Entity {
     private int health;
     private int exp;
     private int level;
+    private char prevChar;
 
     public Entity(String iname, int ihealth, int ilevel) {
         name = iname;
@@ -93,11 +96,14 @@ public class Entity {
     }
 
     public void moveLeft() {
+    	prevChar = MainGame.csi.peekChar(x, y);
         this.x = this.x - 1 < this.minX ? this.minX : this.x - 1;
+        //MainGame.csi.print(x, y, Character.toString(prevChar));
     }
 
     public void moveRight() {
         this.x = this.x + 1 > this.maxX ? this.maxX : this.x + 1;
+        MainGame.csi.print(x - 1, y, " ");
     }
 
     public int getY() {
@@ -110,10 +116,12 @@ public class Entity {
 
     public void moveDown() {
         this.y = this.y - 1 < this.minY ? this.minY : this.y - 1;
+        MainGame.csi.print(x, y + 1, " ");
     }
 
     public void moveUp() {
         this.y = this.y + 1 > this.maxY ? this.maxY : this.y + 1;
+        MainGame.csi.print(x, y - 1, " ");
     }
 
     public int getExp() {

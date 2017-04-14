@@ -47,13 +47,31 @@ public class Map {
 		int curRoom = 0;
 		int curHall = 0;
 		int curTile = 0;
-		for(;;)
+		int limit = rand.nextInt(8) + 3;
+
+		for(int x = 0; x < limit; x++)
 		{
 			Room r = new Room();
 			rooms.add(r);
-			if(r.Xsize + curX >= DUNGEON_RIGHT_MAX)
+			if(r.Xsize + curX - 1 < DUNGEON_RIGHT_MAX && r.Ysize + curY - 1 < DUNGEON_BOTTOM)
 			{
-				
+				int X = r.X;
+				int Y = r.Y;
+				int XS = r.Xsize;
+				int YS = r.Ysize;
+				for(; X < r.X + r.Xsize - 1; X++)
+				{
+					MainGame.csi.print(X, Y, "X");
+					MainGame.csi.print(X, Y + YS - 1, "X");
+				}
+				for(X = r.X; Y <= r.Y + r.Ysize - 1; Y++)
+				{
+					MainGame.csi.print(X, Y, "X");
+					MainGame.csi.print(X + XS - 1, Y, "X");
+				}
+			}else{
+				curX = rand.nextInt(69) + 11;
+				curY = rand.nextInt(15) + 4;
 			}
 		}
 	}
