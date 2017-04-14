@@ -32,10 +32,6 @@ public class Entity {
         y = 0;
     }
 
-    public double distance(int x, int y) {
-        return Math.sqrt( Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2) );
-    }
-
     public String getName() {
         return name;
     }
@@ -102,7 +98,7 @@ public class Entity {
     public void moveLeft() {
     	prevChar = MainGame.csi.peekChar(x, y);
         this.x = this.x - 1 < this.minX ? this.minX : this.x - 1;
-        //MainGame.csi.print(x, y, Character.toString(prevChar));
+        MainGame.csi.print(x + 1, y, " ");
     }
 
     public void moveRight() {

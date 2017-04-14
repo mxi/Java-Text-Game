@@ -16,7 +16,11 @@ public class MainGame {
         csi = new WSwingConsoleInterface();
     	for(;;)
     	{
-    		new MainGame();
+    		new Map();
+    		csi.refresh();
+    		csi.waitKey(1);
+    		csi.cls();
+    		//new MainGame();
     	}
     }
 
@@ -30,18 +34,14 @@ public class MainGame {
         character.setPosition(1, 1);
         character.setMaxHealth(20);
         
-		Map x = new Map();
-		csi.refresh();
-		/*
-		csi.waitKey(1);
-		csi.cls();
-		*/
+		
 		
 		
         // Main game loop:
 		
 		
         while(true) {
+    		Map x = new Map();
             csi.print(character.getX(), character.getY(), "@", character.getColor());
             // 0 = Down
             // 1 = Up
@@ -50,10 +50,10 @@ public class MainGame {
             int key = csi.inkey().code;
 
             switch(key) {
-                case 0: // Up
+                case 0: // Down
                     character.moveDown();
                     break;
-                case 1: // Down
+                case 1: // Up
                     character.moveUp();
                     break;
                 case 2: // Left
@@ -65,7 +65,7 @@ public class MainGame {
                 default: // Other keys can be processed here:
                     break;
             }
-
+            csi.cls();
             csi.refresh();
         }
     }
