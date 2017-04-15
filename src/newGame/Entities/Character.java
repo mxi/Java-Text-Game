@@ -14,7 +14,6 @@ public class Character extends Entity {
     private List<? extends Item> invItems;
     private Item[] hotbar;
     private EntityAttributes.Shield shield;
-    private char representation;
     private int selectedInHotbar;
     private int inventorySpace;
     private int strength;
@@ -26,7 +25,7 @@ public class Character extends Entity {
 
     public Character(String iname, EntityAttributes.CharacterType itype, int icolor, int ilevel) {
         super(iname, itype.calcNewHealth(100), ilevel);
-        representation = '@';
+        setRepresentation('@');
         invItems = new ArrayList<>();
         hotbar = new Item[3];
         selectedInHotbar = 0;
@@ -38,14 +37,6 @@ public class Character extends Entity {
         charisma = itype.calcNewCharisma(100);
         color = icolor;
         type = itype;
-    }
-
-    public char getRepresentation() {
-        return this.representation;
-    }
-
-    public void setRepresentation(char representation) {
-        this.representation = representation;
     }
 
     public EntityAttributes.CharacterType getType() {

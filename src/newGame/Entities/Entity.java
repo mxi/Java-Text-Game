@@ -13,6 +13,7 @@ public abstract class Entity {
 
     private List<Runnable> onUpgrade;
     private String name;
+    private char representation;
     private int minX;
     private int maxX;
     private int x;
@@ -28,6 +29,7 @@ public abstract class Entity {
     public Entity(String iname, int ihealth, int ilevel) {
         onUpgrade = new ArrayList<>();
         name = iname;
+        representation = '!';
         exp = 0;
         level = ilevel;
         health = ihealth;
@@ -35,6 +37,14 @@ public abstract class Entity {
         maxHealth = ihealth;
         x = 0;
         y = 0;
+    }
+
+    public char getRepresentation() {
+        return representation;
+    }
+
+    public void setRepresentation(char representation) {
+        this.representation = representation;
     }
 
     public double distance(int x, int y) {
@@ -220,4 +230,10 @@ public abstract class Entity {
 
         setExp(0);
     }
+
+    public void upgrade(int times) throws UpgradeLimitReachedException {
+        for(int i = 0; i < times; i++)
+            upgrade();
+    }
+
 }
