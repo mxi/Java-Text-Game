@@ -168,6 +168,11 @@ public class Character extends Entity {
     }
 
     @Override
+    public void upgrade() {
+        // TODO: Upgrade character
+    }
+
+    @Override
     public void damage(int amount) {
         setHealth(getHealth() - shield.calcNewDamage(amount));
     }

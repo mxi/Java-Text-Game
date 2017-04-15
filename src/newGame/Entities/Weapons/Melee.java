@@ -1,12 +1,14 @@
 package newGame.Entities.Weapons;
 
+import newGame.Entities.Character;
 import newGame.Entities.Entity;
 import newGame.Entities.Item;
 
 import java.util.List;
 
-public class Melee extends Item {
+public abstract class Melee extends Item {
 
+    private Entity owner;
     private int damageOutput;
     private int damageBonus;
     private int swingRange;
@@ -18,6 +20,19 @@ public class Melee extends Item {
         damageBonus = idamageBonus;
         swingRange = 2;
         swingWeapon = true;
+
+        super.addOnUpgradeEvent(() -> {
+            upgradeDamageOutput();
+            upgradeDamageOutputBonus();
+        });
+    }
+
+    public Entity getOwner() {
+        return this.owner;
+    }
+
+    public void setOwner(Entity owner) {
+        this.owner = owner;
     }
 
     public int getSwingRange() {
@@ -62,6 +77,11 @@ public class Melee extends Item {
 
     public void attack(Entity entity) {
         entity.damage((int) (damageOutput * (1 + damageBonus / 100.0)));
+
+        if(entity.isDead() && this.owner instanceof Character)
+            rewardForKill((Character) this.owner);
+        else
+            rewardForHit((Character) this.owner);
     }
 
     public void swing(List<Entity> entities) {
@@ -74,10 +94,7 @@ public class Melee extends Item {
         });
     }
 
-    @Override
-    protected void onUpgrade() {
-        upgradeDamageOutput();
-        upgradeDamageOutputBonus();
-    }
+    protected abstract void rewardForKill(Character entity);
 
+    protected abstract void rewardForHit(Character entity);
 }

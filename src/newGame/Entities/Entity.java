@@ -1,10 +1,15 @@
 package newGame.Entities;
 
-public class Entity {
+import newGame.Exceptions.UpgradeLimitReachedException;
 
-    private static final int maxLevel = 30;
-    private static final int expUntilLevelup = 1024;
+import java.util.List;
 
+public abstract class Entity {
+
+    private int maxLevel = 30;
+    private int expUntilLevelUp = 1024;
+
+    private List<Runnable> onUpgrade;
     private String name;
     private int minX;
     private int maxX;
@@ -31,6 +36,26 @@ public class Entity {
 
     public double distance(int x, int y) {
         return Math.sqrt( Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2) );
+    }
+
+    public void addOnUpgradeEvent(Runnable upgradeEvent) {
+        this.onUpgrade.add(upgradeEvent);
+    }
+
+    public int getMaxLevel() {
+        return maxLevel;
+    }
+
+    public void setMaxLevel(int maxLevel) {
+        this.maxLevel = maxLevel;
+    }
+
+    public int getExpUntilLevelUp() {
+        return expUntilLevelUp;
+    }
+
+    public void setExpUntilLevelUp(int expUntilLevelUp) {
+        this.expUntilLevelUp = expUntilLevelUp;
     }
 
     public String getName() {
@@ -178,5 +203,15 @@ public class Entity {
 
     public boolean isDead() {
         return this.health <= 0;
+    }
+
+    public void upgrade() throws UpgradeLimitReachedException {
+        if(this.level + 1 > this.maxLevel)
+            throw new UpgradeLimitReachedException(this);
+
+        for(Runnable upgrade : this.onUpgrade)
+            upgrade.run();
+
+        setExp(0);
     }
 }
