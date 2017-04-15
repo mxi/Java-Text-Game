@@ -65,7 +65,7 @@ public class Map {
 				//Anything in the way?
 				for(; X < r.X + r.Xsize - 1; X++)
 				{
-					if(MainGame.csi.peekChar(X, Y) == 'X' || MainGame.csi.peekChar(X, Y + YS - 1) == 'X')
+					if(MainGame.csi.peekChar(X, Y) == 'X' || MainGame.csi.peekChar(X, Y + YS - 1) == 'X' || MainGame.csi.peekChar(X, Y) == '.' || MainGame.csi.peekChar(X, Y + YS - 1) == '.')
 					{
 						x--;
 						continue build;
@@ -73,7 +73,7 @@ public class Map {
 				}
 				for(X = r.X; Y < r.Y + r.Ysize - 1; Y++)
 				{
-					if(MainGame.csi.peekChar(X, Y) == 'X' || MainGame.csi.peekChar(X + XS - 1, Y) == 'X')
+					if(MainGame.csi.peekChar(X, Y) == 'X' || MainGame.csi.peekChar(X + XS - 1, Y) == 'X' || MainGame.csi.peekChar(X, Y) == '.' || MainGame.csi.peekChar(X + XS - 1, Y) == '.')
 					{
 						x--;
 						continue build;
@@ -105,7 +105,7 @@ public class Map {
 		}
 		
 		//Hallway build
-		build: for(int x = 0; x < limit;)
+		build: for(int x = 0; x < limit; x++)
 		{
 			
 		}
