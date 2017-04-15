@@ -33,13 +33,8 @@ public class MainGame {
         character.setMaxXY(69, 15);
         character.setPosition(1, 1);
         character.setMaxHealth(20);
-        
-		
-		
-		
+
         // Main game loop:
-		
-		
         while(true) {
     		Map x = new Map();
             csi.print(character.getX(), character.getY(), "@", character.getColor());

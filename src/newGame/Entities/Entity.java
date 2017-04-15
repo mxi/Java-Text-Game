@@ -60,9 +60,7 @@ public abstract class Entity {
     public void setExpUntilLevelUp(int expUntilLevelUp) {
         this.expUntilLevelUp = expUntilLevelUp;
     }
-
-=======
->>>>>>> 77765fdbde42b1a58ff34906e496ba1d55758037
+    
     public String getName() {
         return name;
     }
