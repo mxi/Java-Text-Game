@@ -79,6 +79,35 @@ public class EntityAttributes {
             UpgradeSpeed = iupgradeSpeed;
         }
 
+        public static Shield fromLevel(int level) {
+            switch(level) {
+                case 1:
+                    return Shield.Leather;
+                case 2:
+                    return Shield.Plastic;
+                case 3:
+                    return Shield.Wood;
+                case 4:
+                    return Shield.Bone;
+                case 5:
+                    return Shield.Paper;
+                case 6:
+                    return Shield.Glass;
+                case 7:
+                    return Shield.Copper;
+                case 8:
+                    return Shield.Brass;
+                case 9:
+                    return Shield.Gold;
+                case 10:
+                    return Shield.Iron;
+                case 11:
+                    return Shield.Steel;
+                default:
+                    return level > 1 ? Shield.Steel : Shield.Leather;
+            }
+        }
+
         public boolean wouldHit() {
             return MainGame.random.nextInt(101) > (MissChance * UpgradeSpeed) + (2 * Level);
         }

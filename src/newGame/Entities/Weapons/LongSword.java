@@ -2,15 +2,15 @@ package newGame.Entities.Weapons;
 
 import newGame.Entities.Character;
 
-public class Knife extends Melee {
+public class LongSword extends Melee {
 
-    public static int INIT_DURABILITY = 45;
-    public static int HOUSING = 3;
-    public static int DEGRADATION = 5;
+    public static int INIT_DURABILITY = 145;
+    public static int HOUSING = 6;
+    public static int DEGRADATION = 7;
     public static float EXP_MULTIPLIER = 1.5f;
 
-    public Knife(int idamageOutput, int idamageBonus, int irewardForKill, int irewardForHit, int ilevel) {
-        super("Knife Level " + ilevel, INIT_DURABILITY, DEGRADATION, HOUSING, idamageOutput, idamageBonus, ilevel);
+    public LongSword(int idamageoutput, int idamageBonus, int irewardForKill, int irewardForHit, int ilevel) {
+        super("Long Sword Level " + ilevel, INIT_DURABILITY, DEGRADATION, HOUSING, idamageoutput, idamageBonus, ilevel);
 
         addOnUpgradeEvent(() -> setExpUntilLevelUp((int) (getExpUntilLevelUp() * EXP_MULTIPLIER)));
         setExpRewardForKill(irewardForKill);

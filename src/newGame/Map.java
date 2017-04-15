@@ -12,12 +12,11 @@ public class Map {
 	private final int DUNGEON_BOTTOM = 15; // old 18
 	private int curX;
 	private int curY;
-	private Random rand = new Random();
 	
 	public class Room
 	{
-		public int Xsize = rand.nextInt(11) + 5;
-		public int Ysize = rand.nextInt(11) + 5;
+		public int Xsize = MainGame.random.nextInt(11) + 5;
+		public int Ysize = MainGame.random.nextInt(11) + 5;
 		// min size are 4 by 4, and max size are 15 by 15
 		public int X = curX;
 		public int Y = curY;
@@ -39,17 +38,16 @@ public class Map {
 	
 	public Map()
 	{
-		curX = rand.nextInt(69) + 1;
-		curY = rand.nextInt(15) + 1;
+		curX = MainGame.random.nextInt(69) + 1;
+		curY = MainGame.random.nextInt(15) + 1;
 		List<Room> rooms = new ArrayList<>();
 		List<Hallway> hallways = new ArrayList<>();
 		List<Tile> tiles = new ArrayList<>();
 		int curRoom = 0;
 		int curHall = 0;
 		int curTile = 0;
-		int limit = rand.nextInt(8) + 3;
+		int limit = MainGame.random.nextInt(8) + 3;
 
-		
 		// room build
 		build: for(int x = 0; x < limit; x++)
 		{
@@ -98,8 +96,8 @@ public class Map {
 					MainGame.csi.print(X + XS - 1, Y, "X");
 				}
 			}else{
-				curX = rand.nextInt(69) + 1;
-				curY = rand.nextInt(15) + 1;
+				curX = MainGame.random.nextInt(69) + 1;
+				curY = MainGame.random.nextInt(15) + 1;
 				x--;
 			}
 		}

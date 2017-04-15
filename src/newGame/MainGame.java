@@ -38,6 +38,7 @@ public class MainGame {
             switch(key) {
                 case 0: // Down
                     character.moveDown();
+                    runAI();
                     break;
                 case 1: // Up
                     character.moveUp();
@@ -55,5 +56,9 @@ public class MainGame {
             csi.cls();
             csi.refresh();
         }
+    }
+
+    private void runAI() {
+
     }
 }
