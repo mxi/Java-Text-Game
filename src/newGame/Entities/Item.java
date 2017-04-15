@@ -25,7 +25,7 @@ public class Item extends Entity {
         totalTimesUsed = 0;
         timesUsed = 0;
 
-        super.addOnUpgradeEvent("[Item] Upgrade", () -> {
+        super.addOnUpgradeEvent(() -> {
             setMaxHealth(getMaxHealth() + HP_INCREASE_ON_UPGRADE);
             setHealthBonus(healthBonus + HP_RES_INCREASE_ON_UPGRADE);
             setHousingSpace(housingSpace + HOUSING_SPACE_INCREASE_ON_UPGRADE);

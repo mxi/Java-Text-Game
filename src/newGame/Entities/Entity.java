@@ -1,7 +1,6 @@
 package newGame.Entities;
 
 import newGame.Exceptions.UpgradeLimitReachedException;
-
 import newGame.MainGame;
 
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ public abstract class Entity {
     private int health;
     private int exp;
     private int level;
-    private char prevChar;
 
     public Entity(String iname, int ihealth, int ilevel) {
         onUpgrade = new ArrayList<>();
@@ -127,7 +125,6 @@ public abstract class Entity {
     }
 
     public void moveLeft() {
-    	prevChar = MainGame.csi.peekChar(x, y);
         this.x = this.x - 1 < this.minX ? this.minX : this.x - 1;
         MainGame.csi.print(x + 1, y, " ");
     }
