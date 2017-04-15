@@ -24,7 +24,8 @@ public class Map {
 	
 	public class Hallway
 	{
-		char direction; // H = Horizontal, V = vertical
+		int length;
+		char direction; // R = right, L = left, U = up, D = down
 	}
 	
 	public class Tile
@@ -51,7 +52,6 @@ public class Map {
 		{
 			Room r = new Room();
 			rooms.add(r);
-			curRoom++;
 			if(r.Xsize + curX - 1 < DUNGEON_RIGHT_MAX && r.Ysize + curY - 1 < DUNGEON_BOTTOM)
 			{
 				int X = r.X;
@@ -66,7 +66,6 @@ public class Map {
 					{
 						x--;
 						rooms.remove(curRoom);
-						curRoom--;
 						continue build;
 					}
 				}
@@ -76,7 +75,6 @@ public class Map {
 					{
 						x--;
 						rooms.remove(curRoom);
-						curRoom--;
 						continue build;
 					}
 				}
@@ -98,12 +96,12 @@ public class Map {
 					MainGame.csi.print(X, Y, "X");
 					MainGame.csi.print(X + XS - 1, Y, "X");
 				}
+				curRoom++;
 			}else{
 				curX = MainGame.random.nextInt(69) + 1;
 				curY = MainGame.random.nextInt(15) + 1;
 				x--;
 				rooms.remove(curRoom);
-				curRoom--;
 			}
 		}
 		
@@ -112,8 +110,16 @@ public class Map {
 		{
 			Hallway h = new Hallway();
 			hallways.add(h);
-			h.direction = 'H';
+			h.direction = 'R';
+			Room r = rooms.get(x);
+			int HallwayHeight = MainGame.random.nextInt(r.Ysize - 3) + 1;
 			
+			for(h.length = r.X + r.Xsize - 1; h.length < DUNGEON_RIGHT_MAX; h.length++)
+			{
+				MainGame.csi.print(h.length, HallwayHeight - 1, "X");
+				MainGame.csi.print(h.length, HallwayHeight, ".");
+				MainGame.csi.print(h.length, HallwayHeight + 1, "X");
+			}
 		}
 	}
 }
