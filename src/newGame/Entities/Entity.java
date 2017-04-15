@@ -2,6 +2,7 @@ package newGame.Entities;
 
 import newGame.Exceptions.UpgradeLimitReachedException;
 
+import newGame.MainGame;
 import java.util.List;
 
 public abstract class Entity {
@@ -22,6 +23,7 @@ public abstract class Entity {
     private int health;
     private int exp;
     private int level;
+    private char prevChar;
 
     public Entity(String iname, int ihealth, int ilevel) {
         name = iname;
@@ -34,6 +36,7 @@ public abstract class Entity {
         y = 0;
     }
 
+<<<<<<< HEAD
     public double distance(int x, int y) {
         return Math.sqrt( Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2) );
     }
@@ -58,6 +61,8 @@ public abstract class Entity {
         this.expUntilLevelUp = expUntilLevelUp;
     }
 
+=======
+>>>>>>> 77765fdbde42b1a58ff34906e496ba1d55758037
     public String getName() {
         return name;
     }
@@ -122,11 +127,14 @@ public abstract class Entity {
     }
 
     public void moveLeft() {
+    	prevChar = MainGame.csi.peekChar(x, y);
         this.x = this.x - 1 < this.minX ? this.minX : this.x - 1;
+        MainGame.csi.print(x + 1, y, " ");
     }
 
     public void moveRight() {
         this.x = this.x + 1 > this.maxX ? this.maxX : this.x + 1;
+        MainGame.csi.print(x - 1, y, " ");
     }
 
     public int getY() {
@@ -139,10 +147,12 @@ public abstract class Entity {
 
     public void moveDown() {
         this.y = this.y - 1 < this.minY ? this.minY : this.y - 1;
+        MainGame.csi.print(x, y + 1, " ");
     }
 
     public void moveUp() {
         this.y = this.y + 1 > this.maxY ? this.maxY : this.y + 1;
+        MainGame.csi.print(x, y - 1, " ");
     }
 
     public int getExp() {
