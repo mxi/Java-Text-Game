@@ -3,6 +3,8 @@ package newGame.Entities;
 import newGame.Exceptions.UpgradeLimitReachedException;
 
 import newGame.MainGame;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Entity {
@@ -26,6 +28,7 @@ public abstract class Entity {
     private char prevChar;
 
     public Entity(String iname, int ihealth, int ilevel) {
+        onUpgrade = new ArrayList<>();
         name = iname;
         exp = 0;
         level = ilevel;
