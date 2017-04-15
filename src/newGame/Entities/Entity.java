@@ -36,7 +36,6 @@ public abstract class Entity {
         y = 0;
     }
 
-<<<<<<< HEAD
     public double distance(int x, int y) {
         return Math.sqrt( Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2) );
     }
@@ -60,7 +59,7 @@ public abstract class Entity {
     public void setExpUntilLevelUp(int expUntilLevelUp) {
         this.expUntilLevelUp = expUntilLevelUp;
     }
-    
+
     public String getName() {
         return name;
     }
