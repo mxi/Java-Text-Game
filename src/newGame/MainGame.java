@@ -13,7 +13,16 @@ public class MainGame {
     public static ConsoleSystemInterface csi;
 
     public static void main(String[] args) {
-        new MainGame();
+    	//new MainGame();
+        csi = new WSwingConsoleInterface();
+    	for(;;)
+    	{
+            random = new Random();
+    		new Map();
+    		csi.refresh();
+    		csi.waitKey(1);
+    		csi.cls();
+    	}
     }
 
     private MainGame() {
