@@ -14,6 +14,9 @@ public abstract class Melee extends Item {
     private int swingRange;
     private boolean swingWeapon;
 
+    private int expRewardForKill;
+    private int expRewardForHit;
+
     public Melee(String iname, int idurability, int idegradation, int ihousing, int idamageOutput, int idamageBonus, int ilevel) {
         super(iname, idurability, idegradation, ihousing, ilevel);
         damageOutput = idamageOutput;
@@ -21,10 +24,29 @@ public abstract class Melee extends Item {
         swingRange = 2;
         swingWeapon = true;
 
+        expRewardForKill = 32;
+        expRewardForHit = 8;
+
         super.addOnUpgradeEvent(() -> {
             upgradeDamageOutput();
             upgradeDamageOutputBonus();
         });
+    }
+
+    public int getExpRewardForKill() {
+        return expRewardForKill;
+    }
+
+    public void setExpRewardForKill(int expRewardForKill) {
+        this.expRewardForKill = expRewardForKill;
+    }
+
+    public int getExpRewardForHit() {
+        return expRewardForHit;
+    }
+
+    public void setExpRewardForHit(int expRewardForHit) {
+        this.expRewardForHit = expRewardForHit;
     }
 
     public Entity getOwner() {

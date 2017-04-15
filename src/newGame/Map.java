@@ -46,8 +46,6 @@ public class Map {
 		int curHall = 0;
 		int curTile = 0;
 		int limit = MainGame.random.nextInt(6) + 1;
-
-		
 		// room build
 		build: for(int x = 0; x < limit; x++)
 		{
