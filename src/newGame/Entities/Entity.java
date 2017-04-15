@@ -216,8 +216,7 @@ public abstract class Entity {
         if(this.level + 1 > this.maxLevel)
             throw new UpgradeLimitReachedException(this);
 
-        for(Runnable upgrade : this.onUpgrade)
-            upgrade.run();
+        onUpgrade.forEach(runnable -> runnable.run());
 
         setExp(0);
     }
