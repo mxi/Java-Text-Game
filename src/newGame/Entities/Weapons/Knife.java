@@ -11,10 +11,28 @@ public class Knife extends Melee {
 
     public Knife(int idamageOutput, int idamageBonus, int irewardForKill, int irewardForHit, int ilevel) {
         super("Knife Level " + ilevel, INIT_DURABILITY, DEGRADATION, HOUSING, idamageOutput, idamageBonus, ilevel);
-
-        addOnUpgradeEvent(() -> setExpUntilLevelUp((int) (getExpUntilLevelUp() * EXP_MULTIPLIER)));
         setExpRewardForKill(irewardForKill);
         setExpRewardForHit(irewardForHit);
+    }
+
+    @Override
+    public void onKeyPress(int key) {
+
+    }
+
+    @Override
+    protected void onMeleeUse() {
+
+    }
+
+    @Override
+    protected void onMeleeUpgrade() {
+
+    }
+
+    @Override
+    protected void onMeleeDowngrade() {
+
     }
 
     @Override

@@ -1,7 +1,5 @@
 package newGame.Entities;
 
-import newGame.MainGame;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +8,10 @@ public class Character extends Entity {
     private final int MAX_INVENTORY_SPACE = 60;
     private final int MIN_INVENTORY_SPACE = 5;
 
-    private EntityAttributes.CharacterType type;
+    private CharacterType type;
     private List<? extends Item> invItems;
     private Item[] hotbar;
-    private EntityAttributes.Shield shield;
+    private Shield shield;
     private int selectedInHotbar;
     private int inventorySpace;
     private int strength;
@@ -21,11 +19,15 @@ public class Character extends Entity {
     private int wisdom;
     private int intelligence;
     private int charisma;
-    private int color;
 
-    public Character(String iname, EntityAttributes.CharacterType itype, int icolor, int ilevel) {
+    public Character() {
+
+    }
+
+    public Character(String iname, CharacterType itype, int icolor, int ilevel) {
         super(iname, itype.calcNewHealth(100), ilevel);
         setRepresentation('@');
+        setColor(icolor);
         invItems = new ArrayList<>();
         hotbar = new Item[3];
         selectedInHotbar = 0;
@@ -35,15 +37,14 @@ public class Character extends Entity {
         wisdom = itype.calcNewWisdom(100);
         intelligence = itype.calcNewIntelligence(100);
         charisma = itype.calcNewCharisma(100);
-        color = icolor;
         type = itype;
     }
 
-    public EntityAttributes.CharacterType getType() {
+    public CharacterType getType() {
         return this.type;
     }
 
-    public void setType(EntityAttributes.CharacterType type) {
+    public void setType(CharacterType type) {
         this.type = type;
     }
 
@@ -59,11 +60,11 @@ public class Character extends Entity {
         return this.hotbar;
     }
 
-    public EntityAttributes.Shield getShield() {
+    public Shield getShield() {
         return this.shield;
     }
 
-    public void setShield(EntityAttributes.Shield shield) {
+    public void setShield(Shield shield) {
         this.shield = shield;
     }
 
@@ -146,21 +147,23 @@ public class Character extends Entity {
         this.charisma = charisma;
     }
 
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
-    }
-
     public String getTypeAsString() {
         return type.Type;
     }
 
     @Override
-    public void upgrade() {
-        // TODO: Upgrade character
+    public void onKeyPress(int key) {
+        
+    }
+
+    @Override
+    protected void onEntityUpgrade() {
+
+    }
+
+    @Override
+    protected void onEntityDowngrade() {
+
     }
 
     @Override

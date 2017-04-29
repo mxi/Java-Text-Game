@@ -1,7 +1,7 @@
 package newGame.Entities.Monsters;
 
 import newGame.Entities.Character;
-import newGame.Entities.EntityAttributes;
+import newGame.Entities.Shield;
 import newGame.Map;
 import sz.csi.ConsoleSystemInterface;
 
@@ -11,11 +11,24 @@ public class Goblin extends Monster {
     public static float EXP_MULTIPLIER = 1.2f;
 
     public Goblin(int ilevel) {
-        super("Goblin Level " + ilevel, EntityAttributes.Shield.fromLevel(ilevel), INIT_HEALTH * ilevel, ilevel);
+        super("Goblin Level " + ilevel, Shield.fromLevel(ilevel), INIT_HEALTH * ilevel, ilevel);
         setColor(ConsoleSystemInterface.GREEN);
         setRepresentation('G');
+    }
 
-        addOnUpgradeEvent(() -> setExpUntilLevelUp((int) (getExpUntilLevelUp() * EXP_MULTIPLIER)));
+    @Override
+    public void onKeyPress(int key) {
+
+    }
+
+    @Override
+    protected void onMonsterUpgrade() {
+
+    }
+
+    @Override
+    protected void onMonsterDowngrade() {
+
     }
 
     @Override

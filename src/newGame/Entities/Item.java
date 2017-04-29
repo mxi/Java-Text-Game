@@ -1,59 +1,63 @@
 package newGame.Entities;
 
-public class Item extends Entity {
+import sz.csi.ConsoleSystemInterface;
 
-    public static int HP_INCREASE_ON_UPGRADE = 5;
-    public static int HP_RES_INCREASE_ON_UPGRADE = 2;
-    public static int HP_DRAIN_ON_USE = 5;
-    public static int HOUSING_SPACE_INCREASE_ON_UPGRADE = 1;
+public abstract class Item extends Entity {
+
+    public int HP_INCREASE_ON_UPGRADE;
+    public int HP_DRAIN_ON_USE;
 
     private int housingSpace;
-    private int housingSpaceBonus;
-
-    private int healthBonus;
-
     private int totalTimesUsed;
     private int timesUsed;
 
-    public Item(String iname, int idurability, int idegradation, int ihousing, int ilevel) {
-        super(iname, idurability * (HP_INCREASE_ON_UPGRADE * ilevel), ilevel);
-        housingSpace = ihousing + ilevel;
-        housingSpaceBonus = 0;
-
-        healthBonus = 0;
-
+    public Item() {
+        setName("Item");
+        setRepresentation('I');
+        setColor(ConsoleSystemInterface.LIGHT_GRAY);
+        setMaxHealth(50);
+        setHealth(50);
+        setLevel(1);
+        HP_INCREASE_ON_UPGRADE = 5;
+        HP_DRAIN_ON_USE = 1;
+        housingSpace = 1;
         totalTimesUsed = 0;
         timesUsed = 0;
+    }
 
-        super.addOnUpgradeEvent(() -> {
-            setMaxHealth(getMaxHealth() + HP_INCREASE_ON_UPGRADE);
-            setHealthBonus(healthBonus + HP_RES_INCREASE_ON_UPGRADE);
-            setHousingSpace(housingSpace + HOUSING_SPACE_INCREASE_ON_UPGRADE);
-        });
+    public Item(String iname, int idurability, int idegradation, int ihousing, int ilevel) {
+        super(iname, idurability, ilevel);
+        setRepresentation('I');
+        setColor(ConsoleSystemInterface.LIGHT_GRAY);
+        HP_INCREASE_ON_UPGRADE = 5;
+        HP_DRAIN_ON_USE = 1;
+        housingSpace = ihousing;
+        totalTimesUsed = 0;
+        timesUsed = 0;
+    }
+
+    public int getHealthIncreaseOnUpgrade() {
+        return HP_INCREASE_ON_UPGRADE;
+    }
+
+    public void setHealthIncreaseOnUpgrade(int healthIncrease) {
+        HP_INCREASE_ON_UPGRADE = healthIncrease;
+    }
+
+    public int getHealthDrainOnUse() {
+        return HP_DRAIN_ON_USE;
+    }
+
+    public void setHealthDrainOnUse(int healthDrain) {
+        HP_DRAIN_ON_USE = healthDrain;
     }
 
     public int getHousingSpace() {
-        return housingSpace - getHousingSpaceBonusDecrease();
+        return housingSpace;
     }
 
     public void setHousingSpace(int housingSpace) {
         this.housingSpace = housingSpace < 1 ? 1 : housingSpace;
-    }
-
-    public int getHousingSpaceBonus() {
-        return housingSpaceBonus - getHousingSpaceBonusDecrease();
-    }
-
-    public void setHousingSpaceBonus(int housingSpaceBonus) {
-        this.housingSpaceBonus = housingSpaceBonus > 50 ? 50 : housingSpaceBonus;
-    }
-
-    public int getHealthBonus() {
-        return healthBonus;
-    }
-
-    public void setHealthBonus(int healthBonus) {
-        this.healthBonus = healthBonus > 50 ? 50 : healthBonus;
     }
 
     public int getTotalTimesUsed() {
@@ -73,14 +77,17 @@ public class Item extends Entity {
     }
 
     public void useItem() {
-        damage(HP_DRAIN_ON_USE - getDamageBonusDecrease());
-        timesUsed++;
-        totalTimesUsed++;
+        if(getHealth() > 0) {
+            damage(HP_DRAIN_ON_USE);
+            timesUsed++;
+            totalTimesUsed++;
+            onItemUse();
+        }
     }
 
     public void destroyItem() {
-        setHealth(1);
-        timesUsed = totalTimesUsed - 1;
+        setHealth(0);
+        timesUsed = totalTimesUsed;
     }
 
     public void repairItem() {
@@ -88,14 +95,20 @@ public class Item extends Entity {
         timesUsed = 0;
     }
 
-    // -- Private Methods
-
-    private int getDamageBonusDecrease() {
-        return (healthBonus * HP_DRAIN_ON_USE) / 100;
+    @Override
+    protected void onEntityUpgrade() {
+        onItemUpgrade();
     }
 
-    private int getHousingSpaceBonusDecrease() {
-        return (housingSpaceBonus * housingSpace) / 100;
+    @Override
+    protected void onEntityDowngrade() {
+        onItemDowngrade();
     }
+
+    protected abstract void onItemUse();
+
+    protected abstract void onItemUpgrade();
+
+    protected abstract void onItemDowngrade();
 
 }
