@@ -78,12 +78,16 @@ public abstract class Entity {
         return distance(e.getX(), e.getY());
     }
 
-    public boolean instersects(int x, int y) {
-        
+    public boolean intersects(double x, double y) {
+        return getX() == x && getY() == y;
     }
 
     public boolean intersects(Point p) {
+        return intersects(p.getX(), p.getY());
+    }
 
+    public boolean intersects(Entity e) {
+        return intersects(e.getPosition());
     }
 
     public int getMaxLevel() {
@@ -113,6 +117,11 @@ public abstract class Entity {
     public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public void setBounds(int minX, int minY, int maxX, int maxY) {
+        setMaxXY(maxX, maxY);
+        setMinXY(minX, minY);
     }
 
     public void setMinXY(int x, int y) {
@@ -163,6 +172,10 @@ public abstract class Entity {
 
     public void setX(int x) {
         this.x = x;
+    }
+
+    public Point getPosition() {
+        return new Point(getX(), getY());
     }
 
     public void moveLeft() {
