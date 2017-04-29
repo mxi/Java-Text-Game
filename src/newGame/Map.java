@@ -11,7 +11,11 @@ public class Map {
 	private final int DUNGEON_BOTTOM = 20; // old 18
 	private int curX;
 	private int curY;
-	
+
+	private List<Room> rooms;
+	private List<Hallway> hallways;
+	private List<Tile> tiles;
+
 	public class Room
 	{
 		public int Xsize = MainGame.random.nextInt(11) + 5;
@@ -35,14 +39,16 @@ public class Map {
 		public int TileX;
 		public int TileY;
 	}
-	
+
+
+
 	public Map()
 	{
 		curX = MainGame.random.nextInt(69) + 1;
 		curY = MainGame.random.nextInt(15) + 1;
-		List<Room> rooms = new ArrayList<>();
-		List<Hallway> hallways = new ArrayList<>();
-		List<Tile> tiles = new ArrayList<>();
+		rooms = new ArrayList<>();
+		hallways = new ArrayList<>();
+		tiles = new ArrayList<>();
 		int curRoom = 0;
 		int curHall = 0;
 		int curTile = 0;

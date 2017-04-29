@@ -17,20 +17,25 @@ public abstract class Melee extends Item {
     private int expRewardForKill;
     private int expRewardForHit;
 
+    public Melee() {
+        super();
+        setName("Melee");
+        swingRange = 2;
+        swingWeapon = false;
+
+        expRewardForKill = 32;
+        expRewardForHit = 3;
+    }
+
     public Melee(String iname, int idurability, int idegradation, int ihousing, int idamageOutput, int idamageBonus, int ilevel) {
         super(iname, idurability, idegradation, ihousing, ilevel);
         damageOutput = idamageOutput;
         damageBonus = idamageBonus;
         swingRange = 2;
-        swingWeapon = true;
+        swingWeapon = false;
 
         expRewardForKill = 32;
-        expRewardForHit = 8;
-
-        super.addOnUpgradeEvent(() -> {
-            upgradeDamageOutput();
-            upgradeDamageOutputBonus();
-        });
+        expRewardForHit = 3;
     }
 
     public int getExpRewardForKill() {
@@ -100,10 +105,10 @@ public abstract class Melee extends Item {
     public void attack(Entity entity) {
         entity.damage((int) (damageOutput * (1 + damageBonus / 100.0)));
 
-        if(entity.isDead() && this.owner instanceof Character)
-            rewardForKill((Character) this.owner);
+        if(entity.isDead() && owner instanceof Character)
+            rewardForKill((Character) owner);
         else
-            rewardForHit((Character) this.owner);
+            rewardForHit((Character) owner);
     }
 
     public void swing(List<Entity> entities) {
@@ -115,6 +120,27 @@ public abstract class Melee extends Item {
                 attack(entity);
         });
     }
+
+    @Override
+    protected void onItemUse() {
+        onMeleeUse();
+    }
+
+    @Override
+    protected void onItemUpgrade() {
+        onMeleeUpgrade();
+    }
+
+    @Override
+    protected void onItemDowngrade() {
+        onMeleeDowngrade();
+    }
+
+    protected abstract void onMeleeUse();
+
+    protected abstract void onMeleeUpgrade();
+
+    protected abstract void onMeleeDowngrade();
 
     protected abstract void rewardForKill(Character entity);
 

@@ -12,9 +12,28 @@ public class LongSword extends Melee {
     public LongSword(int idamageoutput, int idamageBonus, int irewardForKill, int irewardForHit, int ilevel) {
         super("Long Sword Level " + ilevel, INIT_DURABILITY, DEGRADATION, HOUSING, idamageoutput, idamageBonus, ilevel);
 
-        addOnUpgradeEvent(() -> setExpUntilLevelUp((int) (getExpUntilLevelUp() * EXP_MULTIPLIER)));
         setExpRewardForKill(irewardForKill);
         setExpRewardForHit(irewardForHit);
+    }
+
+    @Override
+    public void onKeyPress(int key) {
+
+    }
+
+    @Override
+    protected void onMeleeUse() {
+
+    }
+
+    @Override
+    protected void onMeleeUpgrade() {
+
+    }
+
+    @Override
+    protected void onMeleeDowngrade() {
+
     }
 
     @Override
