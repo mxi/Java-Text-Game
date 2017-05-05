@@ -390,9 +390,9 @@ public class Map {
 					MainGame.csi.print(HallwayX - 1, h.length, "X");
 					MainGame.csi.print(HallwayX, h.length, ".");
 					MainGame.csi.print(HallwayX + 1, h.length, "X");
-					MainGame.csi.print(HallwayX - 1, h.length + 1, "X");
+					MainGame.csi.print(HallwayX - 1, h.length + 1, ".");
 					MainGame.csi.print(HallwayX, h.length + 1, ".");
-					MainGame.csi.print(HallwayX + 1, h.length + 1, "X");
+					MainGame.csi.print(HallwayX + 1, h.length + 1, ".");
 					break;
 				}
 				//standard hallway segment
@@ -402,6 +402,21 @@ public class Map {
 					MainGame.csi.print(HallwayX + 1, h.length, "X");
 				}
 			}
+			
+		}
+
+		//Printing the Stairs
+		for(;;)
+		{
+			Room StairRoom = rooms.get(MainGame.random.nextInt(rooms.size()));
+			int StairX = StairRoom.X + 1 + MainGame.random.nextInt(StairRoom.Xsize - 1);
+			int StairY= StairRoom.Y + 1 + MainGame.random.nextInt(StairRoom.Ysize - 1);
+			if(MainGame.csi.peekChar(StairX, StairY) == 'X')
+			{
+				continue;
+			}
+			MainGame.csi.print(StairX , StairY, "/");
+			break;
 		}
 	}
 }
