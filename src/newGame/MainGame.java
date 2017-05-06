@@ -8,6 +8,7 @@ import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class MainGame {
@@ -15,7 +16,7 @@ public class MainGame {
     public static Random random;
     public static ConsoleSystemInterface csi;
 
-    private static MonsterList monsters;
+    private static List<Monster> monsters;
     private static int goblinSpawnChance = 15;
 
     public static void main(String[] args) {
@@ -34,8 +35,7 @@ public class MainGame {
     private MainGame() {
         random = new Random();
         csi = new WSwingConsoleInterface();
-        monsters = new MonsterList();
-        monsters.setBounds(1, 1, 69, 15);
+        monsters = new ArrayList<>();
 
         // Character & Game initialization:
         Character character = new Character("John", CharacterType.Fighter, ConsoleSystemInterface.CYAN, 1);
@@ -46,17 +46,14 @@ public class MainGame {
         // Main game loop:
         while(true) {
             csi.print(character.getX(), character.getY(), character.getRepresentation(), character.getColor());
-            monsters.getMonsters().forEach(monster ->
+            monsters.forEach(monster ->
                     csi.print(monster.getX(), monster.getY(), monster.getRepresentation(), monster.getColor()));
-            // 0 = Down
-            // 1 = Up
-            // 2 = Left
-            // 3 = Right
+
             int key = csi.inkey().code;
 
             switch(key) {
                 case 0:
-                    for(Monster m : monsters.getMonsters())
+                    for(Monster m : monsters)
                         if(m.intersects(character.previewDown()))
                             break;
                     break;
@@ -72,7 +69,7 @@ public class MainGame {
             }
 
             character.onKeyPress(key);
-            monsters.getMonsters().forEach(monster -> monster.onKeyPress(key));
+            monsters.forEach(monster -> monster.onKeyPress(key));
 
             runAI();
 
@@ -83,7 +80,10 @@ public class MainGame {
 
     private void runAI() {
         if(random.nextInt(101) <= goblinSpawnChance) {
-            monsters.spawnGoblin(1);
+            Goblin goblin = new Goblin(1);
+            goblin.setMinXY(1, 1);
+            goblin.setMaxXY(69, 15);
+            monsters.add(goblin);
         }
     }
 }
