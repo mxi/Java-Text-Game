@@ -20,7 +20,7 @@ public class MainGame {
 
     public static void main(String[] args) {
     	//new MainGame();
-        csi = new WSwingConsoleInterface();
+    	csi = new WSwingConsoleInterface();
     	for(;;)
     	{
           random = new Random();
