@@ -20,16 +20,16 @@ public class MainGame {
     private static int goblinSpawnChance = 15;
 
     public static void main(String[] args) {
-    	new MainGame();
-        //csi = new WSwingConsoleInterface();
-    	//for(;;)
-    	//{
-        //  random = new Random();
-    	//	new Map();
-    	//	csi.refresh();
-    	//	csi.waitKey(1);
-    	//	csi.cls();
-    	//}
+    	//new MainGame();
+        csi = new WSwingConsoleInterface();
+    	for(;;)
+    	{
+          random = new Random();
+    		new Map();
+    		csi.refresh();
+    		csi.waitKey(1);
+    		csi.cls();
+    	}
     }
 
     private MainGame() {
