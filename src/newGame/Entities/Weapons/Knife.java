@@ -1,6 +1,7 @@
 package newGame.Entities.Weapons;
 
 import newGame.Entities.Character;
+import newGame.Entities.Entity;
 
 public class Knife extends Melee {
 
@@ -9,8 +10,8 @@ public class Knife extends Melee {
     public static int DEGRADATION = 5;
     public static float EXP_MULTIPLIER = 1.5f;
 
-    public Knife(int idamageOutput, int idamageBonus, int irewardForKill, int irewardForHit, int ilevel) {
-        super("Knife Level " + ilevel, INIT_DURABILITY, DEGRADATION, HOUSING, idamageOutput, idamageBonus, ilevel);
+    public Knife(Entity owner, int idamageOutput, int irewardForKill, int irewardForHit, int ilevel) {
+        super(owner, "Knife Level " + ilevel, INIT_DURABILITY, DEGRADATION, HOUSING, idamageOutput, ilevel);
         setExpRewardForKill(irewardForKill);
         setExpRewardForHit(irewardForHit);
     }

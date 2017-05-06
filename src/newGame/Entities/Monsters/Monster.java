@@ -60,7 +60,7 @@ public abstract class Monster extends Entity {
 
     protected abstract void onMonsterDowngrade();
 
-    public abstract void performAI(Character character, Map map);
+    public abstract void performAI(Character character);
 
     // TODO: add range weapon getter and setter.
 }

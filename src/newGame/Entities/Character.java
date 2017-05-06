@@ -168,6 +168,6 @@ public class Character extends Entity {
 
     @Override
     public void damage(int amount) {
-        setHealth(getHealth() - shield.calcNewDamage(amount));
+        setHealth(getHealth() - (shield == null ? amount : shield.calcNewDamage(amount)));
     }
 }
