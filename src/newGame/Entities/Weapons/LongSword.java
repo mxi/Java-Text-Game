@@ -1,6 +1,7 @@
 package newGame.Entities.Weapons;
 
 import newGame.Entities.Character;
+import newGame.Entities.Entity;
 
 public class LongSword extends Melee {
 
@@ -9,8 +10,8 @@ public class LongSword extends Melee {
     public static int DEGRADATION = 7;
     public static float EXP_MULTIPLIER = 1.5f;
 
-    public LongSword(int idamageoutput, int idamageBonus, int irewardForKill, int irewardForHit, int ilevel) {
-        super("Long Sword Level " + ilevel, INIT_DURABILITY, DEGRADATION, HOUSING, idamageoutput, idamageBonus, ilevel);
+    public LongSword(Entity owner, int idamageoutput, int idamageBonus, int irewardForKill, int irewardForHit, int ilevel) {
+        super(owner, "Long Sword Level " + ilevel, INIT_DURABILITY, DEGRADATION, HOUSING, idamageoutput, ilevel);
 
         setExpRewardForKill(irewardForKill);
         setExpRewardForHit(irewardForHit);

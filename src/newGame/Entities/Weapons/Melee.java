@@ -10,7 +10,6 @@ public abstract class Melee extends Item {
 
     private Entity owner;
     private int damageOutput;
-    private int damageBonus;
     private int swingRange;
     private boolean swingWeapon;
 
@@ -27,10 +26,10 @@ public abstract class Melee extends Item {
         expRewardForHit = 3;
     }
 
-    public Melee(String iname, int idurability, int idegradation, int ihousing, int idamageOutput, int idamageBonus, int ilevel) {
+    public Melee(Entity iowner, String iname, int idurability, int idegradation, int ihousing, int idamageOutput, int ilevel) {
         super(iname, idurability, idegradation, ihousing, ilevel);
+        owner = iowner;
         damageOutput = idamageOutput;
-        damageBonus = idamageBonus;
         swingRange = 2;
         swingWeapon = false;
 
@@ -86,28 +85,16 @@ public abstract class Melee extends Item {
         this.damageOutput = damageOutput;
     }
 
-    public int getDamageOutputBonus() {
-        return damageBonus;
-    }
-
-    public void setDamageOutputBonus(int damageBonus) {
-        this.damageBonus = damageBonus;
-    }
-
     public void upgradeDamageOutput() {
         damageOutput += 5;
     }
 
-    public void upgradeDamageOutputBonus() {
-        damageBonus += 5;
-    }
-
     public void attack(Entity entity) {
-        entity.damage((int) (damageOutput * (1 + damageBonus / 100.0)));
+        entity.damage(damageOutput);
 
         if(entity.isDead() && owner instanceof Character)
             rewardForKill((Character) owner);
-        else
+        else if(owner instanceof Character)
             rewardForHit((Character) owner);
     }
 

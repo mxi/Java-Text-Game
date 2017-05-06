@@ -13,6 +13,7 @@ public abstract class Entity {
 
     private String name;
     private char representation;
+    private int floor;
     private int color;
     private int minX;
     private int maxX;
@@ -48,6 +49,14 @@ public abstract class Entity {
         maxHealth = ihealth;
         x = 0;
         y = 0;
+    }
+
+    public int getFloor() {
+        return floor;
+    }
+
+    public void setFloor(int ifloor) {
+        floor = ifloor;
     }
 
     public char getRepresentation() {
@@ -179,8 +188,10 @@ public abstract class Entity {
     }
 
     public void moveLeft() {
+        Point previousPos = getPosition();
         this.x = this.x - 1 < this.minX ? this.minX : this.x - 1;
-        MainGame.csi.print(x + 1, y, " ");
+        if(previousPos.getX() != getX() || previousPos.getY() != getY())
+            MainGame.csi.print(x + 1, y, " ");
     }
 
     public Point previewLeft() {
@@ -188,8 +199,10 @@ public abstract class Entity {
     }
 
     public void moveRight() {
+        Point previousPos = getPosition();
         this.x = this.x + 1 > this.maxX ? this.maxX : this.x + 1;
-        MainGame.csi.print(x - 1, y, " ");
+        if(previousPos.getX() != getX() || previousPos.getY() != getY())
+            MainGame.csi.print(x - 1, y, " ");
     }
 
     public Point previewRight() {
@@ -205,8 +218,10 @@ public abstract class Entity {
     }
 
     public void moveDown() {
-        this.y = this.y - 1 < this.minY ? this.minY : this.y - 1;
-        MainGame.csi.print(x, y + 1, " ");
+        Point previousPos = getPosition();
+        this.y = this.y + 1 > this.maxY ? this.maxY : this.y + 1;
+        if(previousPos.getX() != getX() || previousPos.getY() != getY())
+            MainGame.csi.print(x, y - 1, " ");
     }
 
     public Point previewDown() {
@@ -214,8 +229,10 @@ public abstract class Entity {
     }
 
     public void moveUp() {
-        this.y = this.y + 1 > this.maxY ? this.maxY : this.y + 1;
-        MainGame.csi.print(x, y - 1, " ");
+        Point previousPos = getPosition();
+        this.y = this.y - 1 < this.minY ? this.minY : this.y - 1;
+        if(previousPos.getX() != getX() || previousPos.getY() != getY())
+            MainGame.csi.print(x, y + 1, " ");
     }
 
     public Point previewUp() {
@@ -280,6 +297,8 @@ public abstract class Entity {
 
     public void setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
+        if(getHealth() > maxHealth)
+            setHealth(maxHealth);
     }
 
     public void heal(int amount) {
