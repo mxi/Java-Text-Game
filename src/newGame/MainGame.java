@@ -21,6 +21,7 @@ public class MainGame {
     private static int goblinSpawnChance = 5; // Rarity of a goblin spawning.
 
     public static void main(String[] args) {
+        random = new Random();
     	new MainGame();
         //csi = new WSwingConsoleInterface();
     	//for(;;)
@@ -46,11 +47,16 @@ public class MainGame {
          * TODO: Add character initialization description.
          */
         Character character = new Character("John", CharacterType.Fighter, ConsoleSystemInterface.CYAN, 1);
-        character.setMaxXY(69, 15);
-        character.setPosition(3, 3);
+        character.setMaxXY(69, 19);
+        int x = random.nextInt(69) + 1;
+        int y = random.nextInt(19) + 1;
+		character.setPosition(x, y);
         character.setMaxHealth(20);
         character.setFloor(1);
 
+        new Map();
+    	csi.refresh();
+        
         // Initializes the main loop to run the game:
         while(true) {
 
@@ -64,9 +70,9 @@ public class MainGame {
                     csi.print(monster.getX(), monster.getY(), monster.getRepresentation(), monster.getColor()));
 
             // Print Information:
-            csi.print(1, 16, "Health: " + character.getHealth() + "/" + character.getMaxHealth());
-            csi.print(1, 17, "Level: " + character.getLevel() + "/" + character.getMaxLevel());
-            csi.print(1, 18, "Type: " + character.getTypeAsString());
+            csi.print(1, 20, "Health: " + character.getHealth() + "/" + character.getMaxHealth());
+            csi.print(1, 21, "Level: " + character.getLevel() + "/" + character.getMaxLevel());
+            csi.print(1, 22, "Type: " + character.getTypeAsString());
 
             /**
              * The next part takes in keyboard input and
@@ -80,25 +86,46 @@ public class MainGame {
                     for(Monster m : monsters)
                         if(m.intersects(character.previewUp()))
                             break Keys;
+                    if(csi.peekChar(character.x, character.y - 1) == 'X')
+                    {
+                    	break;
+                    }
                     character.moveUp();
                     break;
                 case 1:
                     for(Monster m : monsters)
                         if(m.intersects(character.previewDown()))
                             break Keys;
+                    if(csi.peekChar(character.x, character.y + 1) == 'X')
+                    {
+                    	break;
+                    }
                     character.moveDown();
                     break;
                 case 2:
                     for(Monster m : monsters)
                         if(m.intersects(character.previewLeft()))
                             break Keys;
+                    if(csi.peekChar(character.x - 1, character.y) == 'X')
+                    {
+                    	break;
+                    }
                     character.moveLeft();
                     break;
                 case 3:
                     for(Monster m : monsters)
                         if(m.intersects(character.previewRight()))
                             break Keys;
+                    if(csi.peekChar(character.x + 1, character.y) == 'X')
+                    {
+                    	break;
+                    }
                     character.moveRight();
+                    break;
+                case 10:
+                	csi.cls();
+                    new Map();
+                    csi.refresh();
                     break;
                 default:
                     character.onKeyPress(key);
@@ -109,9 +136,9 @@ public class MainGame {
              * monsters, spawn monsters, update the character,
              * and spawn more items.
              */
-            runAI(character);
+            //runAI(character);
 
-            csi.cls();
+            //csi.cls();
             csi.refresh();
         }
     }
@@ -123,7 +150,7 @@ public class MainGame {
         if(random.nextInt(101) <= goblinSpawnChance) {
             Goblin goblin = new Goblin(1);
             goblin.setMinXY(1, 1);
-            goblin.setMaxXY(69, 15);
+            goblin.setMaxXY(69, 19);
             monsters.add(goblin);
         }
     }

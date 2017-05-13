@@ -17,10 +17,10 @@ public abstract class Entity {
     private int color;
     private int minX;
     private int maxX;
-    private int x;
+    public int x;
     private int minY;
     private int maxY;
-    private int y;
+    public int y;
     private int maxHealth;
     private int initialHealth;
     private int health;
