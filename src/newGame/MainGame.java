@@ -48,9 +48,7 @@ public class MainGame {
          */
         Character character = new Character("John", CharacterType.Fighter, ConsoleSystemInterface.CYAN, 1);
         character.setMaxXY(69, 19);
-        int x = random.nextInt(69) + 1;
-        int y = random.nextInt(19) + 1;
-		character.setPosition(x, y);
+		character.setPosition(3, 3);
         character.setMaxHealth(20);
         character.setFloor(1);
 

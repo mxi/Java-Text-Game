@@ -18,9 +18,9 @@ public class Map {
 
 	public class Room
 	{
-		public int Xsize = MainGame.random.nextInt(11) + 5;
-		public int Ysize = MainGame.random.nextInt(11) + 5;
-		// min size are 4 by 4, and max size are 15 by 15
+		public int Xsize = MainGame.random.nextInt(9) + 7;
+		public int Ysize = MainGame.random.nextInt(9) + 7;
+		// min size are 6 by 6, and max size are 15 by 15
 		public int X = curX;
 		public int Y = curY;
 		// the x and y cords are found in the top left corner
@@ -140,6 +140,7 @@ public class Map {
 			hallways.add(h);
 			h.direction = 'R';
 			Room r = rooms.get(x);
+			
 			int HallwayHeight = MainGame.random.nextInt(r.Ysize - 2) + r.Y + 1;
 			
 			//right----------------------------------------------------
@@ -284,6 +285,193 @@ public class Map {
 					MainGame.csi.print(h.length, HallwayHeight + 1, "X");
 				}
 			}
+
+			MainGame.csi.refresh();
+			MainGame.csi.waitKey(10);
+			
+			
+			
+			
+			
+			int hold = MainGame.random.nextInt(r.Ysize - 2) + r.Y + 1;
+			int tries = 0;
+			loop: for(;; tries++)
+			{
+				if(tries > 100000)
+				{
+					break loop;
+				}
+				//System.out.println(hold - r.Y - 1);
+				//System.out.println(HallwayHeight - r.Y - 1);
+				//MainGame.csi.waitKey(10);
+				if(hold < HallwayHeight + 2 && HallwayHeight > x - 2)
+				{
+					hold = MainGame.random.nextInt(r.Ysize - 2) + r.Y + 1;
+					//System.out.println("HELLO");
+					//MainGame.csi.waitKey(10);
+					continue loop;
+				}
+				//System.out.println("HI");
+				//MainGame.csi.waitKey(10);
+				break loop;
+			}
+			HallwayHeight = hold;
+			//System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+			
+			for(h.length = r.X + r.Xsize - 1;; h.length++)
+			{
+				if(tries > 100000)
+				{
+					break;
+				}
+				// hits dungeon boundary
+				if(h.length + 1 >= DUNGEON_RIGHT_MAX)
+				{
+					MainGame.csi.print(h.length, HallwayHeight - 1, "X");
+					MainGame.csi.print(h.length, HallwayHeight, "X");
+					MainGame.csi.print(h.length, HallwayHeight + 1, "X");
+					break;
+				}
+				//directly hits a room
+				else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight) == 'X'
+						&& MainGame.csi.peekChar(h.length + 1, HallwayHeight + 1) == 'X'
+						&& MainGame.csi.peekChar(h.length + 1, HallwayHeight - 1) == 'X'
+						&& MainGame.csi.peekChar(h.length + 2, HallwayHeight) == '.')
+				{
+					MainGame.csi.print(h.length, HallwayHeight - 1, "X");
+					MainGame.csi.print(h.length, HallwayHeight, ".");
+					MainGame.csi.print(h.length, HallwayHeight + 1, "X");
+					MainGame.csi.print(h.length + 1, HallwayHeight - 1, "X");
+					MainGame.csi.print(h.length + 1, HallwayHeight, ".");
+					MainGame.csi.print(h.length + 1, HallwayHeight + 1, "X");
+					MainGame.csi.print(h.length + 2, HallwayHeight, ".");
+					break;
+				}
+				// hits a room in two spots
+				else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight + 1) == 'X'
+						&& MainGame.csi.peekChar(h.length + 1, HallwayHeight) == 'X')
+				{
+					if(MainGame.csi.peekChar(h.length + 2, HallwayHeight + 2) != ' ')
+					{
+						MainGame.csi.print(h.length, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length, HallwayHeight, ".");
+						MainGame.csi.print(h.length, HallwayHeight + 1, "X");
+						MainGame.csi.print(h.length + 1, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length + 1, HallwayHeight, ".");
+						MainGame.csi.print(h.length + 1, HallwayHeight + 1, "X");
+						MainGame.csi.print(h.length + 2, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length + 2, HallwayHeight, ".");
+						MainGame.csi.print(h.length + 2, HallwayHeight + 1, ".");
+						MainGame.csi.print(h.length + 3, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length + 3, HallwayHeight, "X");
+						MainGame.csi.print(h.length + 3, HallwayHeight + 1, ".");
+						break;
+					}
+					else{
+						MainGame.csi.print(h.length, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length, HallwayHeight, ".");
+						MainGame.csi.print(h.length, HallwayHeight + 1, "X");
+					}
+				}else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight - 1) == 'X'
+						&& MainGame.csi.peekChar(h.length + 1, HallwayHeight) == 'X')
+				{
+					if(MainGame.csi.peekChar(h.length + 2, HallwayHeight - 2) != ' ')
+					{
+						MainGame.csi.print(h.length, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length, HallwayHeight, ".");
+						MainGame.csi.print(h.length, HallwayHeight + 1, "X");
+						MainGame.csi.print(h.length + 1, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length + 1, HallwayHeight, ".");
+						MainGame.csi.print(h.length + 1, HallwayHeight + 1, "X");
+						MainGame.csi.print(h.length + 2, HallwayHeight - 1, ".");
+						MainGame.csi.print(h.length + 2, HallwayHeight, ".");
+						MainGame.csi.print(h.length + 2, HallwayHeight + 1, "X");
+						MainGame.csi.print(h.length + 3, HallwayHeight - 1, ".");
+						MainGame.csi.print(h.length + 3, HallwayHeight, "X");
+						MainGame.csi.print(h.length + 3, HallwayHeight + 1, "X");
+						break;
+					}
+					else{
+						MainGame.csi.print(h.length, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length, HallwayHeight, ".");
+						MainGame.csi.print(h.length, HallwayHeight + 1, "X");
+					}
+				}
+				// hits a room in one spot
+				else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight + 1) == 'X')
+				{
+					if(MainGame.csi.peekChar(h.length + 2, HallwayHeight + 2) != ' ')
+					{
+						MainGame.csi.print(h.length, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length, HallwayHeight, ".");
+						MainGame.csi.print(h.length, HallwayHeight + 1, "X");
+						MainGame.csi.print(h.length + 1, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length + 1, HallwayHeight, ".");
+						MainGame.csi.print(h.length + 1, HallwayHeight + 1, "X");
+						MainGame.csi.print(h.length + 2, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length + 2, HallwayHeight, ".");
+						MainGame.csi.print(h.length + 2, HallwayHeight + 1, ".");
+						MainGame.csi.print(h.length + 3, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length + 3, HallwayHeight, "X");
+						MainGame.csi.print(h.length + 3, HallwayHeight + 1, "X");
+						break;
+					}
+					else{
+						MainGame.csi.print(h.length, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length, HallwayHeight, ".");
+						MainGame.csi.print(h.length, HallwayHeight + 1, "X");
+					}
+				}else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight - 1) == 'X')
+				{
+					if(MainGame.csi.peekChar(h.length + 2, HallwayHeight - 2) != ' ')
+					{
+						MainGame.csi.print(h.length, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length, HallwayHeight, ".");
+						MainGame.csi.print(h.length, HallwayHeight + 1, "X");
+						MainGame.csi.print(h.length + 1, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length + 1, HallwayHeight, ".");
+						MainGame.csi.print(h.length + 1, HallwayHeight + 1, "X");
+						MainGame.csi.print(h.length + 2, HallwayHeight - 1, ".");
+						MainGame.csi.print(h.length + 2, HallwayHeight, ".");
+						MainGame.csi.print(h.length + 2, HallwayHeight + 1, "X");
+						MainGame.csi.print(h.length + 3, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length + 3, HallwayHeight, "X");
+						MainGame.csi.print(h.length + 3, HallwayHeight + 1, "X");
+						break;
+					}
+					else{
+						MainGame.csi.print(h.length, HallwayHeight - 1, "X");
+						MainGame.csi.print(h.length, HallwayHeight, ".");
+						MainGame.csi.print(h.length, HallwayHeight + 1, "X");
+					}
+				}
+				// hits other hallway
+				else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight) == '.')
+				{
+					MainGame.csi.print(h.length, HallwayHeight - 1, "X");
+					MainGame.csi.print(h.length, HallwayHeight, ".");
+					MainGame.csi.print(h.length, HallwayHeight + 1, "X");
+					MainGame.csi.print(h.length + 1, HallwayHeight - 1, "X");
+					MainGame.csi.print(h.length + 1, HallwayHeight, ".");
+					MainGame.csi.print(h.length + 1, HallwayHeight + 1, "X");
+					break;
+				}
+				//standard hallway segment
+				else{
+					MainGame.csi.print(h.length, HallwayHeight - 1, "X");
+					MainGame.csi.print(h.length, HallwayHeight, ".");
+					MainGame.csi.print(h.length, HallwayHeight + 1, "X");
+				}
+			}
+
+			MainGame.csi.refresh();
+			MainGame.csi.waitKey(10);
+			
+			
+			
+			
+			
+			
 			
 
 			int HallwayX = MainGame.random.nextInt(r.Xsize - 2) + r.X + 1;
@@ -437,7 +625,8 @@ public class Map {
 					MainGame.csi.print(HallwayX + 1, h.length, "X");
 				}
 			}
-			
+			MainGame.csi.refresh();
+			MainGame.csi.waitKey(10);
 		}
 
 		//Printing the Stairs
