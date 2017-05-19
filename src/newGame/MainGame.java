@@ -68,7 +68,7 @@ public class MainGame {
                     csi.print(monster.getX(), monster.getY(), monster.getRepresentation(), monster.getColor()));
 
             // Print Information:
-            csi.print(1, 20, "Health: " + character.getHealth() + "/" + character.getMaxHealth());
+            csi.print(1, 20, "Health: " + character.getHealth() + "/" + character.getMaxHealth() + " ");
             csi.print(1, 21, "Level: " + character.getLevel() + "/" + character.getMaxLevel());
             csi.print(1, 22, "Type: " + character.getTypeAsString());
 
@@ -84,40 +84,44 @@ public class MainGame {
                     for(Monster m : monsters)
                         if(m.intersects(character.previewUp()))
                             break Keys;
-                    if(csi.peekChar(character.x, character.y - 1) == 'X')
+                    /*if(csi.peekChar(character.x, character.y - 1) == 'X')
                     {
                     	break;
                     }
+                    */
                     character.moveUp();
                     break;
                 case 1:
                     for(Monster m : monsters)
                         if(m.intersects(character.previewDown()))
                             break Keys;
-                    if(csi.peekChar(character.x, character.y + 1) == 'X')
+                    /*if(csi.peekChar(character.x, character.y + 1) == 'X')
                     {
                     	break;
                     }
+                    */
                     character.moveDown();
                     break;
                 case 2:
                     for(Monster m : monsters)
                         if(m.intersects(character.previewLeft()))
                             break Keys;
-                    if(csi.peekChar(character.x - 1, character.y) == 'X')
+                    /*if(csi.peekChar(character.x - 1, character.y) == 'X')
                     {
                     	break;
                     }
+                    */
                     character.moveLeft();
                     break;
                 case 3:
                     for(Monster m : monsters)
                         if(m.intersects(character.previewRight()))
                             break Keys;
-                    if(csi.peekChar(character.x + 1, character.y) == 'X')
+                    /*if(csi.peekChar(character.x + 1, character.y) == 'X')
                     {
                     	break;
                     }
+                    */
                     character.moveRight();
                     break;
                 case 10:
@@ -125,7 +129,11 @@ public class MainGame {
                     new Map();
                     csi.refresh();
                     break;
+                case 64:
+                	//newGame.Entities.Weapons.Melee.attack(goblin(0));
+                    break;
                 default:
+                	//System.out.println(key);
                     character.onKeyPress(key);
             }
 
@@ -134,7 +142,7 @@ public class MainGame {
              * monsters, spawn monsters, update the character,
              * and spawn more items.
              */
-            //runAI(character);
+            runAI(character);
 
             //csi.cls();
             csi.refresh();
@@ -147,7 +155,7 @@ public class MainGame {
         // #region spawn monsters
         if(random.nextInt(101) <= goblinSpawnChance) {
             Goblin goblin = new Goblin(1);
-            goblin.setMinXY(1, 1);
+            goblin.setMinXY(0, 0);
             goblin.setMaxXY(69, 19);
             monsters.add(goblin);
         }
