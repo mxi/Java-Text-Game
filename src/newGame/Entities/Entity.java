@@ -1,20 +1,15 @@
 package newGame.Entities;
 
-import newGame.MainGame;
-
 import java.awt.*;
 
-public abstract class Entity {
+public abstract class Entity extends Representable {
 
     private int maxLevel = 30;
     private int expUntilLevelUp = 1024;
     private int hpIncreaseOnUpgrade = 5;
     private float expWeightOnUpgrade = 1.5f;
 
-    private String name;
-    private char representation;
     private int floor;
-    private int color;
     private int minX;
     private int maxX;
     private int x;
@@ -28,8 +23,8 @@ public abstract class Entity {
     private int level;
 
     public Entity() {
-        name = "Entity";
-        representation = 'E';
+        setName("Entity");
+        setRepresentation('E');
         exp = 0;
         level = 1;
         health = 25;
@@ -40,8 +35,8 @@ public abstract class Entity {
     }
 
     public Entity(String iname, int ihealth, int ilevel) {
-        name = iname;
-        representation = '!';
+        setName("Entity");
+        setRepresentation('E');
         exp = 0;
         level = ilevel;
         health = ihealth;
@@ -57,22 +52,6 @@ public abstract class Entity {
 
     public void setFloor(int ifloor) {
         floor = ifloor;
-    }
-
-    public char getRepresentation() {
-        return representation;
-    }
-
-    public void setRepresentation(char representation) {
-        this.representation = representation;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 
     public double distance(double x, double y) {
@@ -113,14 +92,6 @@ public abstract class Entity {
 
     public void setExpUntilLevelUp(int expUntilLevelUp) {
         this.expUntilLevelUp = expUntilLevelUp;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setPosition(int x, int y) {
@@ -183,32 +154,6 @@ public abstract class Entity {
         this.x = x;
     }
 
-    public Point getPosition() {
-        return new Point(getX(), getY());
-    }
-
-    public void moveLeft() {
-        Point previousPos = getPosition();
-        this.x = this.x - 1 < this.minX ? this.minX : this.x - 1;
-        if(previousPos.getX() != getX() || previousPos.getY() != getY())
-            MainGame.csi.print(x + 1, y, " ");
-    }
-
-    public Point previewLeft() {
-        return new Point(this.x - 1 < getMinX() ? getMinX() : this.x - 1, getY());
-    }
-
-    public void moveRight() {
-        Point previousPos = getPosition();
-        this.x = this.x + 1 > this.maxX ? this.maxX : this.x + 1;
-        if(previousPos.getX() != getX() || previousPos.getY() != getY())
-            MainGame.csi.print(x - 1, y, " ");
-    }
-
-    public Point previewRight() {
-        return new Point(this.x + 1 > getMaxX() ? this.maxX : this.x + 1, getY());
-    }
-
     public int getY() {
         return y;
     }
@@ -217,26 +162,16 @@ public abstract class Entity {
         this.y = y;
     }
 
-    public void moveDown() {
-        Point previousPos = getPosition();
-        this.y = this.y + 1 > this.maxY ? this.maxY : this.y + 1;
-        if(previousPos.getX() != getX() || previousPos.getY() != getY())
-            MainGame.csi.print(x, y - 1, " ");
+    public Point getPosition() {
+        return new Point(getX(), getY());
     }
 
-    public Point previewDown() {
-        return new Point(getX(), this.y + 1 > getMaxY() ? getMaxY() : this.y + 1);
+    public void move(int deltaX, int deltaY) {
+        setPosition(getX() + deltaX, getY() + deltaY);
     }
 
-    public void moveUp() {
-        Point previousPos = getPosition();
-        this.y = this.y - 1 < this.minY ? this.minY : this.y - 1;
-        if(previousPos.getX() != getX() || previousPos.getY() != getY())
-            MainGame.csi.print(x, y + 1, " ");
-    }
-
-    public Point previewUp() {
-        return new Point(getX(), this.y - 1 <getMinY() ? getMinY() : this.y - 1);
+    public Point previewMove(int deltaX, int deltaY) {
+        return new Point(getX() + deltaX, getY() + deltaY);
     }
 
     public int getExp() {

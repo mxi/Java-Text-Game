@@ -6,3 +6,5 @@ out/*
 src/libjcsi.jar
 .idea/*
 /bin/
+.settings/*
+.idea/*
