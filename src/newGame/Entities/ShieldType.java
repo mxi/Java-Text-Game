@@ -31,35 +31,6 @@ public enum ShieldType {
         UpgradeSpeed = iupgradeSpeed;
     }
 
-    public static ShieldType fromLevel(int level) {
-        switch(level) {
-            case 1:
-                return ShieldType.Leather;
-            case 2:
-                return ShieldType.Plastic;
-            case 3:
-                return ShieldType.Wood;
-            case 4:
-                return ShieldType.Bone;
-            case 5:
-                return ShieldType.Paper;
-            case 6:
-                return ShieldType.Glass;
-            case 7:
-                return ShieldType.Copper;
-            case 8:
-                return ShieldType.Brass;
-            case 9:
-                return ShieldType.Gold;
-            case 10:
-                return ShieldType.Iron;
-            case 11:
-                return ShieldType.Steel;
-            default:
-                return level > 1 ? ShieldType.Steel : ShieldType.Leather;
-        }
-    }
-
     public boolean wouldHit(int istrength) {
         return MainGame.random.nextInt(101) > ((MissChance / istrength) * UpgradeSpeed) + (2 * Level);
     }

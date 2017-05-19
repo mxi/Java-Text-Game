@@ -34,18 +34,6 @@ public abstract class Entity extends Representable {
         y = 0;
     }
 
-    public Entity(String iname, int ihealth, int ilevel) {
-        setName("Entity");
-        setRepresentation('E');
-        exp = 0;
-        level = ilevel;
-        health = ihealth;
-        initialHealth = ihealth;
-        maxHealth = ihealth;
-        x = 0;
-        y = 0;
-    }
-
     public int getFloor() {
         return floor;
     }
@@ -192,16 +180,6 @@ public abstract class Entity extends Representable {
         }
     }
 
-    public void removeExp(int amount) {
-        if(exp - amount < 0) {
-            int leftOver = -(exp - amount);
-            downgrade(leftOver);
-        }
-        else {
-            this.exp -= amount;
-        }
-    }
-
     public int getLevel() {
         return level;
     }
@@ -259,20 +237,6 @@ public abstract class Entity extends Representable {
         onEntityUpgrade();
     }
 
-    public void downgrade(int leftOver) {
-        if(getLevel() - 1 < 0)
-            return;
-
-        setLevel(getLevel() - 1);
-        setMaxHealth(getMaxHealth() - hpIncreaseOnUpgrade);
-        setExpUntilLevelUp((int) (getExpUntilLevelUp() / expWeightOnUpgrade));
-        setExp(getExpUntilLevelUp() - leftOver);
-        onEntityDowngrade();
-    }
-
-    public abstract void onKeyPress(int key);
-
     protected abstract void onEntityUpgrade();
 
-    protected abstract void onEntityDowngrade();
 }

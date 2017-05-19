@@ -4,34 +4,20 @@ import newGame.Entities.Character;
 import newGame.Entities.Entity;
 import newGame.Entities.Item;
 
+import java.awt.*;
 import java.util.List;
 
 public abstract class Melee extends Item {
 
-    private Entity owner;
     private int damageOutput;
     private int swingRange;
-    private boolean swingWeapon;
 
     private int expRewardForKill;
     private int expRewardForHit;
 
     public Melee() {
-        super();
         setName("Melee");
-        swingRange = 2;
-        swingWeapon = false;
-
-        expRewardForKill = 32;
-        expRewardForHit = 3;
-    }
-
-    public Melee(Entity iowner, String iname, int idurability, int idegradation, int ihousing, int idamageOutput, int ilevel) {
-        super(iname, idurability, idegradation, ihousing, ilevel);
-        owner = iowner;
-        damageOutput = idamageOutput;
-        swingRange = 2;
-        swingWeapon = false;
+        swingRange = 0;
 
         expRewardForKill = 32;
         expRewardForHit = 3;
@@ -53,14 +39,6 @@ public abstract class Melee extends Item {
         this.expRewardForHit = expRewardForHit;
     }
 
-    public Entity getOwner() {
-        return this.owner;
-    }
-
-    public void setOwner(Entity owner) {
-        this.owner = owner;
-    }
-
     public int getSwingRange() {
         return swingRange;
     }
@@ -70,11 +48,7 @@ public abstract class Melee extends Item {
     }
 
     public boolean isSwingWeapon() {
-        return swingWeapon;
-    }
-
-    public void setSwingWeapon(boolean swingWeapon) {
-        this.swingWeapon = swingWeapon;
+        return swingRange > 0;
     }
 
     public int getDamageOutput() {
@@ -85,49 +59,32 @@ public abstract class Melee extends Item {
         this.damageOutput = damageOutput;
     }
 
-    public void upgradeDamageOutput() {
-        damageOutput += 5;
-    }
-
     public void attack(Entity entity) {
-        entity.damage(damageOutput);
+        onAttack(entity);
 
-        if(entity.isDead() && owner instanceof Character)
-            rewardForKill((Character) owner);
-        else if(owner instanceof Character)
-            rewardForHit((Character) owner);
+        if(entity.isDead() && getOwner() instanceof Character)
+            rewardForKill((Character) getOwner());
+        else if(getOwner() instanceof Character)
+            rewardForHit((Character) getOwner());
     }
 
     public void swing(List<Entity> entities) {
-        if(!swingWeapon)
+        if(!isSwingWeapon())
             return;
 
         entities.forEach(entity -> {
-            if(entity.distance(getX(), getY()) <= swingRange)
+            Point ownerPosition = getOwner().getPosition();
+            if(entity.distance(ownerPosition.getX(), ownerPosition.getY()) <= swingRange)
                 attack(entity);
         });
     }
 
     @Override
     protected void onItemUse() {
-        onMeleeUse();
+        // Nothing...
     }
 
-    @Override
-    protected void onItemUpgrade() {
-        onMeleeUpgrade();
-    }
-
-    @Override
-    protected void onItemDowngrade() {
-        onMeleeDowngrade();
-    }
-
-    protected abstract void onMeleeUse();
-
-    protected abstract void onMeleeUpgrade();
-
-    protected abstract void onMeleeDowngrade();
+    protected abstract void onAttack(Entity entity);
 
     protected abstract void rewardForKill(Character entity);
 

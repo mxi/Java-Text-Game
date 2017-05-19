@@ -10,16 +10,13 @@ public class Goblin extends Monster {
     public static int INIT_HEALTH = 5;
     public static float EXP_MULTIPLIER = 1.2f;
 
-    public Goblin(int ilevel) {
-        super("Goblin Level " + ilevel, Shield.fromLevel(ilevel), INIT_HEALTH * ilevel, ilevel);
+    public Goblin() {
         setColor(ConsoleSystemInterface.GREEN);
         setRepresentation('G');
-        setMeleeWeapon(new Knife(this, 5, 28, 4, 1));
-    }
 
-    @Override
-    public void onKeyPress(int key) {
-
+        Knife goblinKnife = new Knife();
+        setMeleeWeapon(goblinKnife);
+        setShield(Shield.Leather);
     }
 
     @Override
@@ -28,21 +25,16 @@ public class Goblin extends Monster {
     }
 
     @Override
-    protected void onMonsterDowngrade() {
-
-    }
-
-    @Override
     public void performAI(Character character) {
         if(character.getX() - getX() == 0) {
             if(character.getY() > getY() && character.getY() - getY() > 1) {
-                moveDown();
+                move(0, 1);
             }
             else if(character.getY() > getY() && character.getY() - getY() == 1) {
                 getMeleeWeapon().attack(character);
             }
             else if(character.getY() < getY() && character.getY() - getY() > 1) {
-                moveUp();
+                move(0, -1);
             }
             else if(character.getY() < getY() && character.getY() - getY() == 1){
                 getMeleeWeapon().attack(character);
@@ -50,13 +42,13 @@ public class Goblin extends Monster {
         }
         else if(character.getY() - getY() == 0){
             if(character.getX() > getX() && character.getX() - getX() > 1) {
-                moveRight();
+                move(1, 0);
             }
             else if(character.getX() > getX() && character.getX() - getX() == 1){
                 getMeleeWeapon().attack(character);
             }
             else if(character.getX() < getX() && getX() - character.getX() > 1) {
-                moveLeft();
+                move(-1, 0);
             }
             else if(character.getX() < getX() && getX() - character.getX() == 1){
                 getMeleeWeapon().attack(character);
@@ -64,9 +56,9 @@ public class Goblin extends Monster {
         }
         else {
             if(character.getX() > getX())
-                moveRight();
+                move(-1, 0);
             else if(character.getX() < getX())
-                moveLeft();
+                move(1, 0);
         }
     }
 }
