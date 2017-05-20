@@ -17,7 +17,10 @@ public class MainGame {
     public static Random random; // Random object
     public static ConsoleSystemInterface csi; // Window (console interface)
 
+    private static MapInterface map; // Map of the game.
+
     private static List<Monster> monsters; // List of all monsters in the game.
+
     private static int goblinSpawnChance = 5; // Rarity of a goblin spawning.
 
     public static void main(String[] args) {
@@ -33,26 +36,13 @@ public class MainGame {
     	//	csi.cls();
     	//}
     }
-    
-    public static void SpawnCharacter(Character character)
-    {
-    	for(;;)
-        {
-            int x = random.nextInt(69) + 1;
-            int y = random.nextInt(19) + 1;
-        	if(csi.peekChar(x, y) != '.')
-        	{
-        		continue;
-        	}
-        	character.setPosition(x, y);
-        	break;
-        }
-    }
 
     private MainGame() {
         random = new Random(); // Creates a new instance of the Random object
         csi = new WSwingConsoleInterface(); // Creates a new instance of WSwingConsoleInterface.
         monsters = new ArrayList<>(); // Creates a new instance of the monsters list.
+        map = new Map();
+        csi.refresh();
 
         /**
          * Begin to initialize characters and other initial
@@ -61,19 +51,16 @@ public class MainGame {
          * Character initialization:
          * TODO: Add character initialization description.
          */
-
-        MapInterface map = new Map();
-    	csi.refresh();
-    	
     	
         Character character = new Character("Justin Li", CharacterType.Wizard);
         character.setMaxXY(69, 19);
-        SpawnCharacter(character);
-        csi.refresh();
         character.setMaxHealth(20);
         character.setFloor(1);
 
-        char prevCharOfMap = '.';
+        csi.refresh();
+
+        char prevCharOfMap = '.'; // This is the char that will replace the Character's previous position.
+
         // Initializes the main loop to run the game:
         while(true) {
 
@@ -157,7 +144,6 @@ public class MainGame {
                 case 10:
                 	csi.cls();
                     new Map();
-                	SpawnCharacter(character);
                     csi.refresh();
                     break;
                 case 64:
@@ -186,7 +172,7 @@ public class MainGame {
         if(random.nextInt(101) <= goblinSpawnChance) {
             Goblin goblin = new Goblin();
             goblin.setRepresentation('G');
-            goblin.setColor(ConsoleSystemInterface.CYAN);
+            goblin.setColor(ConsoleSystemInterface.GREEN);
             goblin.setLevel(1);
             goblin.setMinXY(1, 1);
             goblin.setMaxXY(69, 19);
