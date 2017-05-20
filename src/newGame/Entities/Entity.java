@@ -155,11 +155,25 @@ public abstract class Entity extends Representable {
     }
 
     public void move(int deltaX, int deltaY) {
-        setPosition(getX() + deltaX, getY() + deltaY);
+        Point p = previewMove(deltaX, deltaY);
+        setPosition((int) p.getX(), (int) p.getY());
     }
 
     public Point previewMove(int deltaX, int deltaY) {
-        return new Point(getX() + deltaX, getY() + deltaY);
+        int newX = getX() + deltaX;
+        int newY = getY() + deltaY;
+
+        if(newX < getMinX())
+            newX = getMinX();
+        else if(newX > getMaxX())
+            newX = getMaxX();
+
+        if(newY < getMinY())
+            newY = getMinY();
+        else if(newY > getMaxY())
+            newY = getMaxY();
+
+        return new Point(newX, newY);
     }
 
     public int getExp() {

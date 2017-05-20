@@ -174,8 +174,10 @@ public class MainGame {
         // #region spawn monsters
         if(random.nextInt(101) <= goblinSpawnChance) {
             Goblin goblin = new Goblin();
+            goblin.setRepresentation('G');
+            goblin.setColor(ConsoleSystemInterface.CYAN);
             goblin.setLevel(1);
-            goblin.setMinXY(0, 0);
+            goblin.setMinXY(1, 1);
             goblin.setMaxXY(69, 19);
             monsters.add(goblin);
         }
