@@ -46,7 +46,7 @@ public class MainGame {
          * Character initialization:
          * TODO: Add character initialization description.
          */
-        Character character = new Character("John", CharacterType.Fighter, ConsoleSystemInterface.CYAN, 1);
+        Character character = new Character("Justin Li", CharacterType.Wizard);
         character.setMaxXY(69, 19);
 		character.setPosition(3, 3);
         character.setMaxHealth(20);
@@ -82,47 +82,47 @@ public class MainGame {
             switch(key) {
                 case 0:
                     for(Monster m : monsters)
-                        if(m.intersects(character.previewUp()))
+                        if(m.intersects(character.previewMove(0, -1)))
                             break Keys;
                     /*if(csi.peekChar(character.x, character.y - 1) == 'X')
                     {
                     	break;
                     }
                     */
-                    character.moveUp();
+                    character.move(0, -1);
                     break;
                 case 1:
                     for(Monster m : monsters)
-                        if(m.intersects(character.previewDown()))
+                        if(m.intersects(character.previewMove(0, 1)))
                             break Keys;
                     /*if(csi.peekChar(character.x, character.y + 1) == 'X')
                     {
                     	break;
                     }
                     */
-                    character.moveDown();
+                    character.move(0, 1);
                     break;
                 case 2:
                     for(Monster m : monsters)
-                        if(m.intersects(character.previewLeft()))
+                        if(m.intersects(character.previewMove(-1, 0)))
                             break Keys;
                     /*if(csi.peekChar(character.x - 1, character.y) == 'X')
                     {
                     	break;
                     }
                     */
-                    character.moveLeft();
+                    character.move(-1, 0);
                     break;
                 case 3:
                     for(Monster m : monsters)
-                        if(m.intersects(character.previewRight()))
+                        if(m.intersects(character.previewMove(1, 0)))
                             break Keys;
                     /*if(csi.peekChar(character.x + 1, character.y) == 'X')
                     {
                     	break;
                     }
                     */
-                    character.moveRight();
+                    character.move(1, 0);
                     break;
                 case 10:
                 	csi.cls();
@@ -133,8 +133,6 @@ public class MainGame {
                 	//newGame.Entities.Weapons.Melee.attack(goblin(0));
                     break;
                 default:
-                	//System.out.println(key);
-                    character.onKeyPress(key);
             }
 
             /**
@@ -154,7 +152,8 @@ public class MainGame {
 
         // #region spawn monsters
         if(random.nextInt(101) <= goblinSpawnChance) {
-            Goblin goblin = new Goblin(1);
+            Goblin goblin = new Goblin();
+            goblin.setLevel(1);
             goblin.setMinXY(0, 0);
             goblin.setMaxXY(69, 19);
             monsters.add(goblin);
