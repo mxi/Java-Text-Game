@@ -3,7 +3,7 @@ package newGame;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Map {
+public class Map implements MapInterface{
 	
 	private final int DUNGEON_LEFT_MAX = 0; // old 10
 	private final int DUNGEON_TOP = 0; // old 3
@@ -579,7 +579,7 @@ public class Map {
 		{
 			Room StairRoom = rooms.get(MainGame.random.nextInt(rooms.size()));
 			int StairX = StairRoom.X + 1 + MainGame.random.nextInt(StairRoom.Xsize - 1);
-			int StairY= StairRoom.Y + 1 + MainGame.random.nextInt(StairRoom.Ysize - 1);
+			int StairY = StairRoom.Y + 1 + MainGame.random.nextInt(StairRoom.Ysize - 1);
 			if(MainGame.csi.peekChar(StairX, StairY) == 'X')
 			{
 				continue;
@@ -587,5 +587,11 @@ public class Map {
 			MainGame.csi.print(StairX , StairY, "/");
 			break;
 		}
+	}
+
+	@Override
+	public char getCharacter(int x, int y) {
+		// TODO Auto-generated method stub
+		return MainGame.csi.peekChar(x, y);
 	}
 }
