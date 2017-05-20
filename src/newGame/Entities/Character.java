@@ -1,5 +1,7 @@
 package newGame.Entities;
 
+import sz.csi.ConsoleSystemInterface;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,18 +22,13 @@ public class Character extends Entity {
     private int intelligence;
     private int charisma;
 
-    public Character() {
-
-    }
-
-    public Character(String iname, CharacterType itype, int icolor, int ilevel) {
-        super(iname, itype.calcNewHealth(100), ilevel);
+    public Character(String iname, CharacterType itype) {
         setRepresentation('@');
-        setColor(icolor);
+        setColor(ConsoleSystemInterface.CYAN);
         invItems = new ArrayList<>();
         hotbar = new Item[3];
         selectedInHotbar = 0;
-        inventorySpace = 9 + ilevel;
+        inventorySpace = 9;
         strength = itype.calcNewStrength(100);
         dexterity = itype.calcNewDexterity(100);
         wisdom = itype.calcNewWisdom(100);
@@ -152,17 +149,7 @@ public class Character extends Entity {
     }
 
     @Override
-    public void onKeyPress(int key) {
-        
-    }
-
-    @Override
     protected void onEntityUpgrade() {
-
-    }
-
-    @Override
-    protected void onEntityDowngrade() {
 
     }
 
