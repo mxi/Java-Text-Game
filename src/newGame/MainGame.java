@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.text.html.parser.Entity;
+
 public class MainGame {
 
     public static Random random; // Random object
@@ -102,49 +104,46 @@ public class MainGame {
                     for(Monster m : monsters)
                         if(m.intersects(character.previewMove(0, -1)))
                             break Keys;
-                    /*if(csi.peekChar(character.x, character.y - 1) == 'X')
+                    if(csi.peekChar(character.getX(), character.getY() - 1) == 'X')
                     {
                     	break;
                     }
-                    */
                     character.move(0, -1);
                     break;
                 case 1:
                     for(Monster m : monsters)
                         if(m.intersects(character.previewMove(0, 1)))
                             break Keys;
-                    /*if(csi.peekChar(character.x, character.y + 1) == 'X')
+                    if(csi.peekChar(character.getX(), character.getY() + 1) == 'X')
                     {
                     	break;
                     }
-                    */
                     character.move(0, 1);
                     break;
                 case 2:
                     for(Monster m : monsters)
                         if(m.intersects(character.previewMove(-1, 0)))
                             break Keys;
-                    /*if(csi.peekChar(character.x - 1, character.y) == 'X')
+                    if(csi.peekChar(character.getX() - 1, character.getY()) == 'X')
                     {
                     	break;
                     }
-                    */
                     character.move(-1, 0);
                     break;
                 case 3:
                     for(Monster m : monsters)
                         if(m.intersects(character.previewMove(1, 0)))
                             break Keys;
-                    /*if(csi.peekChar(character.x + 1, character.y) == 'X')
+                    if(csi.peekChar(character.getX() + 1, character.getY()) == 'X')
                     {
                     	break;
                     }
-                    */
                     character.move(1, 0);
                     break;
                 case 10:
                 	csi.cls();
                     new Map();
+                	SpawnCharacter(character);
                     csi.refresh();
                     break;
                 case 64:
@@ -152,7 +151,6 @@ public class MainGame {
                     break;
                 default:
                 	//System.out.println(key);
-                	SpawnCharacter(character);
                     break;
             }
 
