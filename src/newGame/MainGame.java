@@ -62,7 +62,7 @@ public class MainGame {
          * TODO: Add character initialization description.
          */
 
-        new Map();
+        MapInterface map = new Map();
     	csi.refresh();
     	
     	
@@ -96,6 +96,9 @@ public class MainGame {
              */
             int key = csi.inkey().code;
 
+            int x = character.getX();
+            int y = character.getY();
+
             Keys:
             switch(key) {
                 case 0:
@@ -106,7 +109,8 @@ public class MainGame {
                     {
                     	break;
                     }
-                    csi.print(character.getX(), character.getY(), ".", ConsoleSystemInterface.WHITE);
+
+                    csi.print(x, y, map.getCharacter(x, y), ConsoleSystemInterface.WHITE);
                     character.move(0, -1);
                     break;
                 case 1:
@@ -117,7 +121,8 @@ public class MainGame {
                     {
                     	break;
                     }
-                    csi.print(character.getX(), character.getY(), ".", ConsoleSystemInterface.WHITE);
+
+                    csi.print(x, y, map.getCharacter(x, y), ConsoleSystemInterface.WHITE);
                     character.move(0, 1);
                     break;
                 case 2:
@@ -128,7 +133,8 @@ public class MainGame {
                     {
                     	break;
                     }
-                    csi.print(character.getX(), character.getY(), ".", ConsoleSystemInterface.WHITE);
+
+                    csi.print(x, y, map.getCharacter(x, y), ConsoleSystemInterface.WHITE);
                     character.move(-1, 0);
                     break;
                 case 3:
@@ -139,7 +145,8 @@ public class MainGame {
                     {
                     	break;
                     }
-                    csi.print(character.getX(), character.getY(), ".", ConsoleSystemInterface.WHITE);
+
+                    csi.print(x, y, map.getCharacter(x, y), ConsoleSystemInterface.WHITE);
                     character.move(1, 0);
                     break;
                 case 10:
