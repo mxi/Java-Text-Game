@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.text.html.parser.Entity;
-
 public class MainGame {
 
     public static Random random; // Random object
@@ -108,6 +106,7 @@ public class MainGame {
                     {
                     	break;
                     }
+                    csi.print(character.getX(), character.getY(), ".", ConsoleSystemInterface.WHITE);
                     character.move(0, -1);
                     break;
                 case 1:
@@ -118,6 +117,7 @@ public class MainGame {
                     {
                     	break;
                     }
+                    csi.print(character.getX(), character.getY(), ".", ConsoleSystemInterface.WHITE);
                     character.move(0, 1);
                     break;
                 case 2:
@@ -128,6 +128,7 @@ public class MainGame {
                     {
                     	break;
                     }
+                    csi.print(character.getX(), character.getY(), ".", ConsoleSystemInterface.WHITE);
                     character.move(-1, 0);
                     break;
                 case 3:
@@ -138,6 +139,7 @@ public class MainGame {
                     {
                     	break;
                     }
+                    csi.print(character.getX(), character.getY(), ".", ConsoleSystemInterface.WHITE);
                     character.move(1, 0);
                     break;
                 case 10:
@@ -147,7 +149,6 @@ public class MainGame {
                     csi.refresh();
                     break;
                 case 64:
-                	//newGame.Entities.Weapons.Melee.attack(goblin(0));
                     break;
                 default:
                 	//System.out.println(key);
