@@ -33,6 +33,21 @@ public class MainGame {
     	//	csi.cls();
     	//}
     }
+    
+    public static void SpawnCharacter(Character character)
+    {
+    	for(;;)
+        {
+            int x = random.nextInt(69) + 1;
+            int y = random.nextInt(19) + 1;
+        	if(csi.peekChar(x, y) != '.')
+        	{
+        		continue;
+        	}
+        	character.setPosition(x, y);
+        	break;
+        }
+    }
 
     private MainGame() {
         random = new Random(); // Creates a new instance of the Random object
@@ -46,14 +61,17 @@ public class MainGame {
          * Character initialization:
          * TODO: Add character initialization description.
          */
-        Character character = new Character("Justin Li", CharacterType.Wizard);
-        character.setMaxXY(69, 19);
-		character.setPosition(3, 3);
-        character.setMaxHealth(20);
-        character.setFloor(1);
 
         new Map();
     	csi.refresh();
+    	
+    	
+        Character character = new Character("Justin Li", CharacterType.Wizard);
+        character.setMaxXY(69, 19);
+        SpawnCharacter(character);
+        csi.refresh();
+        character.setMaxHealth(20);
+        character.setFloor(1);
         
         // Initializes the main loop to run the game:
         while(true) {
@@ -133,6 +151,9 @@ public class MainGame {
                 	//newGame.Entities.Weapons.Melee.attack(goblin(0));
                     break;
                 default:
+                	//System.out.println(key);
+                	SpawnCharacter(character);
+                    break;
             }
 
             /**
