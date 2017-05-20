@@ -1,5 +1,8 @@
 package newGame.Entities;
 
+import newGame.MainGame;
+import sz.csi.ConsoleSystemInterface;
+
 import java.awt.*;
 
 public abstract class Entity extends Representable {
@@ -9,6 +12,8 @@ public abstract class Entity extends Representable {
     private int hpIncreaseOnUpgrade = 5;
     private float expWeightOnUpgrade = 1.5f;
 
+    private boolean spawned = false;
+    private char prevCharOfMap = '.';
     private int floor;
     private int minX;
     private int maxX;
@@ -25,6 +30,7 @@ public abstract class Entity extends Representable {
     public Entity() {
         setName("Entity");
         setRepresentation('E');
+        setPrevCharOfMap('.');
         exp = 0;
         level = 1;
         health = 25;
@@ -32,6 +38,32 @@ public abstract class Entity extends Representable {
         maxHealth = 30;
         x = 0;
         y = 0;
+    }
+
+    public void spawn() {
+        if(spawned)
+            return;
+
+        while(true) {
+            int x = MainGame.random.nextInt(MainGame.mapWidth) + 1;
+            int y = MainGame.random.nextInt(MainGame.mapHeight) + 1;
+
+            if(MainGame.csi.peekChar(x, y) == '.') {
+                MainGame.csi.print(x, y, getRepresentation(), getColor());
+                setPosition(x, y);
+                break;
+            }
+        }
+
+        spawned = true;
+    }
+
+    public char getPrevCharOfMap() {
+        return prevCharOfMap;
+    }
+
+    public void setPrevCharOfMap(char c) {
+        prevCharOfMap = c;
     }
 
     public int getFloor() {
@@ -156,7 +188,14 @@ public abstract class Entity extends Representable {
 
     public void move(int deltaX, int deltaY) {
         Point p = previewMove(deltaX, deltaY);
+        for(Entity e : MainGame.entities) {
+            if(e.intersects(p) || MainGame.csi.peekChar((int) p.getX(), (int) p.getY()) == 'X')
+                return;
+        }
+
+        MainGame.csi.print(getX(), getY(), prevCharOfMap, ConsoleSystemInterface.WHITE);
         setPosition((int) p.getX(), (int) p.getY());
+        setPrevCharOfMap(MainGame.csi.peekChar(getX(), getY()));
     }
 
     public Point previewMove(int deltaX, int deltaY) {

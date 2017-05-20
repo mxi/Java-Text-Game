@@ -2,9 +2,9 @@ package newGame;
 
 import newGame.Entities.Character;
 import newGame.Entities.CharacterType;
+import newGame.Entities.Entity;
 import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.Monster;
-import newGame.Entities.Shield;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
@@ -14,12 +14,14 @@ import java.util.Random;
 
 public class MainGame {
 
+    public static List<Entity> entities; // List of all monsters in the game.
     public static Random random; // Random object
     public static ConsoleSystemInterface csi; // Window (console interface)
+    public static int mapWidth = 69;
+    public static int mapHeight = 19;
 
     private static MapInterface map; // Map of the game.
-
-    private static List<Monster> monsters; // List of all monsters in the game.
+    private static Character character; // Character of the game.
 
     private static int goblinSpawnChance = 5; // Rarity of a goblin spawning.
 
@@ -40,7 +42,7 @@ public class MainGame {
     private MainGame() {
         random = new Random(); // Creates a new instance of the Random object
         csi = new WSwingConsoleInterface(); // Creates a new instance of WSwingConsoleInterface.
-        monsters = new ArrayList<>(); // Creates a new instance of the monsters list.
+        entities = new ArrayList<>(); // Creates a new instance of the monsters list.
         map = new Map();
         csi.refresh();
 
@@ -52,14 +54,14 @@ public class MainGame {
          * TODO: Add character initialization description.
          */
     	
-        Character character = new Character("Justin Li", CharacterType.Wizard);
+        character = new Character("Justin Li", CharacterType.Wizard);
         character.setMaxXY(69, 19);
         character.setMaxHealth(20);
         character.setFloor(1);
+        character.spawn();
 
+        entities.add(character);
         csi.refresh();
-
-        char prevCharOfMap = '.'; // This is the char that will replace the Character's previous position.
 
         // Initializes the main loop to run the game:
         while(true) {
@@ -69,9 +71,8 @@ public class MainGame {
              * entities/game objects on the window itself.
              */
             // Print Entities:
-            csi.print(character.getX(), character.getY(), character.getRepresentation(), character.getColor());
-            monsters.forEach(monster ->
-                    csi.print(monster.getX(), monster.getY(), monster.getRepresentation(), monster.getColor()));
+            entities.forEach(e ->
+                    csi.print(e.getX(), e.getY(), e.getRepresentation(), e.getColor()));
 
             // Print Information:
             csi.print(1, 20, "Health: " + character.getHealth() + "/" + character.getMaxHealth() + " ");
@@ -84,62 +85,19 @@ public class MainGame {
              */
             int key = csi.inkey().code;
 
-            int x = character.getX();
-            int y = character.getY();
-
             Keys:
             switch(key) {
                 case 0:
-                    for(Monster m : monsters)
-                        if(m.intersects(character.previewMove(0, -1)))
-                            break Keys;
-                    if(csi.peekChar(character.getX(), character.getY() - 1) == 'X')
-                    {
-                    	break;
-                    }
-
-                    csi.print(x, y, prevCharOfMap, ConsoleSystemInterface.WHITE);
                     character.move(0, -1);
-                    prevCharOfMap = map.getCharacter(character.getX(), character.getY());
                     break;
                 case 1:
-                    for(Monster m : monsters)
-                        if(m.intersects(character.previewMove(0, 1)))
-                            break Keys;
-                    if(csi.peekChar(character.getX(), character.getY() + 1) == 'X')
-                    {
-                    	break;
-                    }
-
-                    csi.print(x, y, prevCharOfMap, ConsoleSystemInterface.WHITE);
                     character.move(0, 1);
-                    prevCharOfMap = map.getCharacter(character.getX(), character.getY());
                     break;
                 case 2:
-                    for(Monster m : monsters)
-                        if(m.intersects(character.previewMove(-1, 0)))
-                            break Keys;
-                    if(csi.peekChar(character.getX() - 1, character.getY()) == 'X')
-                    {
-                    	break;
-                    }
-
-                    csi.print(x, y, prevCharOfMap, ConsoleSystemInterface.WHITE);
                     character.move(-1, 0);
-                    prevCharOfMap = map.getCharacter(character.getX(), character.getY());
                     break;
                 case 3:
-                    for(Monster m : monsters)
-                        if(m.intersects(character.previewMove(1, 0)))
-                            break Keys;
-                    if(csi.peekChar(character.getX() + 1, character.getY()) == 'X')
-                    {
-                    	break;
-                    }
-
-                    csi.print(x, y, prevCharOfMap, ConsoleSystemInterface.WHITE);
                     character.move(1, 0);
-                    prevCharOfMap = map.getCharacter(character.getX(), character.getY());
                     break;
                 case 10:
                 	csi.cls();
@@ -166,7 +124,10 @@ public class MainGame {
     }
 
     private void runAI(Character c) {
-        monsters.forEach(m -> m.performAI(c));
+        entities.forEach(entity -> {
+            if(entity instanceof Monster)
+                ((Monster) entity).performAI(character);
+        });
 
         // #region spawn monsters
         if(random.nextInt(101) <= goblinSpawnChance) {
@@ -176,7 +137,8 @@ public class MainGame {
             goblin.setLevel(1);
             goblin.setMinXY(1, 1);
             goblin.setMaxXY(69, 19);
-            monsters.add(goblin);
+            goblin.spawn();
+            entities.add(goblin);
         }
     }
 }
