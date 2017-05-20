@@ -8,7 +8,7 @@ public class Map {
 	private final int DUNGEON_LEFT_MAX = 0; // old 10
 	private final int DUNGEON_TOP = 0; // old 3
 	private final int DUNGEON_RIGHT_MAX = 69; // old 79
-	private final int DUNGEON_BOTTOM = 20; // old 18
+	private final int DUNGEON_BOTTOM = 19; // old 18
 	private int curX;
 	private int curY;
 
@@ -166,7 +166,10 @@ public class Map {
 					}
 					for(int count = 0; count < HXlist.size(); count++)
 					{
-						if(hold < HXlist.get(count) + 2 && hold > HXlist.get(count) - 2)
+						if((hold < HXlist.get(count) + 2 && hold > HXlist.get(count) - 2)
+								|| (MainGame.csi.peekChar(hold, r.Y + r.Ysize - 1) != 'X'
+								|| MainGame.csi.peekChar(hold + 1, r.Y + r.Ysize - 1) != 'X'
+								|| MainGame.csi.peekChar(hold - 1, r.Y + r.Ysize - 1) != 'X'))
 						{
 							hold = MainGame.random.nextInt(r.Xsize - 2) + r.X + 1;
 							continue loop;
@@ -200,10 +203,7 @@ public class Map {
 						MainGame.csi.print(HallwayX - 1, h.length, "X");
 						MainGame.csi.print(HallwayX, h.length, ".");
 						MainGame.csi.print(HallwayX + 1, h.length, "X");
-						MainGame.csi.print(HallwayX - 1, h.length + 1, "X");
 						MainGame.csi.print(HallwayX, h.length + 1, ".");
-						MainGame.csi.print(HallwayX + 1, h.length + 1, "X");
-						MainGame.csi.print(HallwayX, h.length + 2, ".");
 						break;
 					}
 					// hits a room in two spots
@@ -369,7 +369,10 @@ public class Map {
 					}
 					for(int count = 0; count < HHlist.size(); count++)
 					{
-						if(hold < HHlist.get(count) + 2 && hold > HHlist.get(count) - 2)
+						if((hold < HHlist.get(count) + 2 && hold > HHlist.get(count) - 2)
+								|| (MainGame.csi.peekChar(r.X + r.Xsize - 1, hold) != 'X'
+								|| MainGame.csi.peekChar(r.X + r.Xsize - 1, hold + 1) != 'X'
+								|| MainGame.csi.peekChar(r.X + r.Xsize - 1, hold - 1) != 'X'))
 						{
 							hold = MainGame.random.nextInt(r.Ysize - 2) + r.Y + 1;
 							continue loop;
@@ -404,10 +407,7 @@ public class Map {
 						MainGame.csi.print(h.length, HallwayHeight - 1, "X");
 						MainGame.csi.print(h.length, HallwayHeight, ".");
 						MainGame.csi.print(h.length, HallwayHeight + 1, "X");
-						MainGame.csi.print(h.length + 1, HallwayHeight - 1, "X");
 						MainGame.csi.print(h.length + 1, HallwayHeight, ".");
-						MainGame.csi.print(h.length + 1, HallwayHeight + 1, "X");
-						MainGame.csi.print(h.length + 2, HallwayHeight, ".");
 						break;
 					}
 					// hits a room in two spots
@@ -535,6 +535,40 @@ public class Map {
 		
 		
 		
+		
+		
+		
+		
+		
+		//cover up edges
+		for(int x = 0; x < DUNGEON_RIGHT_MAX + 1; x++)
+		{
+			if(MainGame.csi.peekChar(x, DUNGEON_TOP) == '.')
+			{
+				MainGame.csi.print(x, DUNGEON_TOP, "X");
+			}
+		}
+		for(int x = 0; x < DUNGEON_RIGHT_MAX + 1; x++)
+		{
+			if(MainGame.csi.peekChar(x, DUNGEON_BOTTOM) == '.')
+			{
+				MainGame.csi.print(x, DUNGEON_BOTTOM, "X");
+			}
+		}
+		for(int y = 0; y < DUNGEON_BOTTOM + 1; y++)
+		{
+			if(MainGame.csi.peekChar(0, y) == '.')
+			{
+				MainGame.csi.print(0, y, "X");
+			}
+		}
+		for(int y = 0; y < DUNGEON_BOTTOM + 1; y++)
+		{
+			if(MainGame.csi.peekChar(DUNGEON_RIGHT_MAX, y) == '.')
+			{
+				MainGame.csi.print(DUNGEON_RIGHT_MAX, y, "X");
+			}
+		}
 		
 		
 		
