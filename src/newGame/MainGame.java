@@ -72,7 +72,8 @@ public class MainGame {
         csi.refresh();
         character.setMaxHealth(20);
         character.setFloor(1);
-        
+
+        char prevCharOfMap = '.';
         // Initializes the main loop to run the game:
         while(true) {
 
@@ -110,8 +111,9 @@ public class MainGame {
                     	break;
                     }
 
-                    csi.print(x, y, map.getCharacter(x, y), ConsoleSystemInterface.WHITE);
+                    csi.print(x, y, prevCharOfMap, ConsoleSystemInterface.WHITE);
                     character.move(0, -1);
+                    prevCharOfMap = map.getCharacter(character.getX(), character.getY());
                     break;
                 case 1:
                     for(Monster m : monsters)
@@ -122,8 +124,9 @@ public class MainGame {
                     	break;
                     }
 
-                    csi.print(x, y, map.getCharacter(x, y), ConsoleSystemInterface.WHITE);
+                    csi.print(x, y, prevCharOfMap, ConsoleSystemInterface.WHITE);
                     character.move(0, 1);
+                    prevCharOfMap = map.getCharacter(character.getX(), character.getY());
                     break;
                 case 2:
                     for(Monster m : monsters)
@@ -134,8 +137,9 @@ public class MainGame {
                     	break;
                     }
 
-                    csi.print(x, y, map.getCharacter(x, y), ConsoleSystemInterface.WHITE);
+                    csi.print(x, y, prevCharOfMap, ConsoleSystemInterface.WHITE);
                     character.move(-1, 0);
+                    prevCharOfMap = map.getCharacter(character.getX(), character.getY());
                     break;
                 case 3:
                     for(Monster m : monsters)
@@ -146,8 +150,9 @@ public class MainGame {
                     	break;
                     }
 
-                    csi.print(x, y, map.getCharacter(x, y), ConsoleSystemInterface.WHITE);
+                    csi.print(x, y, prevCharOfMap, ConsoleSystemInterface.WHITE);
                     character.move(1, 0);
+                    prevCharOfMap = map.getCharacter(character.getX(), character.getY());
                     break;
                 case 10:
                 	csi.cls();
