@@ -3,7 +3,7 @@ package newGame;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Map implements MapInterface{
+public class Map implements MapInterface {
 	
 	private final int DUNGEON_LEFT_MAX = 0; // old 10
 	private final int DUNGEON_TOP = 0; // old 3
@@ -14,10 +14,8 @@ public class Map implements MapInterface{
 
 	private List<Room> rooms;
 	private List<Hallway> hallways;
-	private List<Tile> tiles;
 
-	public class Room
-	{
+	public class Room {
 		public int Xsize = MainGame.random.nextInt(9) + 7;
 		public int Ysize = MainGame.random.nextInt(9) + 7;
 		// min size are 6 by 6, and max size are 15 by 15
@@ -26,53 +24,46 @@ public class Map implements MapInterface{
 		// the x and y cords are found in the top left corner
 	}
 	
-	public class Hallway
-	{
+	public class Hallway {
 		int length;
 		char direction; // R = right, L = left, U = up, D = down
 	}
-	
-	public class Tile
-	{
-		public char TileType; //X: wall, _: empty, |: door, $: treasure, P: player, M: monster
-		public char TileVisibility; //V: visible, P: seen before, but out of sight, I: haven't seen before
-		public int TileX;
-		public int TileY;
-	}
 
-
-
-	public Map()
-	{
+	public Map() {
 		curX = MainGame.random.nextInt(69) + 1;
 		curY = MainGame.random.nextInt(15) + 1;
 		rooms = new ArrayList<>();
 		hallways = new ArrayList<>();
-		tiles = new ArrayList<>();
+
 		int curRoom = 0;
-		int curHall = 0;
-		int curTile = 0;
 		int limit = MainGame.random.nextInt(20) + 10;
+
+		// int curHall = 0;
+		// int curTile = 0;
 		// room build
+
 		int retries = 0;
-		build: for(int x = 0; x < limit; x++)
-		{
-			if(retries < 100)
-			{
+		build: for(int x = 0; x < limit; x++) {
+			if(retries < 100) {
 				curX = MainGame.random.nextInt(69) + 1;
 				curY = MainGame.random.nextInt(15) + 1;
 				Room r = new Room();
 				rooms.add(r);
-				if(r.Xsize + curX - 1 < DUNGEON_RIGHT_MAX && r.Ysize + curY - 1 < DUNGEON_BOTTOM)
-				{
+
+				if(r.Xsize + curX - 1 < DUNGEON_RIGHT_MAX && r.Ysize + curY - 1 < DUNGEON_BOTTOM) {
 					int X = r.X;
 					int Y = r.Y;
 					int XS = r.Xsize;
 					int YS = r.Ysize;
-					
+
+						// TODO: Ask ryan about this, might need to remove for a bit
+						// TODO: better readability
 						//Anything in the way?for(; X < r.X + r.Xsize - 1; X++)
 						{
-							if(MainGame.csi.peekChar(X, Y) == 'X' || MainGame.csi.peekChar(X, Y + YS - 1) == 'X' || MainGame.csi.peekChar(X, Y) == '.' || MainGame.csi.peekChar(X, Y + YS - 1) == '.')
+							if(MainGame.csi.peekChar(X, Y) == 'X'
+									|| MainGame.csi.peekChar(X, Y + YS - 1) == 'X'
+									|| MainGame.csi.peekChar(X, Y) == '.'
+									|| MainGame.csi.peekChar(X, Y + YS - 1) == '.')
 							{
 								x--;
 								rooms.remove(curRoom);
@@ -80,9 +71,12 @@ public class Map implements MapInterface{
 								continue build;
 							}
 						}
-						for(X = r.X; Y < r.Y + r.Ysize - 1; Y++)
-						{
-							if(MainGame.csi.peekChar(X, Y) == 'X' || MainGame.csi.peekChar(X + XS - 1, Y) == 'X' || MainGame.csi.peekChar(X, Y) == '.' || MainGame.csi.peekChar(X + XS - 1, Y) == '.')
+
+						for(X = r.X; Y < r.Y + r.Ysize - 1; Y++) {
+							if(MainGame.csi.peekChar(X, Y) == 'X'
+									|| MainGame.csi.peekChar(X + XS - 1, Y) == 'X'
+									|| MainGame.csi.peekChar(X, Y) == '.'
+									|| MainGame.csi.peekChar(X + XS - 1, Y) == '.')
 							{
 								x--;
 								rooms.remove(curRoom);
@@ -91,11 +85,10 @@ public class Map implements MapInterface{
 							}
 						}
 						
-						for(int CountA = 1; CountA <= r.Xsize; CountA++)
-						{
-							for(int CountB = 1; CountB <= r.Ysize; CountB++)
-							{
-								if(MainGame.csi.peekChar(CountA - 1 + r.X, CountB - 1 + r.Y) == 'X' || MainGame.csi.peekChar(CountA - 1 + r.X, CountB - 1 + r.Y) == '.')
+						for(int CountA = 1; CountA <= r.Xsize; CountA++) {
+							for(int CountB = 1; CountB <= r.Ysize; CountB++) {
+								if(MainGame.csi.peekChar(CountA - 1 + r.X, CountB - 1 + r.Y) == 'X' ||
+										MainGame.csi.peekChar(CountA - 1 + r.X, CountB - 1 + r.Y) == '.')
 								{
 									x--;
 									rooms.remove(curRoom);
@@ -105,49 +98,38 @@ public class Map implements MapInterface{
 							}
 						}
 					
-					
-					
 					//build
 					Y = r.Y;
-					for(X = r.X; X < r.X + r.Xsize - 1; X++)
-					{
+					for(X = r.X; X < r.X + r.Xsize - 1; X++) {
 						MainGame.csi.print(X, Y, "X");
 						for(YS = r.Ysize - 1; YS > 1; YS--)
-						{
 							MainGame.csi.print(X, Y + YS - 1, ".");
-						}
+
 						MainGame.csi.print(X, Y + r.Ysize - 1, "X");
 					}
-					for(X = r.X; Y <= r.Y + r.Ysize - 1; Y++)
-					{
+
+					for(X = r.X; Y <= r.Y + r.Ysize - 1; Y++) {
 						MainGame.csi.print(X, Y, "X");
 						MainGame.csi.print(X + XS - 1, Y, "X");
 					}
 					curRoom++;
-				}else{
+				}
+				else {
 					x--;
 					rooms.remove(curRoom);
 				}
-			}else{
+			}
+			else {
 				limit = rooms.size();
 			}
 		}
 		
 		//Hallway build
-		build: for(int x = 0; x < limit; x++)
-		{
+		build: for(int x = 0; x < limit; x++) {
 			Hallway h = new Hallway();
 			hallways.add(h);
 			h.direction = 'R';
 			Room r = rooms.get(x);
-
-
-			
-			
-			
-			
-			
-			
 
 			int HallwayX = MainGame.random.nextInt(r.Xsize - 2) + r.X + 1;
 			List<Integer> HXlist;
@@ -155,17 +137,14 @@ public class Map implements MapInterface{
 			HXlist.add(HallwayX);
 			
 			int tries = 0;
-			rightHalls:for(;;)
-			{
+			rightHalls: for(;;) {
+
 				int hold = MainGame.random.nextInt(r.Xsize - 2) + r.X + 1;
-				loop: for(;; tries++)
-				{
+				loop: for(;; tries++) {
 					if(tries > 1000000)
-					{
 						break loop;
-					}
-					for(int count = 0; count < HXlist.size(); count++)
-					{
+
+					for(int count = 0; count < HXlist.size(); count++) {
 						if((hold < HXlist.get(count) + 2 && hold > HXlist.get(count) - 2)
 								|| (MainGame.csi.peekChar(hold, r.Y + r.Ysize - 1) != 'X'
 								|| MainGame.csi.peekChar(hold + 1, r.Y + r.Ysize - 1) != 'X'
@@ -180,15 +159,12 @@ public class Map implements MapInterface{
 				HallwayX = hold;
 				HXlist.add(HallwayX);
 				//Down----------------------------------------------------
-				for(h.length = r.Y + r.Ysize - 1;; h.length++)
-				{
+				for(h.length = r.Y + r.Ysize - 1;; h.length++) {
 					if(tries > 1000000)
-					{
 						break rightHalls;
-					}
+
 					// hits dungeon boundary
-					if(h.length + 1 >= DUNGEON_BOTTOM)
-					{
+					if(h.length + 1 >= DUNGEON_BOTTOM) {
 						MainGame.csi.print(HallwayX - 1, h.length, "X");
 						MainGame.csi.print(HallwayX, h.length, "X");
 						MainGame.csi.print(HallwayX + 1, h.length, "X");
@@ -210,8 +186,7 @@ public class Map implements MapInterface{
 					else if(MainGame.csi.peekChar(HallwayX + 1, h.length + 1) == 'X'
 							&& MainGame.csi.peekChar(HallwayX, h.length + 1) == 'X')
 					{
-						if(MainGame.csi.peekChar(HallwayX + 2, h.length + 2) != ' ')
-						{
+						if(MainGame.csi.peekChar(HallwayX + 2, h.length + 2) != ' ') {
 							MainGame.csi.print(HallwayX - 1, h.length, "X");
 							MainGame.csi.print(HallwayX, h.length, ".");
 							MainGame.csi.print(HallwayX + 1, h.length, "X");
@@ -226,16 +201,16 @@ public class Map implements MapInterface{
 							MainGame.csi.print(HallwayX + 1, h.length + 3, ".");
 							break;
 						}
-						else{
+						else {
 							MainGame.csi.print(HallwayX - 1, h.length, "X");
 							MainGame.csi.print(HallwayX, h.length, ".");
 							MainGame.csi.print(HallwayX + 1, h.length, "X");
 						}
-					}else if(MainGame.csi.peekChar(HallwayX - 1, h.length + 1) == 'X'
+					}
+					else if(MainGame.csi.peekChar(HallwayX - 1, h.length + 1) == 'X'
 							&& MainGame.csi.peekChar(HallwayX, h.length + 1) == 'X')
 					{
-						if(MainGame.csi.peekChar(HallwayX - 2, h.length + 2) != ' ')
-						{
+						if(MainGame.csi.peekChar(HallwayX - 2, h.length + 2) != ' ') {
 							MainGame.csi.print(HallwayX - 1, h.length, "X");
 							MainGame.csi.print(HallwayX, h.length, ".");
 							MainGame.csi.print(HallwayX + 1, h.length, "X");
@@ -250,17 +225,15 @@ public class Map implements MapInterface{
 							MainGame.csi.print(HallwayX + 1, h.length + 3, "X");
 							break;
 						}
-						else{
+						else {
 							MainGame.csi.print(HallwayX - 1, h.length, "X");
 							MainGame.csi.print(HallwayX, h.length, ".");
 							MainGame.csi.print(HallwayX + 1, h.length, "X");
 						}
 					}
 					// hits a room in one spot
-					else if(MainGame.csi.peekChar(HallwayX + 1, h.length + 1) == 'X')
-					{
-						if(MainGame.csi.peekChar(HallwayX + 2, h.length + 2) != ' ')
-						{
+					else if(MainGame.csi.peekChar(HallwayX + 1, h.length + 1) == 'X') {
+						if(MainGame.csi.peekChar(HallwayX + 2, h.length + 2) != ' ') {
 							MainGame.csi.print(HallwayX - 1, h.length, "X");
 							MainGame.csi.print(HallwayX, h.length, ".");
 							MainGame.csi.print(HallwayX + 1, h.length, "X");
@@ -273,21 +246,20 @@ public class Map implements MapInterface{
 							MainGame.csi.print(HallwayX - 1, h.length + 3, "X");
 							MainGame.csi.print(HallwayX, h.length + 3, "X");
 							MainGame.csi.print(HallwayX + 1, h.length + 3, "X");
+
 							if(MainGame.csi.peekChar(HallwayX + 2, h.length + 3) == ' ')
-							{
 								MainGame.csi.print(HallwayX + 2, h.length + 3, "X");
-							}
+
 							break;
 						}
-						else{
+						else {
 							MainGame.csi.print(HallwayX - 1, h.length, "X");
 							MainGame.csi.print(HallwayX, h.length, ".");
 							MainGame.csi.print(HallwayX + 1, h.length, "X");
 						}
-					}else if(MainGame.csi.peekChar(HallwayX - 1, h.length + 1) == 'X')
-					{
-						if(MainGame.csi.peekChar(HallwayX - 2, h.length + 2) != ' ')
-						{
+					}
+					else if(MainGame.csi.peekChar(HallwayX - 1, h.length + 1) == 'X') {
+						if(MainGame.csi.peekChar(HallwayX - 2, h.length + 2) != ' ') {
 							MainGame.csi.print(HallwayX - 1, h.length, "X");
 							MainGame.csi.print(HallwayX, h.length, ".");
 							MainGame.csi.print(HallwayX + 1, h.length, "X");
@@ -300,21 +272,20 @@ public class Map implements MapInterface{
 							MainGame.csi.print(HallwayX - 1, h.length + 3, "X");
 							MainGame.csi.print(HallwayX, h.length + 3, "X");
 							MainGame.csi.print(HallwayX + 1, h.length + 3, "X");
+
 							if(MainGame.csi.peekChar(HallwayX - 2, h.length + 3) == ' ')
-							{
 								MainGame.csi.print(HallwayX - 2, h.length + 3, "X");
-							}
+
 							break;
 						}
-						else{
+						else {
 							MainGame.csi.print(HallwayX - 1, h.length, "X");
 							MainGame.csi.print(HallwayX, h.length, ".");
 							MainGame.csi.print(HallwayX + 1, h.length, "X");
 						}
 					}
 					// hits other hallway
-					else if(MainGame.csi.peekChar(HallwayX, h.length + 1) == '.')
-					{
+					else if(MainGame.csi.peekChar(HallwayX, h.length + 1) == '.') {
 						MainGame.csi.print(HallwayX - 1, h.length, "X");
 						MainGame.csi.print(HallwayX, h.length, ".");
 						MainGame.csi.print(HallwayX + 1, h.length, "X");
@@ -324,7 +295,7 @@ public class Map implements MapInterface{
 						break;
 					}
 					//standard hallway segment
-					else{
+					else {
 						MainGame.csi.print(HallwayX - 1, h.length, "X");
 						MainGame.csi.print(HallwayX, h.length, ".");
 						MainGame.csi.print(HallwayX + 1, h.length, "X");
@@ -333,24 +304,7 @@ public class Map implements MapInterface{
 				//MainGame.csi.refresh();
 				//MainGame.csi.waitKey(10);
 			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+
 			int HallwayHeight = MainGame.random.nextInt(r.Ysize - 2) + r.Y + 1;
 			
 			List<Integer> HHlist;
@@ -358,17 +312,15 @@ public class Map implements MapInterface{
 			HHlist.add(HallwayHeight);
 			
 			tries = 0;
-			rightHalls:for(;;)
-			{
+
+			rightHalls: for(;;) {
 				int hold = MainGame.random.nextInt(r.Ysize - 2) + r.Y + 1;
-				loop: for(;; tries++)
-				{
+
+				loop: for(;; tries++) {
 					if(tries > 1000000)
-					{
 						break loop;
-					}
-					for(int count = 0; count < HHlist.size(); count++)
-					{
+
+					for(int count = 0; count < HHlist.size(); count++) {
 						if((hold < HHlist.get(count) + 2 && hold > HHlist.get(count) - 2)
 								|| (MainGame.csi.peekChar(r.X + r.Xsize - 1, hold) != 'X'
 								|| MainGame.csi.peekChar(r.X + r.Xsize - 1, hold + 1) != 'X'
@@ -378,21 +330,19 @@ public class Map implements MapInterface{
 							continue loop;
 						}
 					}
+
 					break loop;
 				}
 				HallwayHeight = hold;
 				HHlist.add(HallwayHeight);
 				
 				//right----------------------------------------------------
-				for(h.length = r.X + r.Xsize - 1;; h.length++)
-				{
+				for(h.length = r.X + r.Xsize - 1;; h.length++) {
 					if(tries > 1000000)
-					{
 						break rightHalls;
-					}
+
 					// hits dungeon boundary
-					if(h.length + 1 >= DUNGEON_RIGHT_MAX)
-					{
+					if(h.length + 1 >= DUNGEON_RIGHT_MAX) {
 						MainGame.csi.print(h.length, HallwayHeight - 1, "X");
 						MainGame.csi.print(h.length, HallwayHeight, "X");
 						MainGame.csi.print(h.length, HallwayHeight + 1, "X");
@@ -414,8 +364,7 @@ public class Map implements MapInterface{
 					else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight + 1) == 'X'
 							&& MainGame.csi.peekChar(h.length + 1, HallwayHeight) == 'X')
 					{
-						if(MainGame.csi.peekChar(h.length + 2, HallwayHeight + 2) != ' ')
-						{
+						if(MainGame.csi.peekChar(h.length + 2, HallwayHeight + 2) != ' ') {
 							MainGame.csi.print(h.length, HallwayHeight - 1, "X");
 							MainGame.csi.print(h.length, HallwayHeight, ".");
 							MainGame.csi.print(h.length, HallwayHeight + 1, "X");
@@ -430,16 +379,16 @@ public class Map implements MapInterface{
 							MainGame.csi.print(h.length + 3, HallwayHeight + 1, ".");
 							break;
 						}
-						else{
+						else {
 							MainGame.csi.print(h.length, HallwayHeight - 1, "X");
 							MainGame.csi.print(h.length, HallwayHeight, ".");
 							MainGame.csi.print(h.length, HallwayHeight + 1, "X");
 						}
-					}else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight - 1) == 'X'
+					}
+					else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight - 1) == 'X'
 							&& MainGame.csi.peekChar(h.length + 1, HallwayHeight) == 'X')
 					{
-						if(MainGame.csi.peekChar(h.length + 2, HallwayHeight - 2) != ' ')
-						{
+						if(MainGame.csi.peekChar(h.length + 2, HallwayHeight - 2) != ' ') {
 							MainGame.csi.print(h.length, HallwayHeight - 1, "X");
 							MainGame.csi.print(h.length, HallwayHeight, ".");
 							MainGame.csi.print(h.length, HallwayHeight + 1, "X");
@@ -454,17 +403,15 @@ public class Map implements MapInterface{
 							MainGame.csi.print(h.length + 3, HallwayHeight + 1, "X");
 							break;
 						}
-						else{
+						else {
 							MainGame.csi.print(h.length, HallwayHeight - 1, "X");
 							MainGame.csi.print(h.length, HallwayHeight, ".");
 							MainGame.csi.print(h.length, HallwayHeight + 1, "X");
 						}
 					}
 					// hits a room in one spot
-					else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight + 1) == 'X')
-					{
-						if(MainGame.csi.peekChar(h.length + 2, HallwayHeight + 2) != ' ')
-						{
+					else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight + 1) == 'X') {
+						if(MainGame.csi.peekChar(h.length + 2, HallwayHeight + 2) != ' ') {
 							MainGame.csi.print(h.length, HallwayHeight - 1, "X");
 							MainGame.csi.print(h.length, HallwayHeight, ".");
 							MainGame.csi.print(h.length, HallwayHeight + 1, "X");
@@ -479,15 +426,14 @@ public class Map implements MapInterface{
 							MainGame.csi.print(h.length + 3, HallwayHeight + 1, "X");
 							break;
 						}
-						else{
+						else {
 							MainGame.csi.print(h.length, HallwayHeight - 1, "X");
 							MainGame.csi.print(h.length, HallwayHeight, ".");
 							MainGame.csi.print(h.length, HallwayHeight + 1, "X");
 						}
-					}else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight - 1) == 'X')
-					{
-						if(MainGame.csi.peekChar(h.length + 2, HallwayHeight - 2) != ' ')
-						{
+					}
+					else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight - 1) == 'X') {
+						if(MainGame.csi.peekChar(h.length + 2, HallwayHeight - 2) != ' ') {
 							MainGame.csi.print(h.length, HallwayHeight - 1, "X");
 							MainGame.csi.print(h.length, HallwayHeight, ".");
 							MainGame.csi.print(h.length, HallwayHeight + 1, "X");
@@ -502,15 +448,14 @@ public class Map implements MapInterface{
 							MainGame.csi.print(h.length + 3, HallwayHeight + 1, "X");
 							break;
 						}
-						else{
+						else {
 							MainGame.csi.print(h.length, HallwayHeight - 1, "X");
 							MainGame.csi.print(h.length, HallwayHeight, ".");
 							MainGame.csi.print(h.length, HallwayHeight + 1, "X");
 						}
 					}
 					// hits other hallway
-					else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight) == '.')
-					{
+					else if(MainGame.csi.peekChar(h.length + 1, HallwayHeight) == '.') {
 						MainGame.csi.print(h.length, HallwayHeight - 1, "X");
 						MainGame.csi.print(h.length, HallwayHeight, ".");
 						MainGame.csi.print(h.length, HallwayHeight + 1, "X");
@@ -520,7 +465,7 @@ public class Map implements MapInterface{
 						break;
 					}
 					//standard hallway segment
-					else{
+					else {
 						MainGame.csi.print(h.length, HallwayHeight - 1, "X");
 						MainGame.csi.print(h.length, HallwayHeight, ".");
 						MainGame.csi.print(h.length, HallwayHeight + 1, "X");
@@ -532,58 +477,34 @@ public class Map implements MapInterface{
 			}
 		}
 
-		
-		
-		
-		
-		
-		
-		
-		
 		//cover up edges
-		for(int x = 0; x < DUNGEON_RIGHT_MAX + 1; x++)
-		{
+		for(int x = 0; x < DUNGEON_RIGHT_MAX + 1; x++) {
 			if(MainGame.csi.peekChar(x, DUNGEON_TOP) == '.')
-			{
 				MainGame.csi.print(x, DUNGEON_TOP, "X");
-			}
 		}
-		for(int x = 0; x < DUNGEON_RIGHT_MAX + 1; x++)
-		{
+
+		for(int x = 0; x < DUNGEON_RIGHT_MAX + 1; x++) {
 			if(MainGame.csi.peekChar(x, DUNGEON_BOTTOM) == '.')
-			{
 				MainGame.csi.print(x, DUNGEON_BOTTOM, "X");
-			}
 		}
-		for(int y = 0; y < DUNGEON_BOTTOM + 1; y++)
-		{
+		for(int y = 0; y < DUNGEON_BOTTOM + 1; y++) {
 			if(MainGame.csi.peekChar(0, y) == '.')
-			{
 				MainGame.csi.print(0, y, "X");
-			}
 		}
-		for(int y = 0; y < DUNGEON_BOTTOM + 1; y++)
-		{
+
+		for(int y = 0; y < DUNGEON_BOTTOM + 1; y++) {
 			if(MainGame.csi.peekChar(DUNGEON_RIGHT_MAX, y) == '.')
-			{
 				MainGame.csi.print(DUNGEON_RIGHT_MAX, y, "X");
-			}
 		}
-		
-		
-		
-		
-		
+
 		//Printing the Stairs
-		for(;;)
-		{
+		for(;;) {
 			Room StairRoom = rooms.get(MainGame.random.nextInt(rooms.size()));
 			int StairX = StairRoom.X + 1 + MainGame.random.nextInt(StairRoom.Xsize - 1);
 			int StairY = StairRoom.Y + 1 + MainGame.random.nextInt(StairRoom.Ysize - 1);
 			if(MainGame.csi.peekChar(StairX, StairY) == 'X')
-			{
 				continue;
-			}
+
 			MainGame.csi.print(StairX , StairY, "/");
 			break;
 		}
@@ -591,7 +512,26 @@ public class Map implements MapInterface{
 
 	@Override
 	public char getCharacter(int x, int y) {
-		// TODO Auto-generated method stub
 		return MainGame.csi.peekChar(x, y);
+	}
+
+	@Override
+	public int getMapWidth() {
+		return DUNGEON_RIGHT_MAX;
+	}
+
+	@Override
+	public int getMapHeight() {
+		return DUNGEON_BOTTOM;
+	}
+
+	@Override
+	public List<Hallway> getHallways() {
+		return hallways;
+	}
+
+	@Override
+	public List<Room> getRooms() {
+		return rooms;
 	}
 }

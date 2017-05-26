@@ -12,7 +12,6 @@ public abstract class Entity extends Representable {
     private int hpIncreaseOnUpgrade = 5;
     private float expWeightOnUpgrade = 1.5f;
 
-    private boolean spawned = false;
     private char prevCharOfMap = '.';
     private int floor;
     private int minX;
@@ -40,22 +39,32 @@ public abstract class Entity extends Representable {
         y = 0;
     }
 
-    public void spawn() {
-        if(spawned)
-            return;
+    public void spawn(char onWhatTile) {
+        // The "random" finding method took about 10x longer to find a
+        // stair character than the binary search method.
+        //while(true) {
+        //    int x = MainGame.random.nextInt(MainGame.mapWidth) + 1;
+        //    int y = MainGame.random.nextInt(MainGame.mapHeight) + 1;
+        //
+        //    if(MainGame.map.getCharacter(x, y) == onWhatTile) {
+        //        setPosition(x, y);
+        //        break;
+        //    }
+        //}
 
-        while(true) {
-            int x = MainGame.random.nextInt(MainGame.mapWidth) + 1;
-            int y = MainGame.random.nextInt(MainGame.mapHeight) + 1;
-
-            if(MainGame.csi.peekChar(x, y) == '.') {
-                MainGame.csi.print(x, y, getRepresentation(), getColor());
-                setPosition(x, y);
-                break;
+        boolean found = false;
+        for(int x = 1; x <= maxX; x++) {
+            for(int y = 1; y <= maxY; y++) {
+                if(MainGame.map.getCharacter(x, y) == onWhatTile) {
+                    setPosition(x, y);
+                    found = true;
+                    break;
+                }
             }
-        }
 
-        spawned = true;
+            if(found)
+                break;
+        }
     }
 
     public char getPrevCharOfMap() {

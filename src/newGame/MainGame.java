@@ -17,16 +17,13 @@ public class MainGame {
     public static List<Entity> entities; // List of all monsters in the game.
     public static Random random; // Random object
     public static ConsoleSystemInterface csi; // Window (console interface)
-    public static int mapWidth = 69;
-    public static int mapHeight = 19;
+    public static MapInterface map; // Map of the game.
 
-    private static MapInterface map; // Map of the game.
     private static Character character; // Character of the game.
 
     private static int goblinSpawnChance = 5; // Rarity of a goblin spawning.
 
     public static void main(String[] args) {
-        random = new Random();
     	new MainGame();
         //csi = new WSwingConsoleInterface();
     	//for(;;)
@@ -58,7 +55,7 @@ public class MainGame {
         character.setMaxXY(69, 19);
         character.setMaxHealth(20);
         character.setFloor(1);
-        character.spawn();
+        character.spawn('.');
 
         entities.add(character);
         csi.refresh();
@@ -100,9 +97,14 @@ public class MainGame {
                     character.move(1, 0);
                     break;
                 case 10:
-                	csi.cls();
-                    new Map();
-                    csi.refresh();
+                    // Creates a new map interface/object when the
+                    // player presses the space bar on a stair character.
+                    if(character.getPrevCharOfMap() == '/') {
+                        csi.cls();
+                        map = new Map();
+                        csi.refresh();
+                        character.spawn('/');
+                    }
                     break;
                 case 64:
                     break;
@@ -137,7 +139,7 @@ public class MainGame {
             goblin.setLevel(1);
             goblin.setMinXY(1, 1);
             goblin.setMaxXY(69, 19);
-            goblin.spawn();
+            goblin.spawn('.');
             entities.add(goblin);
         }
     }
