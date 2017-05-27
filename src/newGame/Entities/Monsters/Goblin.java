@@ -1,5 +1,6 @@
 package newGame.Entities.Monsters;
 
+import game.MainGame;
 import newGame.Entities.Character;
 import newGame.Entities.Shield;
 import newGame.Entities.Weapons.Knife;
