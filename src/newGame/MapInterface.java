@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface MapInterface {
 
-	char getCharacter(int x, int y);
+    char getCharacter(int x, int y);
     int getMapWidth();
     int getMapHeight();
 
