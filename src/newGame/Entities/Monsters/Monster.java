@@ -52,56 +52,82 @@ public abstract class Monster extends Entity {
 
     public abstract void performAI(Character character);
     
-    public boolean PlayerInSight(Character character, Goblin goblin)
+    public boolean PlayerInSight(Character character)
     {
-    	for(int x = goblin.getX();; x++)
+    	for(int x = getX();; x++)
     	{
-    		if(MainGame.csi.peekChar(x, goblin.getY()) == '@')
+    		if(MainGame.csi.peekChar(x, getY()) == '@')
     		{
     	    	return true;
-    		}else if(MainGame.csi.peekChar(x, goblin.getY()) == 'X')
+    		}else if(MainGame.csi.peekChar(x, getY()) == 'X')
     		{
     	    	break;
     		}
     	}
-    	for(int y = goblin.getY();; y++)
+    	for(int y = getY();; y++)
     	{
-    		if(MainGame.csi.peekChar(goblin.getX(), y) == '@')
+    		if(MainGame.csi.peekChar(getX(), y) == '@')
     		{
     	    	return true;
-    		}else if(MainGame.csi.peekChar(goblin.getX(), y) == 'X')
+    		}else if(MainGame.csi.peekChar(getX(), y) == 'X')
     		{
     	    	return false;
     		}
     	}
     }
     
-	public void FindAI(Character character, Goblin goblin, char direction /*Direction trying to go*/, int Persistance) {
-		if(PlayerInSight(character, goblin))
+	public void FindAI(Character character, char direction /*Direction trying to go*/, int Persistance) {
+		if(PlayerInSight(character))
     	{
     		FindMode = false;
     		performAI(character);
     	}else{
     		if(direction == 'L')
     		{
-    			// go up
-    			goblin.move(0, -1);
+    			if(MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == 'X')
+    			{
+    				move(1,0);
+    				direction = 'D';
+    			}else{
+    				// go up
+    				move(0, -1);
+    			}
     		}else if(direction == 'R')
     		{
-    			// go down
-    			goblin.move(0, 1);
+    			if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == 'X')
+    			{
+    				move(-1,0);
+    				direction = 'U';
+    			}else{
+	    			// go down
+	    			move(0, 1);
+    			}
     		}else if(direction == 'U')
     		{
-    			// go right
-    			goblin.move(-1, 0);
+    			if(MainGame.csi.peekChar(previewMove(0,-1).x, previewMove(0,-1).y) == 'X')
+    			{
+    				move(0,-1);
+    				direction = 'L';
+    			}else{
+	    			// go right
+	    			move(-1, 0);
+    			}
     		}else if(direction == 'D')
     		{
-    			// go left
-    			goblin.move(1, 0);
+    			if(MainGame.csi.peekChar(previewMove(0,1).x, previewMove(0,1).y) == 'X')
+    			{
+    				move(0,1);
+    				direction = 'R';
+    			}else{
+	    			// go left
+	    			move(1, 0);
+    			}
     		}
-    	}if(FindCount == Persistance)
+    	}if(FindCount >= Persistance)
 		{
     		FindMode = false;
+		}else{
+			FindCount++;
 		}
 	}
 }
