@@ -88,7 +88,7 @@ public class MainGame {
                     // player presses the space bar on a stair character.
                     if(character.getPrevCharOfMap() == '/') {
                         csi.cls();
-                        Entity.entities.clear();
+                        Entity.entities.removeIf(e -> !(e instanceof Character));
                         map = new Map();
                         csi.refresh();
                         character.spawn('/');

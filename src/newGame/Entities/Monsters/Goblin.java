@@ -27,6 +27,7 @@ public class Goblin extends Monster {
 
     @Override
     public void performAI(Character character) {
+
         chaseAI(character);
     }
 }
