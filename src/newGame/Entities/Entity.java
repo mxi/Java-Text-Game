@@ -3,9 +3,14 @@ package newGame.Entities;
 import newGame.MainGame;
 import sz.csi.ConsoleSystemInterface;
 
-import java.awt.*;
+import java.awt.Point;
+
+import java.util.List;
+import java.util.ArrayList;
 
 public abstract class Entity extends Representable {
+
+    public static List<Entity> entities = new ArrayList<>();
 
     private int maxLevel = 30;
     private int expUntilLevelUp = 1024;
@@ -197,7 +202,7 @@ public abstract class Entity extends Representable {
 
     public void move(int deltaX, int deltaY) {
         Point p = previewMove(deltaX, deltaY);
-        for(Entity e : MainGame.entities) {
+        for(Entity e : entities) {
             if(e.intersects(p) || MainGame.csi.peekChar((int) p.getX(), (int) p.getY()) == 'X')
                 return;
         }

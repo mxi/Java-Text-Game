@@ -27,39 +27,6 @@ public class Goblin extends Monster {
 
     @Override
     public void performAI(Character character) {
-        if(character.getX() - getX() == 0) {
-            if(character.getY() > getY() && character.getY() - getY() > 1) {
-                move(0, 1);
-            }
-            else if(character.getY() > getY() && character.getY() - getY() == 1) {
-                getMeleeWeapon().attack(character);
-            }
-            else if(character.getY() < getY() && character.getY() - getY() > 1) {
-                move(0, -1);
-            }
-            else if(character.getY() < getY() && character.getY() - getY() == 1){
-                getMeleeWeapon().attack(character);
-            }
-        }
-        else if(character.getY() - getY() == 0){
-            if(character.getX() > getX() && character.getX() - getX() > 1) {
-                move(1, 0);
-            }
-            else if(character.getX() > getX() && character.getX() - getX() == 1){
-                getMeleeWeapon().attack(character);
-            }
-            else if(character.getX() < getX() && getX() - character.getX() > 1) {
-                move(-1, 0);
-            }
-            else if(character.getX() < getX() && getX() - character.getX() == 1){
-                getMeleeWeapon().attack(character);
-            }
-        }
-        else {
-            if(character.getX() > getX())
-                move(-1, 0);
-            else if(character.getX() < getX())
-                move(1, 0);
-        }
+        chaseAI(character);
     }
 }

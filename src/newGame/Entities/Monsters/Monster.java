@@ -1,6 +1,6 @@
 package newGame.Entities.Monsters;
 
-import game.MainGame;
+import newGame.MainGame;
 import newGame.Entities.Character;
 import newGame.Entities.Entity;
 import newGame.Entities.Shield;
@@ -48,60 +48,90 @@ public abstract class Monster extends Entity {
         onMonsterUpgrade();
     }
 
+    public boolean playerInSight(Character character) {
+        for(int x = getX(); ; x++) {
+            if(MainGame.csi.peekChar(x, getY()) == '@')
+                return true;
+            if(MainGame.csi.peekChar(x, getY()) == 'X')
+                break;
+        }
+
+        for(int y = getY();; y++) {
+            if(MainGame.csi.peekChar(getX(), y) == '@')
+                return true;
+            else if(MainGame.csi.peekChar(getX(), y) == 'X')
+                return false;
+        }
+    }
+
+    public void findAI(Character character,  char direction /*Direction trying to go*/, int Persistance) {
+        if(playerInSight(character)) {
+            FindMode = true;
+            performAI(character);
+        }
+        else {
+            if(direction == 'L') {
+                // go up
+                move(0, -1);
+            }
+            else if(direction == 'R') {
+                // go down
+                move(0, 1);
+            }
+            else if(direction == 'U') {
+                // go right
+                move(-1, 0);
+            }
+            else if(direction == 'D') {
+                // go left
+                move(1, 0);
+            }
+        }
+
+        if(FindCount == Persistance) {
+            FindMode = false;
+        }
+    }
+
+    public void chaseAI(Character c) {
+        if(FindMode)
+            return;
+
+        int deltaX = getX() - c.getX();
+        int deltaY = getY() - c.getY();
+
+        int absX = Math.abs(deltaX);
+        int absY = Math.abs(deltaY);
+
+        if(absX > absY) {
+            if (MainGame.map.getCharacter(previewMove(deltaX > 0 ? -1 : 1, 0)) != 'X')
+                move(deltaX > 0 ? -1 : 1, 0);
+            else
+                move(0, deltaY > 0 ? -1 : 1);
+        } else if(absY > absX) {
+            if(MainGame.map.getCharacter(previewMove(0, deltaY > 0 ? -1 : 1)) != 'X')
+                move(0, deltaY > 0 ? -1 : 1);
+            else
+                move(deltaX > 0 ? -1 : 1, 0);
+        }
+        else {
+            if(MainGame.random.nextInt(1) == 0) {
+                if (MainGame.map.getCharacter(previewMove(deltaX > 0 ? -1 : 1, 0)) != 'X')
+                    move(deltaX > 0 ? -1 : 1, 0);
+                else
+                    move(0, deltaY > 0 ? -1 : 1);
+            }
+            else {
+                if(MainGame.map.getCharacter(previewMove(0, deltaY > 0 ? -1 : 1)) != 'X')
+                    move(0, deltaY > 0 ? -1 : 1);
+                else
+                    move(deltaX > 0 ? -1 : 1, 0);
+            }
+        }
+    }
+
     protected abstract void onMonsterUpgrade();
 
     public abstract void performAI(Character character);
-    
-    public boolean PlayerInSight(Character character, Goblin goblin)
-    {
-    	for(int x = goblin.getX();; x++)
-    	{
-    		if(MainGame.csi.peekChar(x, goblin.getY()) == '@')
-    		{
-    	    	return true;
-    		}else if(MainGame.csi.peekChar(x, goblin.getY()) == 'X')
-    		{
-    	    	break;
-    		}
-    	}
-    	for(int y = goblin.getY();; y++)
-    	{
-    		if(MainGame.csi.peekChar(goblin.getX(), y) == '@')
-    		{
-    	    	return true;
-    		}else if(MainGame.csi.peekChar(goblin.getX(), y) == 'X')
-    		{
-    	    	return false;
-    		}
-    	}
-    }
-    
-	public void FindAI(Character character, Goblin goblin, char direction /*Direction trying to go*/, int Persistance) {
-		if(PlayerInSight(character, goblin))
-    	{
-    		FindMode = false;
-    		performAI(character);
-    	}else{
-    		if(direction == 'L')
-    		{
-    			// go up
-    			goblin.move(0, -1);
-    		}else if(direction == 'R')
-    		{
-    			// go down
-    			goblin.move(0, 1);
-    		}else if(direction == 'U')
-    		{
-    			// go right
-    			goblin.move(-1, 0);
-    		}else if(direction == 'D')
-    		{
-    			// go left
-    			goblin.move(1, 0);
-    		}
-    	}if(FindCount == Persistance)
-		{
-    		FindMode = false;
-		}
-	}
+
 }

@@ -8,13 +8,10 @@ import newGame.Entities.Monsters.Monster;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class MainGame {
 
-    public static List<Entity> entities; // List of all monsters in the game.
     public static Random random; // Random object
     public static ConsoleSystemInterface csi; // Window (console interface)
     public static MapInterface map; // Map of the game.
@@ -25,21 +22,11 @@ public class MainGame {
 
     public static void main(String[] args) {
     	new MainGame();
-        //csi = new WSwingConsoleInterface();
-    	//for(;;)
-    	//{
-        //  random = new Random();
-    	//	new Map();
-    	//	csi.refresh();
-    	//	csi.waitKey(1);
-    	//	csi.cls();
-    	//}
     }
 
     private MainGame() {
         random = new Random(); // Creates a new instance of the Random object
         csi = new WSwingConsoleInterface(); // Creates a new instance of WSwingConsoleInterface.
-        entities = new ArrayList<>(); // Creates a new instance of the monsters list.
         map = new Map();
         csi.refresh();
 
@@ -57,7 +44,7 @@ public class MainGame {
         character.setFloor(1);
         character.spawn('.');
 
-        entities.add(character);
+        Entity.entities.add(character);
         csi.refresh();
 
         // Initializes the main loop to run the game:
@@ -68,7 +55,7 @@ public class MainGame {
              * entities/game objects on the window itself.
              */
             // Print Entities:
-            entities.forEach(e ->
+            Entity.entities.forEach(e ->
                     csi.print(e.getX(), e.getY(), e.getRepresentation(), e.getColor()));
 
             // Print Information:
@@ -101,6 +88,7 @@ public class MainGame {
                     // player presses the space bar on a stair character.
                     if(character.getPrevCharOfMap() == '/') {
                         csi.cls();
+                        Entity.entities.clear();
                         map = new Map();
                         csi.refresh();
                         character.spawn('/');
@@ -126,7 +114,7 @@ public class MainGame {
     }
 
     private void runAI(Character c) {
-        entities.forEach(entity -> {
+        Entity.entities.forEach(entity -> {
             if(entity instanceof Monster)
                 ((Monster) entity).performAI(character);
         });
@@ -140,7 +128,7 @@ public class MainGame {
             goblin.setMinXY(1, 1);
             goblin.setMaxXY(69, 19);
             goblin.spawn('.');
-            entities.add(goblin);
+            Entity.entities.add(goblin);
         }
     }
 }

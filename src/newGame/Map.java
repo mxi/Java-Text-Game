@@ -1,5 +1,6 @@
 package newGame;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -513,6 +514,11 @@ public class Map implements MapInterface {
     @Override
     public char getCharacter(int x, int y) {
         return MainGame.csi.peekChar(x, y);
+    }
+
+    @Override
+    public char getCharacter(Point p) {
+        return getCharacter((int) p.getX(), (int) p.getY());
     }
 
     @Override
