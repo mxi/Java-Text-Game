@@ -49,13 +49,12 @@ public abstract class Monster extends Entity {
     }
 
     public boolean playerInSight(Character character) {
-        for(int x = getX(); ; x++) {
+        for(int x = getX();; x++) {
             if(MainGame.csi.peekChar(x, getY()) == '@')
                 return true;
-            if(MainGame.csi.peekChar(x, getY()) == 'X')
+            else if(MainGame.csi.peekChar(x, getY()) == 'X')
                 break;
         }
-
         for(int y = getY();; y++) {
             if(MainGame.csi.peekChar(getX(), y) == '@')
                 return true;
@@ -66,31 +65,56 @@ public abstract class Monster extends Entity {
 
     public void findAI(Character character,  char direction /*Direction trying to go*/, int Persistance) {
         if(playerInSight(character)) {
-            FindMode = true;
+            FindMode = false;
             performAI(character);
         }
         else {
             if(direction == 'L') {
-                // go up
-                move(0, -1);
+                if(MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == 'X') {
+                    move(1,0);
+                    direction = 'D';
+                }
+                else {
+                    // go up
+                    move(0, -1);
+                }
             }
             else if(direction == 'R') {
-                // go down
-                move(0, 1);
+                if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == 'X') {
+                    move(-1,0);
+                    direction = 'U';
+                }
+                else {
+                    // go down
+                    move(0, 1);
+                }
             }
             else if(direction == 'U') {
-                // go right
-                move(-1, 0);
+                if(MainGame.csi.peekChar(previewMove(0,-1).x, previewMove(0,-1).y) == 'X') {
+                    move(0,-1);
+                    direction = 'L';
+                }
+                else {
+                    // go right
+                    move(-1, 0);
+                }
             }
             else if(direction == 'D') {
-                // go left
-                move(1, 0);
+                if(MainGame.csi.peekChar(previewMove(0,1).x, previewMove(0,1).y) == 'X') {
+                    move(0,1);
+                    direction = 'R';
+                }
+                else {
+                    // go left
+                    move(1, 0);
+                }
             }
         }
 
-        if(FindCount == Persistance) {
+        if(FindCount >= Persistance)
             FindMode = false;
-        }
+        else
+            FindCount++;
     }
 
     public void chaseAI(Character c) {
@@ -133,5 +157,4 @@ public abstract class Monster extends Entity {
     protected abstract void onMonsterUpgrade();
 
     public abstract void performAI(Character character);
-
 }
