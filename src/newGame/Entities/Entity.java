@@ -1,9 +1,8 @@
 package newGame.Entities;
 
+import newGame.IntPoint;
 import newGame.MainGame;
 import sz.csi.ConsoleSystemInterface;
-
-import java.awt.Point;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ public abstract class Entity extends Representable {
     private float expWeightOnUpgrade = 1.5f;
 
     private char prevCharOfMap = '.';
+    private int prevColorOfMap = ConsoleSystemInterface.WHITE;
     private int floor;
     private int minX;
     private int maxX;
@@ -45,31 +45,24 @@ public abstract class Entity extends Representable {
     }
 
     public void spawn(char onWhatTile) {
-        // The "random" finding method took about 10x longer to find a
-        // stair character than the binary search method.
-        //while(true) {
-        //    int x = MainGame.random.nextInt(MainGame.mapWidth) + 1;
-        //    int y = MainGame.random.nextInt(MainGame.mapHeight) + 1;
-        //
-        //    if(MainGame.map.getCharacter(x, y) == onWhatTile) {
-        //        setPosition(x, y);
-        //        break;
-        //    }
-        //}
+        while(true) {
+            int x = MainGame.random.nextInt(MainGame.map.getMapWidth()) + 1;
+            int y = MainGame.random.nextInt(MainGame.map.getMapHeight()) + 1;
 
-        boolean found = false;
-        for(int x = 1; x <= maxX; x++) {
-            for(int y = 1; y <= maxY; y++) {
-                if(MainGame.map.getCharacter(x, y) == onWhatTile) {
-                    setPosition(x, y);
-                    found = true;
-                    break;
-                }
-            }
-
-            if(found)
+            if(MainGame.map.getCharacter(x, y) == onWhatTile) {
+                setPosition(x, y);
                 break;
+            }
         }
+    }
+
+    public List<Entity> withinProxy(double range) {
+        List<Entity> withinRange = new ArrayList<>();
+        for(Entity e : entities)
+            if(distance(e) <= range)
+                withinRange.add(e);
+
+        return withinRange;
     }
 
     public char getPrevCharOfMap() {
@@ -78,6 +71,14 @@ public abstract class Entity extends Representable {
 
     public void setPrevCharOfMap(char c) {
         prevCharOfMap = c;
+    }
+
+    public int getPrevColorOfMap() {
+        return prevColorOfMap;
+    }
+
+    public void setPrevColorOfMap(int prevColorOfMap) {
+        this.prevColorOfMap = prevColorOfMap;
     }
 
     public int getFloor() {
@@ -92,7 +93,7 @@ public abstract class Entity extends Representable {
         return Math.sqrt( Math.pow(x - this.x, 2) + Math.pow(y - this.y, 2) );
     }
 
-    public double distance(Point p) {
+    public double distance(IntPoint p) {
         return distance(p.getX(), p.getY());
     }
 
@@ -104,7 +105,7 @@ public abstract class Entity extends Representable {
         return getX() == x && getY() == y;
     }
 
-    public boolean intersects(Point p) {
+    public boolean intersects(IntPoint p) {
         return intersects(p.getX(), p.getY());
     }
 
@@ -196,23 +197,24 @@ public abstract class Entity extends Representable {
         this.y = y;
     }
 
-    public Point getPosition() {
-        return new Point(getX(), getY());
+    public IntPoint getPosition() {
+        return new IntPoint(getX(), getY());
     }
 
     public void move(int deltaX, int deltaY) {
-        Point p = previewMove(deltaX, deltaY);
+        IntPoint p = previewMove(deltaX, deltaY);
         for(Entity e : entities) {
-            if(e.intersects(p) || MainGame.csi.peekChar((int) p.getX(), (int) p.getY()) == 'X')
+            if(e.intersects(p) || MainGame.csi.peekChar(p.getX(), p.getY()) == 'X')
                 return;
         }
 
-        MainGame.csi.print(getX(), getY(), prevCharOfMap, ConsoleSystemInterface.WHITE);
-        setPosition((int) p.getX(), (int) p.getY());
+        MainGame.csi.print(getX(), getY(), prevCharOfMap, prevColorOfMap);
+        setPosition(p.getX(), p.getY());
         setPrevCharOfMap(MainGame.csi.peekChar(getX(), getY()));
+        setPrevColorOfMap(MainGame.csi.peekColor(getX(), getY()));
     }
 
-    public Point previewMove(int deltaX, int deltaY) {
+    public IntPoint previewMove(int deltaX, int deltaY) {
         int newX = getX() + deltaX;
         int newY = getY() + deltaY;
 
@@ -226,7 +228,7 @@ public abstract class Entity extends Representable {
         else if(newY > getMaxY())
             newY = getMaxY();
 
-        return new Point(newX, newY);
+        return new IntPoint(newX, newY);
     }
 
     public int getExp() {

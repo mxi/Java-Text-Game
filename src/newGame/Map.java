@@ -625,4 +625,40 @@ public class Map implements MapInterface{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public char getCharacter(IntPoint p) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setCharacter(char c, int x, int y, int color) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getMinX() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getMinY() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getMaxX() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getMaxY() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
