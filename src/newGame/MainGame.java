@@ -119,6 +119,10 @@ public class MainGame {
     }
 
     private void runAI(Character c) {
+        // WARNING:
+        // CONCURRENCY FAILURE HERE:
+        //
+        // (will try to fix it soon)
         for(Entity e : Entity.entities) {
             if(e instanceof Monster)
                 ((Monster) e).performAI(character);
