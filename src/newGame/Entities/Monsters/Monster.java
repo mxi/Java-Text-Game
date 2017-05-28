@@ -10,8 +10,8 @@ public abstract class Monster extends Entity {
 
     private Shield shield;
     private Melee meleeWeapon;
-    private boolean FindMode;
-    private int Persistance;
+    public boolean FindMode;
+    public int Persistance;
     private int FindCount;
 
     public Monster() {
@@ -63,56 +63,91 @@ public abstract class Monster extends Entity {
         }
     }
 
-    public void findAI(Character character,  char direction /*Direction trying to go*/, int Persistance) {
+    /*
+    up 0 (0,-1)  goes right
+    right 1 (1,0) goes down
+    down 2 (0,1) goes left
+    left 3 (-1,0) goes up
+     */
+    
+    public void findAI(Character character,  int direction /*Direction trying to go*/, int Persistance) {
         if(playerInSight(character)) {
             FindMode = false;
             performAI(character);
+            FindCount = 0;
         }
         else {
-            if(direction == 'L') {
-                if(MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == 'X') {
-                    move(1,0);
-                    direction = 'D';
+            if(direction == 3) { //left
+                if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == '.') {
+                    // go left
+                    move(-1,0);
+                    direction = 2;
+                }
+                else if(MainGame.csi.peekChar(previewMove(0,-1).x, previewMove(0,-1).y) == 'X')
+                {
+                    // try up
+                    direction = 0;
                 }
                 else {
                     // go up
                     move(0, -1);
                 }
             }
-            else if(direction == 'R') {
-                if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == 'X') {
-                    move(-1,0);
-                    direction = 'U';
+            else if(direction == 1) { //right
+                if(MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == '.') {
+                    // go right
+                    move(1,0);
+                    direction = 0;
+                }
+                else if(MainGame.csi.peekChar(previewMove(0,1).x, previewMove(0,1).y) == 'X')
+                {
+                    // try down
+                    direction = 2;
                 }
                 else {
                     // go down
                     move(0, 1);
                 }
             }
-            else if(direction == 'U') {
-                if(MainGame.csi.peekChar(previewMove(0,-1).x, previewMove(0,-1).y) == 'X') {
+            else if(direction == 0) { //up
+                if(MainGame.csi.peekChar(previewMove(0,-1).x, previewMove(0,-1).y) == '.') {
+                    // go up
                     move(0,-1);
-                    direction = 'L';
+                    direction = 3;
+                }
+                else if(MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == 'X')
+                {
+                    // try right
+                    direction = 1;
                 }
                 else {
                     // go right
-                    move(-1, 0);
+                    move(1, 0);
                 }
             }
-            else if(direction == 'D') {
-                if(MainGame.csi.peekChar(previewMove(0,1).x, previewMove(0,1).y) == 'X') {
+            else if(direction == 2) { //down
+                if(MainGame.csi.peekChar(previewMove(0,1).x, previewMove(0,1).y) == '.') {
+                    // go down
                     move(0,1);
-                    direction = 'R';
+                    direction = 1;
+                }
+                else if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == 'X')
+                {
+                    // try left
+                    direction = 3;
                 }
                 else {
                     // go left
-                    move(1, 0);
+                    move(-1, 0);
                 }
             }
         }
 
         if(FindCount >= Persistance)
+        {
             FindMode = false;
+        	FindCount = 0;
+        }
         else
             FindCount++;
     }
@@ -120,7 +155,12 @@ public abstract class Monster extends Entity {
     public void chaseAI(Character c) {
         if(FindMode)
             return;
-
+        
+        if(MainGame.random.nextInt(10) == 0)
+        {
+        	FindMode = true;
+        }
+        
         int deltaX = getX() - c.getX();
         int deltaY = getY() - c.getY();
 

@@ -116,7 +116,10 @@ public class MainGame {
     private void runAI(Character c) {
         Entity.entities.forEach(entity -> {
             if(entity instanceof Monster)
-                ((Monster) entity).performAI(character);
+            	if(((Monster) entity).FindMode)
+            		((Monster) entity).findAI(character, random.nextInt(5), 10/*((Monster) entity).Persistance*/);
+            	else
+            		((Monster) entity).performAI(character);
         });
 
         // #region spawn monsters
