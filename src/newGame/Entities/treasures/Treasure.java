@@ -1,4 +1,4 @@
-package newGame.Entities.treasures;
+package newGame.Entities.Treasures;
 
 import newGame.Entities.Representable;
 
