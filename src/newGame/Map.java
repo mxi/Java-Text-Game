@@ -517,8 +517,13 @@ public class Map implements MapInterface {
     }
 
     @Override
-    public char getCharacter(Point p) {
-        return getCharacter((int) p.getX(), (int) p.getY());
+    public char getCharacter(IntPoint p) {
+        return getCharacter(p.getX(), p.getY());
+    }
+
+    @Override
+    public void setCharacter(char c, int color, int x, int y) {
+        MainGame.csi.print(x, y, java.lang.Character.toString(c), color);
     }
 
     @Override
@@ -529,6 +534,26 @@ public class Map implements MapInterface {
     @Override
     public int getMapHeight() {
         return DUNGEON_BOTTOM;
+    }
+
+    @Override
+    public int getMinX() {
+        return DUNGEON_LEFT_MAX + 1;
+    }
+
+    @Override
+    public int getMinY() {
+        return DUNGEON_TOP + 1;
+    }
+
+    @Override
+    public int getMaxX() {
+        return getMapWidth();
+    }
+
+    @Override
+    public int getMaxY() {
+        return getMapHeight();
     }
 
     @Override

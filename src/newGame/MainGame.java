@@ -3,8 +3,10 @@ package newGame;
 import newGame.Entities.Character;
 import newGame.Entities.CharacterType;
 import newGame.Entities.Entity;
+import newGame.Entities.Item;
 import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.Monster;
+import newGame.Entities.Weapons.LongSword;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
@@ -18,17 +20,16 @@ public class MainGame {
 
     private static Character character; // Character of the game.
 
-    private static int goblinSpawnChance = 5; // Rarity of a goblin spawning.
+    private static int goblinSpawnChance = 2; // Rarity of a goblin spawning.
 
     public static void main(String[] args) {
-    	new MainGame();
+        new MainGame();
     }
 
     private MainGame() {
         random = new Random(); // Creates a new instance of the Random object
         csi = new WSwingConsoleInterface(); // Creates a new instance of WSwingConsoleInterface.
         map = new Map();
-        csi.refresh();
 
         /**
          * Begin to initialize characters and other initial
@@ -37,32 +38,37 @@ public class MainGame {
          * Character initialization:
          * TODO: Add character initialization description.
          */
-    	
+
+        IntPoint prevPos = new IntPoint(1, 1);
+
         character = new Character("Justin Li", CharacterType.Wizard);
-        character.setMaxXY(69, 19);
+        character.setMinXY(map.getMinX(), map.getMinY());
+        character.setMaxXY(map.getMaxX(), map.getMaxY());
         character.setMaxHealth(20);
         character.setFloor(1);
         character.spawn('.');
 
+        LongSword ls = new LongSword();
+
+        character.setItemInHand(ls);
+
         Entity.entities.add(character);
-        csi.refresh();
 
         // Initializes the main loop to run the game:
         while(true) {
 
+            prevPos = character.getPosition();
             /**
              * Beginning portion of this loop will display all of the
              * entities/game objects on the window itself.
              */
-            // Print Entities:
+
+            // Print Entities & Character information:
             Entity.entities.forEach(e ->
                     csi.print(e.getX(), e.getY(), e.getRepresentation(), e.getColor()));
+            character.displayInformation();
 
-            // Print Information:
-            csi.print(1, 20, "Health: " + character.getHealth() + "/" + character.getMaxHealth() + " ");
-            csi.print(1, 21, "Level: " + character.getLevel() + "/" + character.getMaxLevel());
-            csi.print(1, 22, "Type: " + character.getTypeAsString());
-
+            csi.refresh();
             /**
              * The next part takes in keyboard input and
              * then processes it using the switch/case statement.
@@ -71,55 +77,59 @@ public class MainGame {
 
             Keys:
             switch(key) {
-                case 0:
+                case 86: // Up
                     character.move(0, -1);
                     break;
-                case 1:
+                case 82: // Down
                     character.move(0, 1);
                     break;
-                case 2:
+                case 64: // Left
                     character.move(-1, 0);
                     break;
-                case 3:
+                case 67: // Right
                     character.move(1, 0);
                     break;
-                case 10:
+                case 40: // Space bar
+                    Item inHand = character.getItemInHand();
+                    if(inHand != null)
+                        inHand.useItem();
+
+                    break;
+                case 10: // Enter
                     // Creates a new map interface/object when the
-                    // player presses the space bar on a stair character.
+                    // player presses the enter on a stair character.
                     if(character.getPrevCharOfMap() == '/') {
-                        csi.cls();
                         Entity.entities.removeIf(e -> !(e instanceof Character));
+                        csi.cls();
                         map = new Map();
-                        csi.refresh();
                         character.spawn('/');
                     }
                     break;
-                case 64:
-                    break;
                 default:
-                	//System.out.println(key);
                     break;
             }
 
             /**
-             * Runs the AI of the game. This will move
-             * monsters, spawn monsters, update the character,
-             * and spawn more items.
+             * Runs the AI of the game (if the character changed position).
+             * This will move monsters, spawn monsters, update the
+             * character, and spawn more items.
              */
             runAI(character);
-
-            //csi.cls();
-            csi.refresh();
         }
     }
 
     private void runAI(Character c) {
-        Entity.entities.forEach(entity -> {
-            if(entity instanceof Monster)
-                ((Monster) entity).performAI(character);
-        });
+        for(Entity e : Entity.entities) {
+            if(e instanceof Monster)
+                ((Monster) e).performAI(character);
 
-        // #region spawn monsters
+            if(e.isDead()) {
+                Entity.entities.remove(e);
+                map.setCharacter(e.getPrevCharOfMap(), e.getX(), e.getY(), e.getPrevColorOfMap());
+            }
+        }
+
+        // Spawning monsters
         if(random.nextInt(101) <= goblinSpawnChance) {
             Goblin goblin = new Goblin();
             goblin.setRepresentation('G');

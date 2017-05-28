@@ -10,13 +10,10 @@ public abstract class Item extends Representable {
     private int maxDurability = 25;
     private int timesUsed = 0;
 
-    private int housingSpace;
-
     public Item() {
         setName("Item");
         setRepresentation('I');
         setColor(ConsoleSystemInterface.LIGHT_GRAY);
-        housingSpace = 1;
     }
 
     public Entity getOwner() {
@@ -27,18 +24,16 @@ public abstract class Item extends Representable {
         owner = o;
     }
 
-    public int getHousingSpace() {
-        return housingSpace;
-    }
-
-    public void setHousingSpace(int newHousingSpace) {
-        housingSpace = newHousingSpace < 1 ? 1 : newHousingSpace;
-    }
-
     public void useItem() {
         if(!isBroken()) {
             onItemUse();
             setTimesUsed(getTimesUsed() + DamageOnUse);
+        }
+        else {
+            if(getOwner() instanceof Character) {
+                Character c = (Character) getOwner();
+                c.setItemInHand(null);
+            }
         }
     }
 

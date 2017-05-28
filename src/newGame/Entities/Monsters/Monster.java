@@ -32,6 +32,7 @@ public abstract class Monster extends Entity {
 
     public void setMeleeWeapon(Melee meleeWeapon) {
         this.meleeWeapon = meleeWeapon;
+        meleeWeapon.setOwner(this);
     }
 
     public boolean hasRangeWeapon() {

@@ -3,8 +3,9 @@ package newGame.Entities.Weapons;
 import newGame.Entities.Character;
 import newGame.Entities.Entity;
 import newGame.Entities.Item;
+import newGame.IntPoint;
 
-import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Melee extends Item {
@@ -62,6 +63,8 @@ public abstract class Melee extends Item {
     public void attack(Entity entity) {
         onAttack(entity);
 
+        System.out.println("Attacked: " + entity.getName() + " : " + entity.getHealth());
+
         if(entity.isDead() && getOwner() instanceof Character)
             rewardForKill((Character) getOwner());
         else if(getOwner() instanceof Character)
@@ -72,16 +75,44 @@ public abstract class Melee extends Item {
         if(!isSwingWeapon())
             return;
 
-        entities.forEach(entity -> {
-            Point ownerPosition = getOwner().getPosition();
-            if(entity.distance(ownerPosition.getX(), ownerPosition.getY()) <= swingRange)
-                attack(entity);
-        });
+        for(Entity e : entities) {
+            IntPoint ownerPosition = getOwner().getPosition();
+            if(e.distance(ownerPosition.getX(), ownerPosition.getY()) <= swingRange)
+                attack(e);
+        }
     }
 
     @Override
     protected void onItemUse() {
-        // Nothing...
+        Character character = null;
+        for(Entity e : Entity.entities)
+            if(e instanceof Character)
+                character = (Character) e;
+
+        if(character == null) {
+            return;
+            // *** Program should never enter this block ***
+        }
+
+        if(isSwingWeapon()) {
+            List<Entity> withinRange = new ArrayList<>();
+            for(Entity e : Entity.entities)
+                if(e.distance(character) <= swingRange && !(e instanceof Character))
+                    withinRange.add(e);
+
+            swing(withinRange);
+        }
+        else {
+            Entity firstWithinRange = null;
+            for(Entity e : Entity.entities) {
+                if(e.distance(character) <= 1 && !(e instanceof Character)) {
+                    firstWithinRange = e;
+                    break;
+                }
+            }
+
+            attack(firstWithinRange);
+        }
     }
 
     protected abstract void onAttack(Entity entity);
