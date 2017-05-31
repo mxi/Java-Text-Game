@@ -605,13 +605,13 @@ public class Map implements MapInterface{
 	@Override
 	public int getMapWidth() {
 		// TODO Auto-generated method stub
-		return 0;
+		return DUNGEON_RIGHT_MAX - DUNGEON_LEFT_MAX;
 	}
 
 	@Override
 	public int getMapHeight() {
 		// TODO Auto-generated method stub
-		return 0;
+		return DUNGEON_BOTTOM - DUNGEON_TOP;
 	}
 
 	@Override

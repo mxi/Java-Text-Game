@@ -202,12 +202,12 @@ public abstract class Entity extends Representable {
     }
 
     public void move(int deltaX, int deltaY) {
-        IntPoint p = previewMove(deltaX, deltaY);
-        for(Entity e : entities) {
+    	
+    	IntPoint p = previewMove(deltaX, deltaY);
+    	for(Entity e : entities) {
             if(e.intersects(p) || MainGame.csi.peekChar(p.getX(), p.getY()) == 'X')
                 return;
         }
-
         MainGame.csi.print(getX(), getY(), prevCharOfMap, prevColorOfMap);
         setPosition(p.getX(), p.getY());
         setPrevCharOfMap(MainGame.csi.peekChar(getX(), getY()));
@@ -217,7 +217,7 @@ public abstract class Entity extends Representable {
     public IntPoint previewMove(int deltaX, int deltaY) {
         int newX = getX() + deltaX;
         int newY = getY() + deltaY;
-
+/*
         if(newX < getMinX())
             newX = getMinX();
         else if(newX > getMaxX())
@@ -227,7 +227,7 @@ public abstract class Entity extends Representable {
             newY = getMinY();
         else if(newY > getMaxY())
             newY = getMaxY();
-
+*/
         return new IntPoint(newX, newY);
     }
 
