@@ -6,6 +6,7 @@ import newGame.Entities.Entity;
 import newGame.Entities.Item;
 import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.Monster;
+import newGame.Entities.Weapons.Fist;
 import newGame.Entities.Weapons.LongSword;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
@@ -38,9 +39,6 @@ public class MainGame {
          * Character initialization:
          * TODO: Add character initialization description.
          */
-
-        IntPoint prevPos = new IntPoint(1, 1);
-
         character = new Character("Justin Li", CharacterType.Wizard);
         character.setMinXY(map.getMinX(), map.getMinY());
         character.setMaxXY(map.getMaxX(), map.getMaxY());
@@ -56,8 +54,6 @@ public class MainGame {
 
         // Initializes the main loop to run the game:
         while(true) {
-
-            prevPos = character.getPosition();
             /**
              * Beginning portion of this loop will display all of the
              * entities/game objects on the window itself.
@@ -66,6 +62,7 @@ public class MainGame {
             // Print Entities & Character information:
             Entity.entities.forEach(e ->
                     csi.print(e.getX(), e.getY(), e.getRepresentation(), e.getColor()));
+
             character.displayInformation();
 
             csi.refresh();
@@ -77,29 +74,30 @@ public class MainGame {
 
             Keys:
             switch(key) {
-                case 86: // Up
+                case 86: // Up ('W')
                     character.move(0, -1);
                     break;
-                case 82: // Down
+                case 82: // Down ('S')
                     character.move(0, 1);
                     break;
-                case 64: // Left
+                case 64: // Left ('A')
                     character.move(-1, 0);
                     break;
-                case 67: // Right
+                case 67: // Right ('D')
                     character.move(1, 0);
                     break;
-                case 40: // Space bar
+                case 40: // Use item ('Space bar')
                     Item inHand = character.getItemInHand();
                     if(inHand != null)
                         inHand.useItem();
-
+                    else
+                        character.setItemInHand(new Fist());
                     break;
-                case 10: // Enter
+                case 10: // Use item on floor ('Enter')
                     // Creates a new map interface/object when the
                     // player presses the enter on a stair character.
                     if(character.getPrevCharOfMap() == '/') {
-                        Entity.entities.removeIf(e -> !(e instanceof Character));
+                        Entity.entities.removeIf(e -> e instanceof Monster);
                         csi.cls();
                         map = new Map();
                         character.spawn('/');
@@ -119,7 +117,7 @@ public class MainGame {
     }
 
     private void runAI(Character c) {
-/*
+        /*
         Entity.entities.forEach(entity -> {
             if(entity instanceof Monster)
             	if(((Monster) entity).FindMode)
@@ -128,19 +126,11 @@ public class MainGame {
             		((Monster) entity).performAI(character);
         });
         */
-        // WARNING:
-        // CONCURRENCY FAILURE HERE:
-        //
-        // (will try to fix it soon)
-        for(Entity e : Entity.entities) {
-            if(e instanceof Monster)
-                ((Monster) e).performAI(character);
 
-            if(e.isDead()) {
-                Entity.entities.remove(e);
-                map.setCharacter(e.getPrevCharOfMap(), e.getX(), e.getY(), e.getPrevColorOfMap());
-            }
-        }
+        Entity.entities.forEach(entity -> {
+            if(entity instanceof Monster)
+                ((Monster) entity).performAI(c);
+        });
 
         // Spawning monsters
         if(random.nextInt(101) <= goblinSpawnChance) {

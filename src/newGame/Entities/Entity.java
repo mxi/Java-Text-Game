@@ -202,22 +202,23 @@ public abstract class Entity extends Representable {
     }
 
     public void move(int deltaX, int deltaY) {
-    	
     	IntPoint p = previewMove(deltaX, deltaY);
-    	for(Entity e : entities) {
+    	for(Entity e : entities)
             if(e.intersects(p) || MainGame.csi.peekChar(p.getX(), p.getY()) == 'X')
                 return;
+
+        if(!p.isEquivalentTo(getPosition())) {
+            MainGame.csi.print(getX(), getY(), prevCharOfMap, prevColorOfMap);
+            setPosition(p.getX(), p.getY());
+            setPrevCharOfMap(MainGame.csi.peekChar(getX(), getY()));
+            setPrevColorOfMap(MainGame.csi.peekColor(getX(), getY()));
         }
-        MainGame.csi.print(getX(), getY(), prevCharOfMap, prevColorOfMap);
-        setPosition(p.getX(), p.getY());
-        setPrevCharOfMap(MainGame.csi.peekChar(getX(), getY()));
-        setPrevColorOfMap(MainGame.csi.peekColor(getX(), getY()));
     }
 
     public IntPoint previewMove(int deltaX, int deltaY) {
         int newX = getX() + deltaX;
         int newY = getY() + deltaY;
-/*
+        /*
         if(newX < getMinX())
             newX = getMinX();
         else if(newX > getMaxX())
@@ -227,7 +228,7 @@ public abstract class Entity extends Representable {
             newY = getMinY();
         else if(newY > getMaxY())
             newY = getMaxY();
-*/
+        */
         return new IntPoint(newX, newY);
     }
 
@@ -293,6 +294,11 @@ public abstract class Entity extends Representable {
 
     public boolean isDead() {
         return this.health <= 0;
+    }
+
+    public void removeAndClean() {
+        entities.removeIf(entity -> entity.equals(this));
+        MainGame.map.setCharacter(prevCharOfMap, getX(), getY(), prevColorOfMap);
     }
 
     public void upgrade(int leftOver) {

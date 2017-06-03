@@ -1,6 +1,5 @@
 package newGame;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +39,6 @@ public class Map implements MapInterface{
 		public int TileX;
 		public int TileY;
 	}
-
-
 
 	public Map()
 	{
@@ -141,14 +138,6 @@ public class Map implements MapInterface{
 			hallways.add(h);
 			h.direction = 'R';
 			Room r = rooms.get(x);
-
-
-			
-			
-			
-			
-			
-			
 
 			int HallwayX = MainGame.random.nextInt(r.Xsize - 2) + r.X + 1;
 			List<Integer> HXlist;
@@ -334,24 +323,7 @@ public class Map implements MapInterface{
 				//MainGame.csi.refresh();
 				//MainGame.csi.waitKey(10);
 			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+
 			int HallwayHeight = MainGame.random.nextInt(r.Ysize - 2) + r.Y + 1;
 			
 			List<Integer> HHlist;
@@ -533,14 +505,6 @@ public class Map implements MapInterface{
 			}
 		}
 
-		
-		
-		
-		
-		
-		
-		
-		
 		//cover up edges
 		for(int x = 0; x < DUNGEON_RIGHT_MAX + 1; x++)
 		{
@@ -570,11 +534,7 @@ public class Map implements MapInterface{
 				MainGame.csi.print(DUNGEON_RIGHT_MAX, y, "X");
 			}
 		}
-		
-		
-		
-		
-		
+
 		//Printing the Stairs
 		for(;;)
 		{
@@ -592,73 +552,57 @@ public class Map implements MapInterface{
 
 	@Override
 	public char getCharacter(int x, int y) {
-		// TODO Auto-generated method stub
 		return MainGame.csi.peekChar(x, y);
 	}
 
 	@Override
-	public char getCharacter(Point p) {
-		// TODO Auto-generated method stub
-		return 0;
+	public char getCharacter(IntPoint p) {
+		return MainGame.csi.peekChar(p.getX(), p.getY());
 	}
 
 	@Override
 	public int getMapWidth() {
-		// TODO Auto-generated method stub
 		return DUNGEON_RIGHT_MAX - DUNGEON_LEFT_MAX;
 	}
 
 	@Override
 	public int getMapHeight() {
-		// TODO Auto-generated method stub
 		return DUNGEON_BOTTOM - DUNGEON_TOP;
 	}
 
 	@Override
 	public List<Hallway> getHallways() {
-		// TODO Auto-generated method stub
-		return null;
+		return hallways;
 	}
 
 	@Override
 	public List<Room> getRooms() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public char getCharacter(IntPoint p) {
-		// TODO Auto-generated method stub
-		return 0;
+		return rooms;
 	}
 
 	@Override
 	public void setCharacter(char c, int x, int y, int color) {
-		// TODO Auto-generated method stub
-		
+		try { MainGame.csi.print(x, y, c, color); }
+		catch(ArrayIndexOutOfBoundsException e) { }
 	}
 
 	@Override
 	public int getMinX() {
-		// TODO Auto-generated method stub
-		return 0;
+		return DUNGEON_LEFT_MAX;
 	}
 
 	@Override
 	public int getMinY() {
-		// TODO Auto-generated method stub
-		return 0;
+		return DUNGEON_TOP;
 	}
 
 	@Override
 	public int getMaxX() {
-		// TODO Auto-generated method stub
-		return 0;
+		return getMinX() + DUNGEON_RIGHT_MAX;
 	}
 
 	@Override
 	public int getMaxY() {
-		// TODO Auto-generated method stub
-		return 0;
+		return getMinY() + DUNGEON_BOTTOM;
 	}
 }

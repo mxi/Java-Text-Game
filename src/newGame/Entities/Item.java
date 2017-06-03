@@ -28,9 +28,8 @@ public abstract class Item extends Representable {
         if(!isBroken()) {
             onItemUse();
             setTimesUsed(getTimesUsed() + DamageOnUse);
-        }
-        else {
-            if(getOwner() instanceof Character) {
+
+            if(isBroken()) {
                 Character c = (Character) getOwner();
                 c.setItemInHand(null);
             }

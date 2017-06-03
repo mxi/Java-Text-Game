@@ -60,7 +60,8 @@ public class Character extends Entity {
 
     public void setItemInHand(Item item) {
         inHand = item;
-        inHand.setOwner(this);
+        if(item != null)
+            item.setOwner(this);
     }
 
     public CharacterType getType() {
@@ -127,8 +128,14 @@ public class Character extends Entity {
         int baseY = MainGame.map.getMapHeight() + 1;
 
         // Clears everything:
-        for(int i = 0; i < 4; i++)
-            MainGame.csi.print(1, baseY + i, "\t\t\t\t\t\t\t\t");
+        final int width = 100;
+        final int height = MainGame.map.getMapHeight() + 5;
+        for(int x = 1; x <= width; x++) {
+            for (int y = MainGame.map.getMapHeight() + 1; y <= height; y++) {
+                MainGame.map.setCharacter(' ', x, y, ConsoleSystemInterface.BLACK);
+                MainGame.csi.refresh();
+            }
+        }
 
         // Prints everything again:
         MainGame.csi.print(1, baseY, getName() + " - " + getTypeAsString() + " - Level "  + getLevel());
