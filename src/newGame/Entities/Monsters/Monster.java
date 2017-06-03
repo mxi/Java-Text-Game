@@ -142,7 +142,12 @@ public abstract class Monster extends Entity {
     public void chaseAI(Character c) {
         if(findMode)
             return;
-        
+
+        if(!inSight(c)) {
+            findMode = true;
+            return;
+        }
+
         int deltaX = getX() - c.getX();
         int deltaY = getY() - c.getY();
 
