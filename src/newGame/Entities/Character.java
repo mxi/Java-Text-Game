@@ -1,5 +1,6 @@
 package newGame.Entities;
 
+import newGame.Entities.Weapons.Fist;
 import newGame.MainGame;
 import sz.csi.ConsoleSystemInterface;
 
@@ -26,6 +27,7 @@ public class Character extends Entity {
         setName(iname);
         setRepresentation('@');
         setColor(ConsoleSystemInterface.CYAN);
+        setItemInHand(new Fist());
         strength = itype.calcNewStrength(100);
         dexterity = itype.calcNewDexterity(100);
         wisdom = itype.calcNewWisdom(100);

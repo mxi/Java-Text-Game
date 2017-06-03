@@ -44,6 +44,44 @@ public abstract class Entity extends Representable {
         y = 0;
     }
 
+    public boolean inSight(Entity entity) {
+        IntPoint p1 = entity.getPosition();
+        IntPoint p2 = getPosition();
+
+        if(p1.getY() == p2.getY()) {
+            int commonX = p1.getX();
+            int maxY = Math.max(p1.getY(), p2.getY());
+            int minY = Math.min(p1.getY(), p2.getY());
+            for(int y = minY + 1; y < maxY; y++)
+                if(MainGame.map.getCharacter(commonX, y) == 'X')
+                    return false;
+
+            return true;
+        }
+        else if(p1.getX() == p2.getX()) {
+            int commonY = p1.getY();
+            int maxX = Math.max(p1.getX(), p2.getX());
+            int minX = Math.min(p1.getX(), p2.getX());
+            for(int x = minX + 1; x < maxX; x++)
+                if(MainGame.map.getCharacter(x, commonY) == 'X')
+                    return false;
+
+            return true;
+        }
+        else {
+            double slope = (p1.getY() - p2.getY()) / (p1.getX() - p2.getX());
+            double intercept = p1.getY() - (p1.getX() * slope);
+
+            int maxX = Math.max(p1.getX(), p2.getX());
+            int minX = Math.min(p1.getX(), p2.getX());
+            for(int x = minX; x < maxX; x++)
+                if(MainGame.map.getCharacter(x, (int) Math.ceil(x * slope + intercept)) == 'X')
+                    return false;
+
+            return true;
+        }
+    }
+
     public void spawn(char onWhatTile) {
         while(true) {
             int x = MainGame.random.nextInt(MainGame.map.getMapWidth()) + 1;
