@@ -10,9 +10,11 @@ public abstract class Monster extends Entity {
 
     private Shield shield;
     private Melee meleeWeapon;
-    public boolean FindMode;
-    public int Persistance;
-    private int FindCount;
+
+    protected int findPersistence = 15;
+    protected int findCount = 0;
+    protected int findDirection = 0;
+    protected boolean findMode = false;
 
     public Monster() {
 
@@ -36,7 +38,6 @@ public abstract class Monster extends Entity {
     }
 
     public boolean hasRangeWeapon() {
-        // TODO: Work on range weapons some time
         return false;
     }
 
@@ -49,21 +50,6 @@ public abstract class Monster extends Entity {
         onMonsterUpgrade();
     }
 
-    public boolean playerInSight(Character character) {
-        for(int x = getX();; x++) {
-            if(MainGame.csi.peekChar(x, getY()) == '@')
-                return true;
-            else if(MainGame.csi.peekChar(x, getY()) == 'X')
-                break;
-        }
-        for(int y = getY();; y++) {
-            if(MainGame.csi.peekChar(getX(), y) == '@')
-                return true;
-            else if(MainGame.csi.peekChar(getX(), y) == 'X')
-                return false;
-        }
-    }
-
     /*
     up 0 (0,-1)  goes right
     right 1 (1,0) goes down
@@ -71,71 +57,71 @@ public abstract class Monster extends Entity {
     left 3 (-1,0) goes up
      */
     
-    public void findAI(Character character,  int direction /*Direction trying to go*/, int Persistance) {
-        if(playerInSight(character)) {
-            FindMode = false;
+    public void findAI(Character character) {
+        if(inSight(character)) {
+            findMode = false;
+            findCount = 0;
             performAI(character);
-            FindCount = 0;
         }
         else {
-            if(direction == 3) { //left
+            if(findDirection == 3) { //left
                 if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == '.') {
                     // go left
                     move(-1,0);
-                    direction = 2;
+                    findDirection = 2;
                 }
                 else if(MainGame.csi.peekChar(previewMove(0,-1).x, previewMove(0,-1).y) == 'X')
                 {
                     // try up
-                    direction = 0;
+                    findDirection = 0;
                 }
                 else {
                     // go up
                     move(0, -1);
                 }
             }
-            else if(direction == 1) { //right
+            else if(findDirection == 1) { //right
                 if(MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == '.') {
                     // go right
                     move(1,0);
-                    direction = 0;
+                    findDirection = 0;
                 }
                 else if(MainGame.csi.peekChar(previewMove(0,1).x, previewMove(0,1).y) == 'X')
                 {
                     // try down
-                    direction = 2;
+                    findDirection = 2;
                 }
                 else {
                     // go down
                     move(0, 1);
                 }
             }
-            else if(direction == 0) { //up
+            else if(findDirection == 0) { //up
                 if(MainGame.csi.peekChar(previewMove(0,-1).x, previewMove(0,-1).y) == '.') {
                     // go up
                     move(0,-1);
-                    direction = 3;
+                    findDirection = 3;
                 }
                 else if(MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == 'X')
                 {
                     // try right
-                    direction = 1;
+                    findDirection = 1;
                 }
                 else {
                     // go right
                     move(1, 0);
                 }
             }
-            else if(direction == 2) { //down
+            else if(findDirection == 2) { //down
                 if(MainGame.csi.peekChar(previewMove(0,1).x, previewMove(0,1).y) == '.') {
                     // go down
                     move(0,1);
-                    direction = 1;
+                    findDirection = 1;
                 }
                 else if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == 'X')
                 {
                     // try left
-                    direction = 3;
+                    findDirection = 3;
                 }
                 else {
                     // go left
@@ -144,23 +130,18 @@ public abstract class Monster extends Entity {
             }
         }
 
-        if(FindCount >= Persistance)
+        if(findCount >= findPersistence)
         {
-            FindMode = false;
-        	FindCount = 0;
+            findMode = false;
+        	findCount = 0;
         }
         else
-            FindCount++;
+            findCount++;
     }
 
     public void chaseAI(Character c) {
-        if(FindMode)
+        if(findMode)
             return;
-        
-        if(MainGame.random.nextInt(10) == 0)
-        {
-        	FindMode = true;
-        }
         
         int deltaX = getX() - c.getX();
         int deltaY = getY() - c.getY();

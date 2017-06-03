@@ -46,10 +46,6 @@ public class MainGame {
         character.setFloor(1);
         character.spawn('.');
 
-        LongSword ls = new LongSword();
-
-        character.setItemInHand(ls);
-
         Entity.entities.add(character);
 
         // Initializes the main loop to run the game:

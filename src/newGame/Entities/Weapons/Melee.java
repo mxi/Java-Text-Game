@@ -10,6 +10,8 @@ import java.util.List;
 
 public abstract class Melee extends Item {
 
+    private static final double singleRange = Math.sqrt(2);
+
     private int damageOutput;
     private int swingRange;
 
@@ -72,6 +74,15 @@ public abstract class Melee extends Item {
         }
     }
 
+    public void attackClosest(List<Entity> entities) {
+        for(Entity e : entities) {
+            if(e.distance(getOwner()) <= singleRange) {
+                attack(e);
+                break;
+            }
+        }
+    }
+
     public void swing(List<Entity> entities) {
         if(!isSwingWeapon() || entities.size() == 0) {
             setTimesUsed(getTimesUsed() - 1);
@@ -87,32 +98,19 @@ public abstract class Melee extends Item {
 
     @Override
     protected void onItemUse() {
-        List<Entity> otherEntities = new ArrayList<>(); // Entities excluding the player.
+        List<Entity> notPlayer = new ArrayList<>();
         Character character = null;
         for(Entity e : Entity.entities) {
             if(e instanceof Character)
                 character = (Character) e;
             else
-                otherEntities.add(e);
+                notPlayer.add(e);
         }
 
-        if(isSwingWeapon()) {
-            swing(otherEntities);
-        }
-        else if(otherEntities.size() > 0) {
-            Entity nearest = null;
-            for(Entity e : Entity.entities) {
-                if(e.distance(character) <= 1.9) {
-                    nearest = e;
-                    return;
-                }
-            }
-
-            if(nearest != null)
-                attack(nearest);
-            else
-                setTimesUsed(getTimesUsed() - 1);
-        }
+        if(isSwingWeapon())
+            swing(notPlayer);
+        else
+            attackClosest(notPlayer);
     }
 
     protected abstract void onAttack(Entity entity);

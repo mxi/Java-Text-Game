@@ -13,6 +13,7 @@ public class Goblin extends Monster {
 
     public Goblin() {
         setColor(ConsoleSystemInterface.GREEN);
+        setName("Goblin");
         setRepresentation('G');
 
         Knife goblinKnife = new Knife();
@@ -27,7 +28,9 @@ public class Goblin extends Monster {
 
     @Override
     public void performAI(Character character) {
-
-        chaseAI(character);
+        if(findMode)
+            findAI(character);
+        else
+            chaseAI(character);
     }
 }
