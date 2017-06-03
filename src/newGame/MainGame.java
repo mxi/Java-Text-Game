@@ -127,11 +127,14 @@ public class MainGame {
 
         Entity.entities.forEach(entity -> {
             if(entity instanceof Monster)
-                ((Monster) entity).performAI(c);
+            	if(((Monster) entity).FindMode)
+            		((Monster) entity).findAI(character, random.nextInt(5), 100);
+            	else
+            		((Monster) entity).chaseAI(character);//((Monster) entity).findAI(character, 0, 100);//performAI(c);
         });
 
         // Spawning monsters
-        if(random.nextInt(101) <= goblinSpawnChance) {
+        if(random.nextInt(1001) <= goblinSpawnChance) {
             Goblin goblin = new Goblin();
             goblin.setRepresentation('G');
             goblin.setColor(ConsoleSystemInterface.GREEN);

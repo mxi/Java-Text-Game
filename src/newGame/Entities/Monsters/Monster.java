@@ -56,6 +56,21 @@ public abstract class Monster extends Entity {
             else if(MainGame.csi.peekChar(x, getY()) == 'X')
                 break;
         }
+        for(int x = getX();; x--) {
+            if(MainGame.csi.peekChar(x, getY()) == '@')
+                return true;
+            else if(MainGame.csi.peekChar(x, getY()) == 'X')
+            {
+            	System.out.println(getX()-x);
+                break;
+            }
+        }
+        for(int y = getY();; y--) {
+            if(MainGame.csi.peekChar(getX(), y) == '@')
+                return true;
+            else if(MainGame.csi.peekChar(getX(), y) == 'X')
+                break;
+        }
         for(int y = getY();; y++) {
             if(MainGame.csi.peekChar(getX(), y) == '@')
                 return true;
@@ -72,10 +87,11 @@ public abstract class Monster extends Entity {
      */
     
     public void findAI(Character character,  int direction /*Direction trying to go*/, int Persistance) {
+        System.out.println(playerInSight(character) + "\n");
         if(playerInSight(character)) {
             FindMode = false;
-            performAI(character);
             FindCount = 0;
+            performAI(character);
         }
         else {
             if(direction == 3) { //left
@@ -84,7 +100,8 @@ public abstract class Monster extends Entity {
                     move(-1,0);
                     direction = 2;
                 }
-                else if(MainGame.csi.peekChar(previewMove(0,-1).x, previewMove(0,-1).y) == 'X')
+                else if(MainGame.csi.peekChar(previewMove(0,-1).x, previewMove(0,-1).y) == 'X' || 
+                		MainGame.csi.peekChar(previewMove(0,-1).x, previewMove(0,-1).y) == 'G')
                 {
                     // try up
                     direction = 0;
@@ -100,7 +117,8 @@ public abstract class Monster extends Entity {
                     move(1,0);
                     direction = 0;
                 }
-                else if(MainGame.csi.peekChar(previewMove(0,1).x, previewMove(0,1).y) == 'X')
+                else if(MainGame.csi.peekChar(previewMove(0,1).x, previewMove(0,1).y) == 'X' || 
+                		MainGame.csi.peekChar(previewMove(0,1).x, previewMove(0,1).y) == 'G')
                 {
                     // try down
                     direction = 2;
@@ -116,7 +134,8 @@ public abstract class Monster extends Entity {
                     move(0,-1);
                     direction = 3;
                 }
-                else if(MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == 'X')
+                else if(MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == 'X' || 
+                		MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == 'G')
                 {
                     // try right
                     direction = 1;
@@ -132,7 +151,8 @@ public abstract class Monster extends Entity {
                     move(0,1);
                     direction = 1;
                 }
-                else if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == 'X')
+                else if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == 'X' || 
+                		MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == 'G')
                 {
                     // try left
                     direction = 3;
@@ -157,7 +177,7 @@ public abstract class Monster extends Entity {
         if(FindMode)
             return;
         
-        if(MainGame.random.nextInt(10) == 0)
+        if(!playerInSight(c))
         {
         	FindMode = true;
         }
