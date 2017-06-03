@@ -128,7 +128,7 @@ public class Character extends Entity {
         int baseY = MainGame.map.getMapHeight() + 1;
 
         // Clears everything:
-        final int width = 100;
+        final int width = 100 ;
         final int height = MainGame.map.getMapHeight() + 5;
         for(int x = 1; x <= width; x++) {
             for (int y = MainGame.map.getMapHeight() + 1; y <= height; y++) {
@@ -143,7 +143,7 @@ public class Character extends Entity {
         MainGame.csi.print(1, baseY + 3, "Shield: " + (getShield() == null ? "None" : getShield().Name));
 
         MainGame.csi.print(25, baseY + 2, "In Hand: " + "  " + (inHand == null
-                ? "Nothing" : inHand.getName() + "(" + inHand.getUsesLeft() +" / " + inHand.getMaxDurability() + ")"));
+                ? "Nothing" : inHand.getName() + " (" + inHand.getUsesLeft() +" / " + inHand.getMaxDurability() + ")"));
 
         if(inHand != null) {
             MainGame.csi.print(34, baseY + 2, inHand.getRepresentation(), inHand.getColor());

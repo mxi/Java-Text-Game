@@ -100,9 +100,19 @@ public abstract class Melee extends Item {
             swing(otherEntities);
         }
         else if(otherEntities.size() > 0) {
+            Entity nearest = null;
+            for(Entity e : Entity.entities) {
+                if(e.distance(character) <= 1.9) {
+                    nearest = e;
+                    return;
+                }
+            }
 
+            if(nearest != null)
+                attack(nearest);
+            else
+                setTimesUsed(getTimesUsed() - 1);
         }
-
     }
 
     protected abstract void onAttack(Entity entity);

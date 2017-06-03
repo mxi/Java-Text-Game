@@ -88,10 +88,8 @@ public class MainGame {
                     break;
                 case 40: // Use item ('Space bar')
                     Item inHand = character.getItemInHand();
-                    if(inHand != null)
-                        inHand.useItem();
-                    else
-                        character.setItemInHand(new Fist());
+                    inHand.useItem();
+
                     break;
                 case 10: // Use item on floor ('Enter')
                     // Creates a new map interface/object when the

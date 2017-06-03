@@ -20,7 +20,7 @@ public class Fist extends Melee {
     protected void onAttack(Entity entity) {
         entity.damage(getDamageOutput());
 
-        if(getTimesUsed() > getMaxDurability() - 1)
+        if(getUsesLeft() <= getMaxDurability() - 1)
             setTimesUsed(0);
     }
 

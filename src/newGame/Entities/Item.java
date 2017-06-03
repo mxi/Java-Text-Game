@@ -1,5 +1,6 @@
 package newGame.Entities;
 
+import newGame.Entities.Weapons.Fist;
 import sz.csi.ConsoleSystemInterface;
 
 public abstract class Item extends Representable {
@@ -29,9 +30,8 @@ public abstract class Item extends Representable {
             onItemUse();
             setTimesUsed(getTimesUsed() + DamageOnUse);
 
-            if(isBroken()) {
-                Character c = (Character) getOwner();
-                c.setItemInHand(null);
+            if(isBroken() && getOwner() instanceof Character) {
+                ((Character) getOwner()).setItemInHand(new Fist());
             }
         }
     }
