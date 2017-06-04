@@ -27,11 +27,17 @@ public class MainGame {
         if(csi != null) {
             for(int i = x; i <= x + width; i++) {
                 for(int j = y; j <= y + height; j++) {
-                    csi.print(i, j, ' ', ConsoleSystemInterface.BLACK);
+                    try { csi.print(i, j, ' ', ConsoleSystemInterface.BLACK); }
+                    catch(ArrayIndexOutOfBoundsException e) { }
                     csi.refresh();
                 }
             }
         }
+    }
+
+    public static void centerPrintHorizontal(int width, int y, String text, int color) {
+        int x = (width / 2) - (int) (Math.floor(text.length()) / 2);
+        csi.print(x, y, text, color);
     }
 
     public static Random random; // Random object
@@ -202,14 +208,12 @@ public class MainGame {
         csi.cls();
 
         String gameOver = "Game Over!";
-
-        int gameOverX = (map.getMapWidth() / 2) - (int) (Math.floor(gameOver.length()) / 2);
         int gameOverY = map.getMapHeight() / 2;
 
-        csi.print(gameOverX, gameOverY, gameOver, ConsoleSystemInterface.RED);
-        csi.print(gameOverX, gameOverY + 2, "[P] Play Again", ConsoleSystemInterface.WHITE);
-        csi.print(gameOverX, gameOverY + 3, "[L] Leaderboards", ConsoleSystemInterface.WHITE);
-        csi.print(gameOverX, gameOverY + 4, "[Q] Quit", ConsoleSystemInterface.WHITE);
+        centerPrintHorizontal(map.getMapWidth(), gameOverY, gameOver, ConsoleSystemInterface.RED);
+        centerPrintHorizontal(map.getMapWidth(), gameOverY + 3, "[P]Play Again", ConsoleSystemInterface.WHITE);
+        centerPrintHorizontal(map.getMapWidth(), gameOverY + 5, "[L]Leaderboards", ConsoleSystemInterface.WHITE);
+        centerPrintHorizontal(map.getMapWidth(), gameOverY + 7, "[Q]Quit", ConsoleSystemInterface.WHITE);
 
         // Game over screen:
         GameOverScreen:
@@ -217,23 +221,22 @@ public class MainGame {
             csi.refresh();
             int key = csi.inkey().code;
 
+            clearCsi(1, gameOverY + 10, 100, 30);
+
             switch(key) {
                 case 79: // 'P'
                     break GameOverScreen;
                 case 75: // 'L'
-                    break GameOverScreen;
+                    csi.print(1, map.getMapHeight() + 5, "Leaderboards are not a feature yet.");
+                    break;
                 case 80: // 'Q'
                     // TODO: Add saving logic later on.
                     playing = false;
-                    csi.print(1, map.getMapHeight(), "Saving...", ConsoleSystemInterface.WHITE);
+                    csi.print(1, map.getMapHeight() + 5, "Saving...", ConsoleSystemInterface.WHITE);
                     csi.refresh();
                     break GameOverScreen;
                 default:
-                    String invalidKey = "Invalid key pressed";
-                    int invalidX = (map.getMapWidth() / 2) - (int) (Math.floor(invalidKey.length()) / 2);
-                    int invalidY = gameOverY + 6;
-
-                    csi.print(invalidX, invalidY, invalidKey, ConsoleSystemInterface.WHITE);
+                    centerPrintHorizontal(map.getMapWidth(), gameOverY + 10, "Invalid key pressed", ConsoleSystemInterface.WHITE);
                     break;
             }
         }
