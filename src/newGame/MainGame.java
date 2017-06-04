@@ -55,8 +55,8 @@ public class MainGame {
     }
 
     private MainGame() {
-        setup();
         synchronized (this) {
+            setup();
             start();
             try { wait(); }
             catch(InterruptedException e) { e.printStackTrace(); }
