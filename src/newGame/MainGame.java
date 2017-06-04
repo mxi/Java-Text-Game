@@ -23,6 +23,17 @@ public class MainGame {
         requestedEnd = true;
     }
 
+    public static void clearCsi(int x, int y, int width, int height) {
+        if(csi != null) {
+            for(int i = x; i <= x + width; i++) {
+                for(int j = y; j <= y + height; j++) {
+                    csi.print(i, j, ' ', ConsoleSystemInterface.BLACK);
+                    csi.refresh();
+                }
+            }
+        }
+    }
+
     public static Random random; // Random object
     public static ConsoleSystemInterface csi; // Window (console interface)
     public static MapInterface map; // Map of the game.
@@ -52,6 +63,9 @@ public class MainGame {
 
         if(csi == null)
             csi = new WSwingConsoleInterface();
+
+        csi.cls();
+        csi.refresh();
 
         requestedEnd = false;
         map = new Map();

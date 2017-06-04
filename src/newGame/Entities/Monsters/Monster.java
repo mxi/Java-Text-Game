@@ -49,13 +49,43 @@ public abstract class Monster extends Entity {
         onMonsterUpgrade();
     }
 
+    public boolean playerInSight(Character character) {
+        for(int x = getX();; x++) {
+            if(MainGame.csi.peekChar(x, getY()) == '@')
+                return true;
+            else if(MainGame.csi.peekChar(x, getY()) == 'X')
+                break;
+        }
+        for(int x = getX();; x--) {
+            if(MainGame.csi.peekChar(x, getY()) == '@')
+                return true;
+            else if(MainGame.csi.peekChar(x, getY()) == 'X')
+            {
+            	System.out.println(getX()-x);
+                break;
+            }
+        }
+        for(int y = getY();; y--) {
+            if(MainGame.csi.peekChar(getX(), y) == '@')
+                return true;
+            else if(MainGame.csi.peekChar(getX(), y) == 'X')
+                break;
+        }
+        for(int y = getY();; y++) {
+            if(MainGame.csi.peekChar(getX(), y) == '@')
+                return true;
+            else if(MainGame.csi.peekChar(getX(), y) == 'X')
+                return false;
+        }
+    }
+
     /*
     up 0 (0,-1)  goes right
     right 1 (1,0) goes down
     down 2 (0,1) goes left
     left 3 (-1,0) goes up
      */
-    
+
     public void findAI(Character character) {
         if(findDirection == 3) { //left
             if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == '.') {
@@ -73,13 +103,31 @@ public abstract class Monster extends Entity {
                 move(0, -1);
             }
         }
+        else if(findDirection == 3) { //left
+            if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == '.') {
+                // go left
+                move(-1,0);
+                findDirection = 2;
+            }
+            else if(MainGame.csi.peekChar(previewMove(0,-1).x, previewMove(0,-1).y) == 'X' ||
+                    MainGame.csi.peekChar(previewMove(0,-1).x, previewMove(0,-1).y) == 'G')
+            {
+                // try up
+                findDirection = 0;
+            }
+            else {
+                // go up
+                move(0, -1);
+            }
+        }
         else if(findDirection == 1) { //right
             if(MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == '.') {
                 // go right
                 move(1,0);
                 findDirection = 0;
             }
-            else if(MainGame.csi.peekChar(previewMove(0,1).x, previewMove(0,1).y) == 'X')
+            else if(MainGame.csi.peekChar(previewMove(0,1).x, previewMove(0,1).y) == 'X' ||
+                    MainGame.csi.peekChar(previewMove(0,1).x, previewMove(0,1).y) == 'G')
             {
                 // try down
                 findDirection = 2;
@@ -95,7 +143,8 @@ public abstract class Monster extends Entity {
                 move(0,-1);
                 findDirection = 3;
             }
-            else if(MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == 'X')
+            else if(MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == 'X' ||
+                    MainGame.csi.peekChar(previewMove(1,0).x, previewMove(1,0).y) == 'G')
             {
                 // try right
                 findDirection = 1;
@@ -111,7 +160,8 @@ public abstract class Monster extends Entity {
                 move(0,1);
                 findDirection = 1;
             }
-            else if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == 'X')
+            else if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == 'X' ||
+                    MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == 'G')
             {
                 // try left
                 findDirection = 3;
@@ -123,7 +173,7 @@ public abstract class Monster extends Entity {
         }
 
         if(findCount >= findPersistence)
-        	findCount = 0;
+            findCount = 0;
         else
             findCount++;
     }

@@ -4,6 +4,7 @@ import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Weapons.Fist;
 import newGame.Entities.Weapons.Knife;
 import newGame.Entities.Weapons.Melee;
+import newGame.IntPoint;
 import newGame.MainGame;
 import sz.csi.ConsoleSystemInterface;
 
@@ -87,15 +88,7 @@ public class Character extends Entity {
     public void displayInformation() {
         int baseY = MainGame.map.getMapHeight() + 1;
 
-        // Clears everything:
-        final int width = 100 ;
-        final int height = MainGame.map.getMapHeight() + 5;
-        for(int x = 1; x <= width; x++) {
-            for (int y = MainGame.map.getMapHeight() + 1; y <= height; y++) {
-                MainGame.map.setCharacter(' ', x, y, ConsoleSystemInterface.BLACK);
-                MainGame.csi.refresh();
-            }
-        }
+        MainGame.clearCsi(1, baseY, 78, 4);
 
         // Prints everything again:
         MainGame.csi.print(1, baseY, getName() + " - " + getTypeAsString() + " - Level "  + getLevel());
