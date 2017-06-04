@@ -1,10 +1,12 @@
 package newGame;
 
+import newGame.Entities.Entity;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Map implements MapInterface{
-	
+public class Map implements MapInterface {
+
 	private final int DUNGEON_LEFT_MAX = 0; // old 10
 	private final int DUNGEON_TOP = 0; // old 3
 	private final int DUNGEON_RIGHT_MAX = 69; // old 79
@@ -12,6 +14,7 @@ public class Map implements MapInterface{
 	private int curX;
 	private int curY;
 
+	private List<Entity> entities = new ArrayList<>();
 	private List<Room> rooms;
 	private List<Hallway> hallways;
 	private List<Tile> tiles;
@@ -551,6 +554,17 @@ public class Map implements MapInterface{
 	}
 
 	@Override
+	public int getEntityCountOf(String name) {
+		int count = 0;
+		for(Entity e : entities) {
+			if(e.getName().equals(name))
+				count++;
+		}
+
+		return count;
+	}
+
+	@Override
 	public char getCharacter(int x, int y) {
 		return MainGame.csi.peekChar(x, y);
 	}
@@ -578,6 +592,11 @@ public class Map implements MapInterface{
 	@Override
 	public List<Room> getRooms() {
 		return rooms;
+	}
+
+	@Override
+	public List<Entity> getEntities() {
+		return entities;
 	}
 
 	@Override

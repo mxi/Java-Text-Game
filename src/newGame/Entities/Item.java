@@ -1,5 +1,6 @@
 package newGame.Entities;
 
+import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Weapons.Fist;
 import sz.csi.ConsoleSystemInterface;
 
@@ -21,6 +22,12 @@ public abstract class Item extends Representable {
         return owner;
     }
 
+    public InventoryStack<Item> toInventoryStack() {
+        InventoryStack<Item> invStack = new InventoryStack<>();
+        invStack.addNext(this);
+        return invStack;
+    }
+
     public void setOwner(Entity o) {
         owner = o;
     }
@@ -31,7 +38,7 @@ public abstract class Item extends Representable {
             setTimesUsed(getTimesUsed() + DamageOnUse);
 
             if(isBroken() && getOwner() instanceof Character) {
-                ((Character) getOwner()).setItemInHand(new Fist());
+                ((Character) getOwner()).setItemsInHand(new Fist().toInventoryStack());
             }
         }
     }

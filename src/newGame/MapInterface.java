@@ -1,10 +1,12 @@
 package newGame;
 
-import java.awt.*;
+import newGame.Entities.Entity;
+
 import java.util.List;
 
 public interface MapInterface {
 
+    int getEntityCountOf(String name);
     char getCharacter(int x, int y);
     char getCharacter(IntPoint p);
     void setCharacter(char c, int x, int y, int color);
@@ -17,4 +19,5 @@ public interface MapInterface {
 
     List<Map.Hallway> getHallways();
     List<Map.Room> getRooms();
+    List<Entity> getEntities();
 }

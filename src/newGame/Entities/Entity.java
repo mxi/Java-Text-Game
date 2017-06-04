@@ -9,8 +9,6 @@ import java.util.ArrayList;
 
 public abstract class Entity extends Representable {
 
-    public static List<Entity> entities = new ArrayList<>();
-
     private int maxLevel = 30;
     private int expUntilLevelUp = 1024;
     private int hpIncreaseOnUpgrade = 5;
@@ -92,15 +90,23 @@ public abstract class Entity extends Representable {
                 break;
             }
         }
+
+        if(!MainGame.map.getEntities().contains(this))
+            MainGame.map.getEntities().add(this);
     }
 
     public List<Entity> withinProxy(double range) {
         List<Entity> withinRange = new ArrayList<>();
-        for(Entity e : entities)
+        for(Entity e : MainGame.map.getEntities())
             if(distance(e) <= range)
                 withinRange.add(e);
 
         return withinRange;
+    }
+
+    public void adaptToMap() {
+        setMinXY(MainGame.map.getMinX(), MainGame.map.getMinY());
+        setMaxXY(MainGame.map.getMaxX(), MainGame.map.getMaxY());
     }
 
     public char getPrevCharOfMap() {
@@ -241,7 +247,7 @@ public abstract class Entity extends Representable {
 
     public void move(int deltaX, int deltaY) {
     	IntPoint p = previewMove(deltaX, deltaY);
-    	for(Entity e : entities)
+    	for(Entity e : MainGame.map.getEntities())
             if(e.intersects(p) || MainGame.csi.peekChar(p.getX(), p.getY()) == 'X')
                 return;
 
@@ -335,8 +341,17 @@ public abstract class Entity extends Representable {
     }
 
     public void removeAndClean() {
-        entities.removeIf(entity -> entity.equals(this));
-        MainGame.map.setCharacter(prevCharOfMap, getX(), getY(), prevColorOfMap);
+        if(this instanceof Character) {
+            MainGame.requestEnd();
+        }
+        else {
+            MainGame.map.getEntities().removeIf(entity -> entity.equals(this));
+            MainGame.map.setCharacter(prevCharOfMap, getX(), getY(), prevColorOfMap);
+
+            if(this instanceof Character) {
+                MainGame.requestEnd();
+            }
+        }
     }
 
     public void upgrade(int leftOver) {
