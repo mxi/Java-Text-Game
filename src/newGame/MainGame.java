@@ -24,7 +24,22 @@ public class MainGame {
     private static int goblinSpawnChance = 2; // Rarity of a goblin spawning.
 
     public static void main(String[] args) {
-        new MainGame();
+
+    	//new MainGame();
+        random = new Random(); // Creates a new instance of the Random object
+        csi = new WSwingConsoleInterface(); // Creates a new instance of WSwingConsoleInterface.
+    	for(int i = 3;; i++)
+    	{
+    		random.setSeed(i);
+    		System.out.println(i);
+    		new Map();
+    		csi.refresh();
+    		csi.waitKey(10);
+    		csi.cls();
+    	}
+    	
+    	
+    	//new MainGame();
     }
 
     private MainGame() {
@@ -123,14 +138,14 @@ public class MainGame {
 
         Entity.entities.forEach(entity -> {
             if(entity instanceof Monster)
-            	if(((Monster) entity).FindMode)
-            		((Monster) entity).findAI(character, random.nextInt(5), 100);
+            	if(((Monster) entity).findMode)
+            		((Monster) entity).findAI(character);
             	else
             		((Monster) entity).chaseAI(character);//((Monster) entity).findAI(character, 0, 100);//performAI(c);
         });
 
         // Spawning monsters
-        if(random.nextInt(1001) <= goblinSpawnChance) {
+        if(random.nextInt(101) <= goblinSpawnChance) {
             Goblin goblin = new Goblin();
             goblin.setRepresentation('G');
             goblin.setColor(ConsoleSystemInterface.GREEN);

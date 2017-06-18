@@ -131,7 +131,190 @@ public class Map implements MapInterface{
 			}
 		}
 		
-		//Hallway build
+		HallwayBuild2(rooms);
+		//HallwayBuild(limit);
+		EndBuild();
+		
+	}
+	
+	void HallwayBuild2(List<Map.Room> rooms)
+	{
+		for(int CountDown = 0; CountDown < rooms.size(); CountDown++)
+		{
+			Room r = rooms.get(CountDown);
+			int LocationOnWall;
+			
+			
+			//up
+			loop: for(LocationOnWall = r.X + 1; LocationOnWall < r.X + r.Xsize - 1; LocationOnWall++)
+			{
+				if(TestHall(0, -1, LocationOnWall, r.Y))
+				{
+					break loop;
+				}
+			}
+			MainGame.csi.refresh();
+			MainGame.csi.waitKey(10);
+
+			//down
+			loop: for(LocationOnWall = r.X + 1; LocationOnWall < r.X + r.Xsize - 1; LocationOnWall++)
+			{
+				if(TestHall(0, 1, LocationOnWall, r.Y + r.Ysize - 1))
+				{
+					break loop;
+				}
+			}
+			MainGame.csi.refresh();
+			MainGame.csi.waitKey(10);
+			
+			//left
+			loop: for(LocationOnWall = r.Y + 1; LocationOnWall < r.Y + r.Ysize - 1; LocationOnWall++)
+			{
+				if(TestHall(-1, 0, r.X , LocationOnWall))
+				{
+					break loop;
+				}
+			}
+			MainGame.csi.refresh();
+			MainGame.csi.waitKey(10);
+			
+			//right
+			loop: for(LocationOnWall = r.Y + 1; LocationOnWall < r.Y + r.Ysize - 1; LocationOnWall++)
+			{
+				if(TestHall(1, 0, r.X + r.Xsize - 1, LocationOnWall))
+				{
+					break loop;
+				}
+			}
+			MainGame.csi.refresh();
+			MainGame.csi.waitKey(10);
+		}
+	}
+	
+	boolean TestHall(int dx, int dy, int StartX, int StartY)
+	{
+		if(dx == 1)
+		{
+			int length;
+			for(length = 1; MainGame.csi.peekChar(StartX + length, StartY) != 'X' && StartX + length < DUNGEON_RIGHT_MAX; length++)
+			{}
+			if((MainGame.csi.peekChar(StartX + length, StartY + 1) == 'X' &&
+					MainGame.csi.peekChar(StartX + length, StartY - 1) == 'X') ||
+					StartX + length == DUNGEON_RIGHT_MAX)
+			{
+				BuildHall(dx, dy, StartX, StartY, length);
+				return true;
+			}else{
+				return false;
+			}
+		}
+		else if(dx == -1)
+		{
+			int length;
+			for(length = 1; MainGame.csi.peekChar(StartX - length, StartY) != 'X' && StartX - length > DUNGEON_LEFT_MAX; length++)
+			{}
+			if((MainGame.csi.peekChar(StartX - length, StartY + 1) == 'X' &&
+					MainGame.csi.peekChar(StartX - length, StartY - 1) == 'X') ||
+					StartX - length == DUNGEON_LEFT_MAX)
+			{
+				BuildHall(dx, dy, StartX, StartY, length);
+				return true;
+			}else{
+				return false;
+			}
+		}
+		else if(dy == 1)
+		{
+			int length;
+			for(length = 1; MainGame.csi.peekChar(StartX, StartY + length) != 'X' && StartY + length < DUNGEON_BOTTOM; length++)
+			{}
+			if((MainGame.csi.peekChar(StartX + 1, StartY + length) == 'X' &&
+					MainGame.csi.peekChar(StartX - 1, StartY + length) == 'X') ||
+					StartY + length == DUNGEON_BOTTOM)
+			{
+				BuildHall(dx, dy, StartX, StartY, length);
+				return true;
+			}else{
+				return false;
+			}
+		}
+		else if(dy == -1)
+		{
+			int length;
+			for(length = 1; MainGame.csi.peekChar(StartX, StartY - length) != 'X' && StartY - length < DUNGEON_TOP; length++)
+			{}
+			if((MainGame.csi.peekChar(StartX + 1, StartY - length) == 'X' &&
+					MainGame.csi.peekChar(StartX - 1, StartY - length) == 'X') ||
+					StartY - length == DUNGEON_TOP)
+			{
+				BuildHall(dx, dy, StartX, StartY, length);
+				return true;
+			}else{
+				return false;
+			}
+		}
+		return false;
+	}
+	
+	void BuildHall(int dx, int dy, int StartX, int StartY, int length)
+	{
+		if(dx == 1)
+		{
+			for(int count = 0; count <= length; count++)
+			{
+				MainGame.csi.print(StartX + count, StartY - 1, "X");
+				MainGame.csi.print(StartX + count, StartY, ".");
+				MainGame.csi.print(StartX + count, StartY + 1, "X");
+			}if(StartX + length ==  DUNGEON_RIGHT_MAX)
+			{
+				MainGame.csi.print(StartX + length, StartY - 1, "X");
+				MainGame.csi.print(StartX + length, StartY, "X");
+				MainGame.csi.print(StartX + length, StartY + 1, "X");
+			}
+		}else if(dx == -1)
+		{
+			for(int count = 0; count <= length; count++)
+			{
+				MainGame.csi.print(StartX - count, StartY - 1, "X");
+				MainGame.csi.print(StartX - count, StartY, ".");
+				MainGame.csi.print(StartX - count, StartY + 1, "X");
+			}if(StartX - length ==  DUNGEON_LEFT_MAX)
+			{
+				MainGame.csi.print(StartX - length, StartY - 1, "X");
+				MainGame.csi.print(StartX - length, StartY, "X");
+				MainGame.csi.print(StartX - length, StartY + 1, "X");
+			}
+		}else if(dy == 1)
+		{
+			for(int count = 0; count <= length; count++)
+			{
+				MainGame.csi.print(StartX - 1, StartY + count, "X");
+				MainGame.csi.print(StartX, StartY + count, ".");
+				MainGame.csi.print(StartX + 1, StartY + count, "X");
+			}if(StartY + length == DUNGEON_BOTTOM)
+			{
+				MainGame.csi.print(StartX - 1, StartY + length, "X");
+				MainGame.csi.print(StartX, StartY + length, "X");
+				MainGame.csi.print(StartX + 1, StartY + length, "X");
+			}
+		}else if(dy == -1)
+		{
+			for(int count = 0; count <= length; count++)
+			{
+				MainGame.csi.print(StartX - 1, StartY - count, "X");
+				MainGame.csi.print(StartX, StartY - count, ".");
+				MainGame.csi.print(StartX + 1, StartY - count, "X");
+			}if(StartY - length == DUNGEON_TOP)
+			{
+				MainGame.csi.print(StartX - 1, StartY - length, "X");
+				MainGame.csi.print(StartX, StartY - length, "X");
+				MainGame.csi.print(StartX + 1, StartY - length, "X");
+			}
+		}
+	}
+	
+	void HallwayBuild(int limit)
+	{
 		build: for(int x = 0; x < limit; x++)
 		{
 			Hallway h = new Hallway();
@@ -504,8 +687,10 @@ public class Map implements MapInterface{
 				//MainGame.csi.waitKey(10);
 			}
 		}
+	}
 
-		//cover up edges
+	void EndBuild()
+	{
 		for(int x = 0; x < DUNGEON_RIGHT_MAX + 1; x++)
 		{
 			if(MainGame.csi.peekChar(x, DUNGEON_TOP) == '.')
@@ -550,6 +735,8 @@ public class Map implements MapInterface{
 		}
 	}
 
+	
+	
 	@Override
 	public char getCharacter(int x, int y) {
 		return MainGame.csi.peekChar(x, y);
