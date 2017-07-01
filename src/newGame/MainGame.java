@@ -48,10 +48,26 @@ public class MainGame {
     private static Character character; // Character of the game.
 
     public static void main(String[] args) {
+    	//new MainGame();
+        random = new Random(); // Creates a new instance of the Random object
+        csi = new WSwingConsoleInterface(); // Creates a new instance of WSwingConsoleInterface.
+    	
+        /*for(int i = 7;; i++)
+    	{
+    		random.setSeed(i);
+    		System.out.println(i);
+    		new Map();
+    		csi.refresh();
+    		csi.waitKey(10);
+    		csi.cls();
+    	}*/
+    	
+    	
+    	//new MainGame();
         while(playing) {
             new MainGame();
         }
-
+        
         //System.exit(0);
     }
 
@@ -187,11 +203,13 @@ public class MainGame {
             		((Monster) entity).performAI(character);
         });
         */
-
-        for(Entity e : map.getEntities()) {
-            if(e instanceof Monster)
-                ((Monster) e).performAI(c);
-        }
+        map.getEntities().forEach(entity -> {
+            if(entity instanceof Monster)
+            	if(((Monster) entity).findMode)
+            		((Monster) entity).findAI(character);
+            	else
+            		((Monster) entity).chaseAI(character);//((Monster) entity).findAI(character, 0, 100);//performAI(c);
+        });
 
         // Spawning monsters
         if(random.nextInt(101) <= Goblin.SPAWN_CHANCE && map.getEntityCountOf(Goblin.NAME) < Goblin.LIMIT) {
