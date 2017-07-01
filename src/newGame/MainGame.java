@@ -9,6 +9,7 @@ import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.Monster;
 import newGame.Entities.Weapons.LongSword;
 import newGame.Entities.Weapons.Melee;
+import newGame.Mapping.MapBuffer;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
@@ -51,7 +52,15 @@ public class MainGame {
             new MainGame();
         }
 
-        System.exit(0);
+        ConsoleSystemInterface csi = new WSwingConsoleInterface();
+
+        MapBuffer buffer = new MapBuffer(79, 24);
+
+        MapRoom room = new MapRoom(2, 4, 6, 5);
+        buffer.set(room);
+        buffer.printAndRefresh(csi);
+
+        //System.exit(0);
     }
 
     private MainGame() {

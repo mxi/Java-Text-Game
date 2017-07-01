@@ -585,16 +585,6 @@ public class Map implements MapInterface {
 	}
 
 	@Override
-	public List<Hallway> getHallways() {
-		return hallways;
-	}
-
-	@Override
-	public List<Room> getRooms() {
-		return rooms;
-	}
-
-	@Override
 	public List<Entity> getEntities() {
 		return entities;
 	}
