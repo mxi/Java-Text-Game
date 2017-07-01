@@ -67,7 +67,7 @@ public class MainGame {
         while(playing) {
             new MainGame();
         }
-        
+
         //System.exit(0);
     }
 
