@@ -4,6 +4,7 @@ import newGame.Entities.Item;
 import newGame.MainGame;
 import sz.csi.ConsoleSystemInterface;
 
+import java.util.Arrays;
 import java.util.Stack;
 
 public class InventoryStack<T extends Item> {
@@ -15,6 +16,10 @@ public class InventoryStack<T extends Item> {
         items = new Stack<>();
         name = "InvStack";
         limit = 1;
+    }
+
+    public int getSize() {
+        return items.size();
     }
 
     public Item getItem() {
@@ -79,20 +84,7 @@ public class InventoryStack<T extends Item> {
             addNext(stack.getNext());
     }
 
-    public void addAll(T... items) {
-        for(T item : items)
-            addNext(item);
-    }
-
-    public void print(int x, int y) {
-        if(items.size() > 0) {
-            Item sample = items.get(0);
-            MainGame.csi.print(x, y, sample.getName(), sample.getColor());
-            MainGame.csi.print(x, y + 1, Integer.toString(getAmount()), ConsoleSystemInterface.GREEN);
-        }
-        else {
-            MainGame.map.setCharacter('*', x, y, ConsoleSystemInterface.GRAY);
-            MainGame.csi.print(x, y + 1, "0", ConsoleSystemInterface.RED);
-        }
+    public void addAll(T... itemList) {
+        items.addAll(Arrays.asList(itemList));
     }
 }

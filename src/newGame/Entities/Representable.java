@@ -10,6 +10,11 @@ public class Representable {
 
     }
 
+    public Representable(char represent, int colour) {
+        representation = represent;
+        color = colour;
+    }
+
     public String getName() {
         return name;
     }

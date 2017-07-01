@@ -2,9 +2,7 @@ package newGame.Entities;
 
 import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Weapons.Fist;
-import newGame.Entities.Weapons.Knife;
 import newGame.Entities.Weapons.Melee;
-import newGame.IntPoint;
 import newGame.MainGame;
 import sz.csi.ConsoleSystemInterface;
 
@@ -115,7 +113,13 @@ public class Character extends Entity {
 
         for(int i = 0; i < inventory.size(); i++) {
             int x = 36 + (7 * i);
-            getStack(i).print(x, baseY + 2);
+            InventoryStack<?> itemStack = getStack(i);
+            if(itemStack == null) {
+                MainGame.csi.print(x, baseY + 2, "0", ConsoleSystemInterface.RED);
+            }
+            else {
+                MainGame.csi.print(x, baseY + 2, Integer.toString(itemStack.getSize()), ConsoleSystemInterface.WHITE);
+            }
             MainGame.csi.print(x, baseY + 4, "[" + INV_CALLER[i] + "]", ConsoleSystemInterface.WHITE);
         }
     }
