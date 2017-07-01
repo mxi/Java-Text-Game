@@ -278,27 +278,27 @@ public class Map implements MapInterface {
 		{
 			for(int count = 0; count <= length; count++)
 			{
-				buffer.setTile();//MainGame.csi.print(StartX + count, StartY - 1, "X");
-				MainGame.csi.print(StartX + count, StartY, ".");
-				MainGame.csi.print(StartX + count, StartY + 1, "X");
+				buffer.setTile(Tile.WALL, StartX + count, StartY - 1);//MainGame.csi.print(StartX + count, StartY - 1, "X");
+				buffer.setTile(Tile.SPACE, StartX + count, StartY);//MainGame.csi.print(StartX + count, StartY, ".");
+				buffer.setTile(Tile.WALL, StartX + count, StartY + 1);//MainGame.csi.print(StartX + count, StartY + 1, "X");
 			}if(StartX + length ==  DUNGEON_RIGHT_MAX)
 			{
-				MainGame.csi.print(StartX + length, StartY - 1, "X");
-				MainGame.csi.print(StartX + length, StartY, "X");
-				MainGame.csi.print(StartX + length, StartY + 1, "X");
+				buffer.setTile(Tile.WALL, StartX + length, StartY - 1);//MainGame.csi.print(StartX + length, StartY - 1, "X");
+				buffer.setTile(Tile.WALL, StartX + length, StartY);//MainGame.csi.print(StartX + length, StartY, "X");
+				buffer.setTile(Tile.WALL, StartX + length, StartY + 1);//MainGame.csi.print(StartX + length, StartY + 1, "X");
 			}
 		}else if(dx == -1)
 		{
 			for(int count = 0; count <= length; count++)
 			{
-				MainGame.csi.print(StartX - count, StartY - 1, "X");
-				MainGame.csi.print(StartX - count, StartY, ".");
-				MainGame.csi.print(StartX - count, StartY + 1, "X");
+				buffer.setTile(Tile.WALL, StartX - count, StartY - 1);//MainGame.csi.print(StartX - count, StartY - 1, "X");
+				buffer.setTile(Tile.SPACE, StartX - count, StartY);//MainGame.csi.print(StartX - count, StartY, ".");
+				buffer.setTile(Tile.WALL, StartX - count, StartY + 1);//MainGame.csi.print(StartX - count, StartY + 1, "X");
 			}if(StartX - length ==  DUNGEON_LEFT_MAX + 1)
 			{
-				MainGame.csi.print(StartX - length, StartY - 1, "X");
-				MainGame.csi.print(StartX - length, StartY, "X");
-				MainGame.csi.print(StartX - length, StartY + 1, "X");
+				buffer.setTile(Tile.WALL, StartX - length, StartY - 1);//MainGame.csi.print(StartX - length, StartY - 1, "X");
+				buffer.setTile(Tile.WALL, StartX - length, StartY);//MainGame.csi.print(StartX - length, StartY, "X");
+				buffer.setTile(Tile.WALL, StartX - length, StartY + 1);//MainGame.csi.print(StartX - length, StartY + 1, "X");
 			}
 		}else if(dy == 1)
 		{
@@ -711,21 +711,21 @@ public class Map implements MapInterface {
 		{
 			if(MainGame.csi.peekChar(x, DUNGEON_TOP) == '.')
 			{
-				MainGame.csi.print(x, DUNGEON_TOP, "X");
+				buffer.setTile(Tile.WALL, x, DUNGEON_TOP);//MainGame.csi.print(x, DUNGEON_TOP, "X");
 			}
 		}
 		for(int x = 0; x < DUNGEON_RIGHT_MAX + 1; x++)
 		{
 			if(MainGame.csi.peekChar(x, DUNGEON_BOTTOM) == '.')
 			{
-				MainGame.csi.print(x, DUNGEON_BOTTOM, "X");
+				buffer.setTile(Tile.WALL, x, DUNGEON_BOTTOM);//MainGame.csi.print(x, DUNGEON_BOTTOM, "X");
 			}
 		}
 		for(int y = 0; y < DUNGEON_BOTTOM + 1; y++)
 		{
 			if(MainGame.csi.peekChar(0, y) == '.')
 			{
-				MainGame.csi.print(0, y, "X");
+				buffer.setTile(Tile.WALL, 0, y);//MainGame.csi.print(0, y, "X");
 			}
 		}
 		for(int y = 0; y < DUNGEON_BOTTOM + 1; y++)
@@ -746,7 +746,7 @@ public class Map implements MapInterface {
 			{
 				continue;
 			}
-			MainGame.csi.print(StairX , StairY, "/");
+			buffer.setTile(Tile.STAIR, StairX, StairY);//MainGame.csi.print(StairX , StairY, "/");
 			break;
 		}
 	}
