@@ -1,6 +1,10 @@
 package newGame.Entities;
 
+import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Weapons.Fist;
+import newGame.Entities.Weapons.Knife;
+import newGame.Entities.Weapons.Melee;
+import newGame.IntPoint;
 import newGame.MainGame;
 import sz.csi.ConsoleSystemInterface;
 
@@ -9,61 +13,56 @@ import java.util.List;
 
 public class Character extends Entity {
 
-    private final int MAX_INVENTORY_SPACE = 60;
-    private final int MIN_INVENTORY_SPACE = 5;
+    private final int MAX_INVENTORY_STACKS = 3;
+    private final char[] INV_CALLER = { 'E', 'R', 'T' };
 
     private CharacterType type;
     private Shield shield;
-    private int strength;
-    private int dexterity;
-    private int wisdom;
-    private int intelligence;
-    private int charisma;
 
-    private List<InventoryStack<? extends Representable>> inventory = new ArrayList<>();
-    private Item inHand = null;
+    private List<InventoryStack<? extends Item>> inventory = new ArrayList<>();
+    private InventoryStack<Item> inHand;
 
     public Character(String iname, CharacterType itype) {
         setName(iname);
         setRepresentation('@');
-        setColor(ConsoleSystemInterface.CYAN);
-        setItemInHand(new Fist());
-        strength = itype.calcNewStrength(100);
-        dexterity = itype.calcNewDexterity(100);
-        wisdom = itype.calcNewWisdom(100);
-        intelligence = itype.calcNewIntelligence(100);
-        charisma = itype.calcNewCharisma(100);
+        setColor(ConsoleSystemInterface.YELLOW);
+        setItemsInHand(new Fist().toInventoryStack());
         type = itype;
+
+        for(int i = 0; i < MAX_INVENTORY_STACKS; i++)
+            addStack(new InventoryStack<>());
     }
 
-    public List<InventoryStack<? extends Representable>> getInventory() {
-        return inventory;
-    }
-
-    public void setInventory(List<InventoryStack<? extends Representable>> newInventory) {
-        inventory = newInventory;
-    }
-
-    public void addStackToInventory(InventoryStack<? extends Representable> stack) {
-        inventory.add(stack);
-    }
-
-    public void removeStackFromInventory(InventoryStack<? extends Representable> stack) {
-        inventory.remove(stack);
-    }
-
-    public void removeStackFromInventory(int index) {
-        inventory.remove(index);
-    }
-
-    public Item getItemInHand() {
+    public InventoryStack<Item> getItemsInHand() {
         return inHand;
     }
 
-    public void setItemInHand(Item item) {
-        inHand = item;
-        if(item != null)
-            item.setOwner(this);
+    public void setItemsInHand(InventoryStack<Item> newItem) {
+        inHand = newItem;
+        if(inHand != null && inHand.isLoneItem())
+            inHand.getItem().setOwner(this);
+    }
+
+    public InventoryStack<? extends Item> getStack(int index) {
+        return inventory.get(index);
+    }
+
+    public void setStack(InventoryStack<? extends Item> stack, int index) {
+        if(index >= MAX_INVENTORY_STACKS)
+            return;
+
+        inventory.set(index, stack);
+    }
+
+    public void addStack(InventoryStack<? extends Item> stack) {
+        if(inventory.size() >= MAX_INVENTORY_STACKS)
+            return;
+
+        inventory.add(stack);
+    }
+
+    public void removeStack(int index) {
+        inventory.remove(index);
     }
 
     public CharacterType getType() {
@@ -82,46 +81,6 @@ public class Character extends Entity {
         this.shield = shield;
     }
 
-    public int getStrength() {
-        return this.strength;
-    }
-
-    public void setStrength(int strength) {
-        this.strength = strength;
-    }
-
-    public int getDexterity() {
-        return dexterity;
-    }
-
-    public void setDexterity(int dexterity) {
-        this.dexterity = dexterity;
-    }
-
-    public int getWisdom() {
-        return wisdom;
-    }
-
-    public void setWisdom(int wisdom) {
-        this.wisdom = wisdom;
-    }
-
-    public int getIntelligence() {
-        return intelligence;
-    }
-
-    public void setIntelligence(int intelligence) {
-        this.intelligence = intelligence;
-    }
-
-    public int getCharisma() {
-        return charisma;
-    }
-
-    public void setCharisma(int charisma) {
-        this.charisma = charisma;
-    }
-
     public String getTypeAsString() {
         return type.Type;
     }
@@ -129,39 +88,35 @@ public class Character extends Entity {
     public void displayInformation() {
         int baseY = MainGame.map.getMapHeight() + 1;
 
-        // Clears everything:
-        final int width = 100 ;
-        final int height = MainGame.map.getMapHeight() + 5;
-        for(int x = 1; x <= width; x++) {
-            for (int y = MainGame.map.getMapHeight() + 1; y <= height; y++) {
-                MainGame.map.setCharacter(' ', x, y, ConsoleSystemInterface.BLACK);
-                MainGame.csi.refresh();
-            }
-        }
+        MainGame.clearCsi(1, baseY, 78, 4);
 
         // Prints everything again:
         MainGame.csi.print(1, baseY, getName() + " - " + getTypeAsString() + " - Level "  + getLevel());
-        MainGame.csi.print(1, baseY + 2, "Health: " + getHealth() + "/" + getMaxHealth());
-        MainGame.csi.print(1, baseY + 3, "Shield: " + (getShield() == null ? "None" : getShield().Name));
+        MainGame.csi.print(1, baseY + 1, "Health: " + getHealth() + "/" + getMaxHealth());
+        MainGame.csi.print(1, baseY + 2, "Shield: " + (getShield() == null ? "None" : getShield().Name));
 
-        MainGame.csi.print(25, baseY + 2, "In Hand: " + "  " + (inHand == null
-                ? "Nothing" : inHand.getName() + " (" + inHand.getUsesLeft() +" / " + inHand.getMaxDurability() + ")"));
+        MainGame.csi.print(25, baseY + 1, "In Hand: "); // +11
+        MainGame.csi.print(25, baseY + 2, "Inventory: "); // +11
 
-        if(inHand != null) {
-            MainGame.csi.print(34, baseY + 2, inHand.getRepresentation(), inHand.getColor());
+        if(inHand != null && inHand.isLoneItem() && inHand.getItem() instanceof Melee) {
+            Item handled = inHand.getItem();
+            MainGame.csi.print(36, baseY + 1, handled.getRepresentation(), handled.getColor());
+            MainGame.csi.print(38, baseY + 1, handled.getName() + " | Durability (" + handled.getUsesLeft() +
+                    "/" + handled.getMaxDurability() + ")");
+        }
+        else if(inHand != null) {
+            Item sampled = inHand.sampleItem();
+            MainGame.csi.print(36, baseY + 1, sampled.getRepresentation(), sampled.getColor());
+            MainGame.csi.print(38, baseY + 1, sampled.getName() + " | Count (" + inHand.getAmount() + ")");
         }
         else {
-            MainGame.csi.print(34, baseY + 2, "N", ConsoleSystemInterface.WHITE);
+            MainGame.csi.print(36, baseY + 1, "N Nothing", ConsoleSystemInterface.WHITE);
         }
 
-        MainGame.csi.print(25, baseY + 3, "Inventory: "); // +11
-        if(inventory.size() == 0) {
-            MainGame.csi.print(36, baseY + 3, "Empty", ConsoleSystemInterface.GRAY);
-        }
-        else {
-            for (InventoryStack<? extends Representable> stacks : inventory) {
-
-            }
+        for(int i = 0; i < inventory.size(); i++) {
+            int x = 36 + (7 * i);
+            getStack(i).print(x, baseY + 2);
+            MainGame.csi.print(x, baseY + 4, "[" + INV_CALLER[i] + "]", ConsoleSystemInterface.WHITE);
         }
     }
 

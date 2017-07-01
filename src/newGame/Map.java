@@ -1,10 +1,12 @@
 package newGame;
 
+import newGame.Entities.Entity;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Map implements MapInterface{
-	
+public class Map implements MapInterface {
+
 	private final int DUNGEON_LEFT_MAX = 0; // old 10
 	private final int DUNGEON_TOP = 0; // old 3
 	private final int DUNGEON_RIGHT_MAX = 69; // old 79
@@ -12,6 +14,7 @@ public class Map implements MapInterface{
 	private int curX;
 	private int curY;
 
+	private List<Entity> entities = new ArrayList<>();
 	private List<Room> rooms;
 	private List<Hallway> hallways;
 	private List<Tile> tiles;
@@ -131,6 +134,7 @@ public class Map implements MapInterface{
 			}
 		}
 		
+		//HallwayBuild2(rooms);
 		HallwayBuild2(rooms);
 		//HallwayBuild(limit);
 		EndBuild();
@@ -143,17 +147,29 @@ public class Map implements MapInterface{
 		{
 			Room r = rooms.get(CountDown);
 			int LocationOnWall;
-			
-			
-			//up
-			loop: for(LocationOnWall = r.X + 1; LocationOnWall < r.X + r.Xsize - 1; LocationOnWall++)
+
+			//right
+			loop: for(LocationOnWall = r.Y + 1; LocationOnWall < r.Y + r.Ysize - 1; LocationOnWall++)
 			{
-				if(TestHall(0, -1, LocationOnWall, r.Y))
+				if(TestHall(1, 0, r.X + r.Xsize - 1, LocationOnWall))
 				{
 					break loop;
 				}
 			}
 			MainGame.csi.refresh();
+			System.out.println(" right :  " + CountDown);
+			MainGame.csi.waitKey(10);
+
+			//left
+			loop: for(LocationOnWall = r.Y + 1; LocationOnWall < r.Y + r.Ysize - 1; LocationOnWall++)
+			{
+				if(TestHall(-1, 0, r.X , LocationOnWall))
+				{
+					break loop;
+				}
+			}
+			MainGame.csi.refresh();
+			System.out.println(" left :  " + CountDown);
 			MainGame.csi.waitKey(10);
 
 			//down
@@ -165,28 +181,19 @@ public class Map implements MapInterface{
 				}
 			}
 			MainGame.csi.refresh();
+			System.out.println(" down :  " + CountDown);
 			MainGame.csi.waitKey(10);
 			
-			//left
-			loop: for(LocationOnWall = r.Y + 1; LocationOnWall < r.Y + r.Ysize - 1; LocationOnWall++)
+			//up
+			loop: for(LocationOnWall = r.X + 1; LocationOnWall < r.X + r.Xsize - 1; LocationOnWall++)
 			{
-				if(TestHall(-1, 0, r.X , LocationOnWall))
+				if(TestHall(0, -1, LocationOnWall, r.Y))
 				{
 					break loop;
 				}
 			}
 			MainGame.csi.refresh();
-			MainGame.csi.waitKey(10);
-			
-			//right
-			loop: for(LocationOnWall = r.Y + 1; LocationOnWall < r.Y + r.Ysize - 1; LocationOnWall++)
-			{
-				if(TestHall(1, 0, r.X + r.Xsize - 1, LocationOnWall))
-				{
-					break loop;
-				}
-			}
-			MainGame.csi.refresh();
+			System.out.println(" up :  " + CountDown);
 			MainGame.csi.waitKey(10);
 		}
 	}
@@ -196,11 +203,13 @@ public class Map implements MapInterface{
 		if(dx == 1)
 		{
 			int length;
-			for(length = 1; MainGame.csi.peekChar(StartX + length, StartY) != 'X' && StartX + length < DUNGEON_RIGHT_MAX; length++)
+			for(length = 1; MainGame.csi.peekChar(StartX + length, StartY) != 'X'
+					&& MainGame.csi.peekChar(StartX + length, StartY + 1) != 'X'
+					&& MainGame.csi.peekChar(StartX + length, StartY - 1) != 'X'		
+					&& StartX + length < DUNGEON_RIGHT_MAX; length++)
 			{}
-			if((MainGame.csi.peekChar(StartX + length, StartY + 1) == 'X' &&
-					MainGame.csi.peekChar(StartX + length, StartY - 1) == 'X') ||
-					StartX + length == DUNGEON_RIGHT_MAX)
+			if(MainGame.csi.peekChar(StartX + length + 1, StartY) == '.'
+					)//|| StartX + length == DUNGEON_RIGHT_MAX)
 			{
 				BuildHall(dx, dy, StartX, StartY, length);
 				return true;
@@ -211,14 +220,21 @@ public class Map implements MapInterface{
 		else if(dx == -1)
 		{
 			int length;
-			for(length = 1; MainGame.csi.peekChar(StartX - length, StartY) != 'X' && StartX - length > DUNGEON_LEFT_MAX; length++)
-			{}
-			if((MainGame.csi.peekChar(StartX - length, StartY + 1) == 'X' &&
-					MainGame.csi.peekChar(StartX - length, StartY - 1) == 'X') ||
-					StartX - length == DUNGEON_LEFT_MAX)
+			for(length = 1; MainGame.csi.peekChar(StartX - length, StartY) != 'X'
+					&& MainGame.csi.peekChar(StartX - length, StartY + 1) != 'X'
+					&& MainGame.csi.peekChar(StartX - length, StartY - 1) != 'X'
+					&& StartX - length > DUNGEON_LEFT_MAX + 1; length++)
+			{}//System.out.println(length);
+			if(StartX - length > DUNGEON_LEFT_MAX)
 			{
-				BuildHall(dx, dy, StartX, StartY, length);
-				return true;
+				if(MainGame.csi.peekChar(StartX - length - 1, StartY) == '.'
+						)//|| StartX - length == DUNGEON_LEFT_MAX + 1)
+				{
+					BuildHall(dx, dy, StartX, StartY, length);
+					return true;
+				}else{
+					return false;
+				}
 			}else{
 				return false;
 			}
@@ -226,11 +242,13 @@ public class Map implements MapInterface{
 		else if(dy == 1)
 		{
 			int length;
-			for(length = 1; MainGame.csi.peekChar(StartX, StartY + length) != 'X' && StartY + length < DUNGEON_BOTTOM; length++)
+			for(length = 1; MainGame.csi.peekChar(StartX, StartY + length) != 'X'
+					&& MainGame.csi.peekChar(StartX - 1, StartY + length) != 'X'
+					&& MainGame.csi.peekChar(StartX + 1, StartY + length) != 'X'
+					&& StartY + length < DUNGEON_BOTTOM; length++)
 			{}
-			if((MainGame.csi.peekChar(StartX + 1, StartY + length) == 'X' &&
-					MainGame.csi.peekChar(StartX - 1, StartY + length) == 'X') ||
-					StartY + length == DUNGEON_BOTTOM)
+			if(MainGame.csi.peekChar(StartX, StartY + length + 1) == '.'
+					)//|| StartY + length == DUNGEON_BOTTOM)
 			{
 				BuildHall(dx, dy, StartX, StartY, length);
 				return true;
@@ -241,14 +259,21 @@ public class Map implements MapInterface{
 		else if(dy == -1)
 		{
 			int length;
-			for(length = 1; MainGame.csi.peekChar(StartX, StartY - length) != 'X' && StartY - length < DUNGEON_TOP; length++)
+			for(length = 1; MainGame.csi.peekChar(StartX, StartY - length) != 'X'
+					&& MainGame.csi.peekChar(StartX, StartY - length) != 'X'
+					&& MainGame.csi.peekChar(StartX, StartY - length) != 'X'
+					&& StartY - length > DUNGEON_TOP + 1; length++)
 			{}
-			if((MainGame.csi.peekChar(StartX + 1, StartY - length) == 'X' &&
-					MainGame.csi.peekChar(StartX - 1, StartY - length) == 'X') ||
-					StartY - length == DUNGEON_TOP)
+			if(StartY - length < DUNGEON_TOP)
 			{
-				BuildHall(dx, dy, StartX, StartY, length);
-				return true;
+				if(MainGame.csi.peekChar(StartX, StartY - length - 1) == '.'
+						)//|| StartY - length == DUNGEON_TOP + 1)
+				{
+					BuildHall(dx, dy, StartX, StartY, length);
+					return true;
+				}else{
+					return false;
+				}
 			}else{
 				return false;
 			}
@@ -278,7 +303,7 @@ public class Map implements MapInterface{
 				MainGame.csi.print(StartX - count, StartY - 1, "X");
 				MainGame.csi.print(StartX - count, StartY, ".");
 				MainGame.csi.print(StartX - count, StartY + 1, "X");
-			}if(StartX - length ==  DUNGEON_LEFT_MAX)
+			}if(StartX - length ==  DUNGEON_LEFT_MAX + 1)
 			{
 				MainGame.csi.print(StartX - length, StartY - 1, "X");
 				MainGame.csi.print(StartX - length, StartY, "X");
@@ -304,7 +329,7 @@ public class Map implements MapInterface{
 				MainGame.csi.print(StartX - 1, StartY - count, "X");
 				MainGame.csi.print(StartX, StartY - count, ".");
 				MainGame.csi.print(StartX + 1, StartY - count, "X");
-			}if(StartY - length == DUNGEON_TOP)
+			}if(StartY - length == DUNGEON_TOP + 1)
 			{
 				MainGame.csi.print(StartX - 1, StartY - length, "X");
 				MainGame.csi.print(StartX, StartY - length, "X");
@@ -738,6 +763,17 @@ public class Map implements MapInterface{
 	
 	
 	@Override
+	public int getEntityCountOf(String name) {
+		int count = 0;
+		for(Entity e : entities) {
+			if(e.getName().equals(name))
+				count++;
+		}
+
+		return count;
+	}
+
+	@Override
 	public char getCharacter(int x, int y) {
 		return MainGame.csi.peekChar(x, y);
 	}
@@ -765,6 +801,11 @@ public class Map implements MapInterface{
 	@Override
 	public List<Room> getRooms() {
 		return rooms;
+	}
+
+	@Override
+	public List<Entity> getEntities() {
+		return entities;
 	}
 
 	@Override

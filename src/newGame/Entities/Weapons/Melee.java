@@ -4,6 +4,7 @@ import newGame.Entities.Character;
 import newGame.Entities.Entity;
 import newGame.Entities.Item;
 import newGame.IntPoint;
+import newGame.MainGame;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,13 +75,28 @@ public abstract class Melee extends Item {
         }
     }
 
+    public void attackPlayer(Character c) {
+        if(isSwingWeapon() && getOwner().distance(c) <= getSwingRange())
+            c.damage(getDamageOutput());
+        else if(!isSwingWeapon() && getOwner().distance(c) <= singleRange)
+            c.damage(getDamageOutput());
+
+        if(c.isDead())
+            c.removeAndClean();
+    }
+
     public void attackClosest(List<Entity> entities) {
+        boolean attacked = false;
         for(Entity e : entities) {
             if(e.distance(getOwner()) <= singleRange) {
                 attack(e);
+                attacked = true;
                 break;
             }
         }
+
+        if(!attacked)
+            setTimesUsed(getTimesUsed() - 1);
     }
 
     public void swing(List<Entity> entities) {
@@ -96,26 +112,41 @@ public abstract class Melee extends Item {
         }
     }
 
+    protected abstract void onAttack(Entity entity);
+
+    protected abstract void rewardForKill(Character entity);
+
+    protected abstract void rewardForHit(Character entity);
+
     @Override
     protected void onItemUse() {
+        if(getOwner() == null)
+            return;
+
         List<Entity> notPlayer = new ArrayList<>();
         Character character = null;
-        for(Entity e : Entity.entities) {
+        for(Entity e : MainGame.map.getEntities()) {
             if(e instanceof Character)
                 character = (Character) e;
             else
                 notPlayer.add(e);
         }
 
-        if(isSwingWeapon())
-            swing(notPlayer);
-        else
-            attackClosest(notPlayer);
+        if(character == null)
+            return;
+
+        boolean attackerIsCharacter = getOwner() instanceof Character;
+        if(isSwingWeapon()) {
+            if(attackerIsCharacter)
+                swing(notPlayer);
+            else
+                attackPlayer(character);
+        }
+        else {
+            if(attackerIsCharacter)
+                attackClosest(notPlayer);
+            else
+                attackPlayer(character);
+        }
     }
-
-    protected abstract void onAttack(Entity entity);
-
-    protected abstract void rewardForKill(Character entity);
-
-    protected abstract void rewardForHit(Character entity);
 }
