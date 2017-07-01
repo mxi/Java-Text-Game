@@ -1,9 +1,10 @@
 package newGame;
 
-import newGame.Entities.Entity;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import newGame.Entities.Entity;
+import newGame.Mapping.MapBuffer;
 
 public class Map implements MapInterface {
 
@@ -14,10 +15,10 @@ public class Map implements MapInterface {
 	private int curX;
 	private int curY;
 
-	public static List<Entity> entities = new ArrayList<>();
+	public MapBuffer buffer = new MapBuffer(DUNGEON_RIGHT_MAX - DUNGEON_LEFT_MAX, DUNGEON_BOTTOM - DUNGEON_TOP);
+	public List<Entity> entities = new ArrayList<>();
 	private List<Room> rooms;
-	private List<Hallway> hallways;
-	private List<Tile> tiles;
+	//private List<Hallway> hallways;
 
 	public class Room
 	{
@@ -29,30 +30,20 @@ public class Map implements MapInterface {
 		// the x and y cords are found in the top left corner
 	}
 	
-	public class Hallway
+	/*public class Hallway
 	{
 		int length;
 		char direction; // R = right, L = left, U = up, D = down
-	}
+	}*/
 	
-	public class Tile
-	{
-		public char TileType; //X: wall, _: empty, |: door, $: treasure, P: player, M: monster
-		public char TileVisibility; //V: visible, P: seen before, but out of sight, I: haven't seen before
-		public int TileX;
-		public int TileY;
-	}
-
 	public Map()
 	{
 		curX = MainGame.random.nextInt(69) + 1;
 		curY = MainGame.random.nextInt(15) + 1;
 		rooms = new ArrayList<>();
-		hallways = new ArrayList<>();
-		tiles = new ArrayList<>();
+		//hallways = new ArrayList<>();
 		int curRoom = 0;
 		int curHall = 0;
-		int curTile = 0;
 		int limit = MainGame.random.nextInt(20) + 10;
 		// room build
 		int retries = 0;
@@ -112,17 +103,17 @@ public class Map implements MapInterface {
 					Y = r.Y;
 					for(X = r.X; X < r.X + r.Xsize - 1; X++)
 					{
-						MainGame.csi.print(X, Y, "X");
+						buffer.setTile(Tile.WALL, X, Y);//MainGame.csi.print(X, Y, "X");
 						for(YS = r.Ysize - 1; YS > 1; YS--)
 						{
-							MainGame.csi.print(X, Y + YS - 1, ".");
+							buffer.setTile(Tile.SPACE, X, Y + YS - 1);//MainGame.csi.print(X, Y + YS - 1, ".");
 						}
-						MainGame.csi.print(X, Y + r.Ysize - 1, "X");
+						buffer.setTile(Tile.WALL, X, Y + r.Ysize - 1);//MainGame.csi.print(X, Y + r.Ysize - 1, "X");
 					}
 					for(X = r.X; Y <= r.Y + r.Ysize - 1; Y++)
 					{
-						MainGame.csi.print(X, Y, "X");
-						MainGame.csi.print(X + XS - 1, Y, "X");
+						buffer.setTile(Tile.WALL, X, Y);//MainGame.csi.print(X, Y, "X");
+						buffer.setTile(Tile.WALL, X + XS - 1, Y);MainGame.csi.print(X + XS - 1, Y, "X");
 					}
 					curRoom++;
 				}else{
@@ -287,7 +278,7 @@ public class Map implements MapInterface {
 		{
 			for(int count = 0; count <= length; count++)
 			{
-				MainGame.csi.print(StartX + count, StartY - 1, "X");
+				buffer.setTile();//MainGame.csi.print(StartX + count, StartY - 1, "X");
 				MainGame.csi.print(StartX + count, StartY, ".");
 				MainGame.csi.print(StartX + count, StartY + 1, "X");
 			}if(StartX + length ==  DUNGEON_RIGHT_MAX)
@@ -338,7 +329,7 @@ public class Map implements MapInterface {
 		}
 	}
 	
-	void HallwayBuild(int limit)
+/*	void HallwayBuild(int limit)
 	{
 		build: for(int x = 0; x < limit; x++)
 		{
@@ -713,7 +704,7 @@ public class Map implements MapInterface {
 			}
 		}
 	}
-
+*/
 	void EndBuild()
 	{
 		for(int x = 0; x < DUNGEON_RIGHT_MAX + 1; x++)

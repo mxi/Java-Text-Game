@@ -7,7 +7,9 @@ import sz.csi.ConsoleSystemInterface;
 
 public enum Tile {
 
-    WALL(null, 'X', ConsoleSystemInterface.WHITE);
+    WALL(null, 'X', ConsoleSystemInterface.WHITE),
+	SPACE(null, '.', ConsoleSystemInterface.WHITE),
+	STAIR(null, '/', ConsoleSystemInterface.WHITE);
 
     private InventoryStack<Item> items;
     private char representable;
