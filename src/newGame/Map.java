@@ -233,12 +233,12 @@ public class Map implements MapInterface {
 		else if(dy == 1)
 		{
 			int length;
-			for(length = 1; MainGame.csi.peekChar(StartX, StartY + length) != 'X'
-					&& MainGame.csi.peekChar(StartX - 1, StartY + length) != 'X'
-					&& MainGame.csi.peekChar(StartX + 1, StartY + length) != 'X'
+			for(length = 1; !buffer.getTile(StartX, StartY + length).equalsTo(Tile.WALL)//MainGame.csi.peekChar(StartX, StartY + length) != 'X'
+					&& !buffer.getTile(StartX - 1, StartY + length).equalsTo(Tile.WALL)//MainGame.csi.peekChar(StartX - 1, StartY + length) != 'X'
+					&& !buffer.getTile(StartX + 1, StartY + length).equalsTo(Tile.WALL)//MainGame.csi.peekChar(StartX + 1, StartY + length) != 'X'
 					&& StartY + length < DUNGEON_BOTTOM; length++)
-			{}
-			if(MainGame.csi.peekChar(StartX, StartY + length + 1) == '.'
+			{  }
+			if(buffer.getTile(StartX, StartY + length + 1).equalsTo(Tile.SPACE)//MainGame.csi.peekChar(StartX, StartY + length + 1) == '.'
 					)//|| StartY + length == DUNGEON_BOTTOM)
 			{
 				BuildHall(dx, dy, StartX, StartY, length);
@@ -250,14 +250,14 @@ public class Map implements MapInterface {
 		else if(dy == -1)
 		{
 			int length;
-			for(length = 1; MainGame.csi.peekChar(StartX, StartY - length) != 'X'
-					&& MainGame.csi.peekChar(StartX, StartY - length) != 'X'
-					&& MainGame.csi.peekChar(StartX, StartY - length) != 'X'
+			for(length = 1; !buffer.getTile(StartX, StartY - length).equalsTo(Tile.WALL)//MainGame.csi.peekChar(StartX, StartY - length) != 'X'
+					&& !buffer.getTile(StartX, StartY - length).equalsTo(Tile.WALL)//MainGame.csi.peekChar(StartX, StartY - length) != 'X'
+					&& !buffer.getTile(StartX, StartY - length).equalsTo(Tile.WALL)//MainGame.csi.peekChar(StartX, StartY - length) != 'X'
 					&& StartY - length > DUNGEON_TOP + 1; length++)
 			{}
 			if(StartY - length > DUNGEON_TOP)
 			{
-				if(MainGame.csi.peekChar(StartX, StartY - length - 1) == '.'
+				if(buffer.getTile(StartX, StartY - length).//MainGame.csi.peekChar(StartX, StartY - length - 1) == '.'
 						)//|| StartY - length == DUNGEON_TOP + 1)
 				{
 					BuildHall(dx, dy, StartX, StartY, length);

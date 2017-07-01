@@ -21,27 +21,35 @@ public enum Tile {
         colour = color;
     }
 
-    public InventoryStack<Item> getItems() {
+    public boolean equalsTo(Tile t) {
+        return similar(t) && t.getInventoryStack().equals(items);
+    }
+
+    public boolean similar(Tile t) {
+        return t.getColor() == colour && t.getRepresentation() == representable;
+    }
+
+    public InventoryStack<Item> getInventoryStack() {
         return items;
     }
 
-    public void setItems(InventoryStack<Item> items) {
+    public void setInventoryStack(InventoryStack<Item> items) {
         this.items = items;
     }
 
-    public char getRepresentable() {
+    public char getRepresentation() {
         return representable;
     }
 
-    public void setRepresentable(char representable) {
+    public void setRepresentation(char representable) {
         this.representable = representable;
     }
 
-    public int getColour() {
+    public int getColor() {
         return colour;
     }
 
-    public void setColour(int colour) {
+    public void setColor(int colour) {
         this.colour = colour;
     }
 }
