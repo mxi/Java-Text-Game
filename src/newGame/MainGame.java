@@ -9,6 +9,7 @@ import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.Monster;
 import newGame.Entities.Weapons.LongSword;
 import newGame.Entities.Weapons.Melee;
+import newGame.Mapping.MapBuffer;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
@@ -50,22 +51,22 @@ public class MainGame {
     	//new MainGame();
         random = new Random(); // Creates a new instance of the Random object
         csi = new WSwingConsoleInterface(); // Creates a new instance of WSwingConsoleInterface.
-    	for(int i = 7;; i++)
+    	
+        /*for(int i = 7;; i++)
     	{
     		random.setSeed(i);
-    		//System.out.println(i);
+    		System.out.println(i);
     		new Map();
     		csi.refresh();
     		csi.waitKey(10);
     		csi.cls();
-    	}
+    	}*/
     	
     	
     	//new MainGame();
-        /*while(playing) {
+        while(playing) {
             new MainGame();
-        }*/
-
+        }
         //System.exit(0);
     }
 
@@ -201,7 +202,7 @@ public class MainGame {
             		((Monster) entity).performAI(character);
         });
         */
-        Entity.entities.forEach(entity -> {
+        map.getEntities().forEach(entity -> {
             if(entity instanceof Monster)
             	if(((Monster) entity).findMode)
             		((Monster) entity).findAI(character);

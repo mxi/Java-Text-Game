@@ -14,7 +14,7 @@ public class Map implements MapInterface {
 	private int curX;
 	private int curY;
 
-	private List<Entity> entities = new ArrayList<>();
+	public static List<Entity> entities = new ArrayList<>();
 	private List<Room> rooms;
 	private List<Hallway> hallways;
 	private List<Tile> tiles;
@@ -156,9 +156,9 @@ public class Map implements MapInterface {
 					break loop;
 				}
 			}
-			MainGame.csi.refresh();
-			System.out.println(" right :  " + CountDown);
-			MainGame.csi.waitKey(10);
+			//MainGame.csi.refresh();
+			//System.out.println(" right :  " + CountDown);
+			//MainGame.csi.waitKey(10);
 
 			//left
 			loop: for(LocationOnWall = r.Y + 1; LocationOnWall < r.Y + r.Ysize - 1; LocationOnWall++)
@@ -168,9 +168,9 @@ public class Map implements MapInterface {
 					break loop;
 				}
 			}
-			MainGame.csi.refresh();
-			System.out.println(" left :  " + CountDown);
-			MainGame.csi.waitKey(10);
+			//MainGame.csi.refresh();
+			//System.out.println(" left :  " + CountDown);
+			//MainGame.csi.waitKey(10);
 
 			//down
 			loop: for(LocationOnWall = r.X + 1; LocationOnWall < r.X + r.Xsize - 1; LocationOnWall++)
@@ -180,9 +180,9 @@ public class Map implements MapInterface {
 					break loop;
 				}
 			}
-			MainGame.csi.refresh();
-			System.out.println(" down :  " + CountDown);
-			MainGame.csi.waitKey(10);
+			//MainGame.csi.refresh();
+			//System.out.println(" down :  " + CountDown);
+			//MainGame.csi.waitKey(10);
 			
 			//up
 			loop: for(LocationOnWall = r.X + 1; LocationOnWall < r.X + r.Xsize - 1; LocationOnWall++)
@@ -192,9 +192,9 @@ public class Map implements MapInterface {
 					break loop;
 				}
 			}
-			MainGame.csi.refresh();
-			System.out.println(" up :  " + CountDown);
-			MainGame.csi.waitKey(10);
+			//MainGame.csi.refresh();
+			//System.out.println(" up :  " + CountDown);
+			//MainGame.csi.waitKey(10);
 		}
 	}
 	
@@ -264,7 +264,7 @@ public class Map implements MapInterface {
 					&& MainGame.csi.peekChar(StartX, StartY - length) != 'X'
 					&& StartY - length > DUNGEON_TOP + 1; length++)
 			{}
-			if(StartY - length < DUNGEON_TOP)
+			if(StartY - length > DUNGEON_TOP)
 			{
 				if(MainGame.csi.peekChar(StartX, StartY - length - 1) == '.'
 						)//|| StartY - length == DUNGEON_TOP + 1)
@@ -791,16 +791,6 @@ public class Map implements MapInterface {
 	@Override
 	public int getMapHeight() {
 		return DUNGEON_BOTTOM - DUNGEON_TOP;
-	}
-
-	@Override
-	public List<Hallway> getHallways() {
-		return hallways;
-	}
-
-	@Override
-	public List<Room> getRooms() {
-		return rooms;
 	}
 
 	@Override

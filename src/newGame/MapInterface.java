@@ -17,7 +17,5 @@ public interface MapInterface {
     int getMaxX();
     int getMaxY();
 
-    List<Map.Hallway> getHallways();
-    List<Map.Room> getRooms();
     List<Entity> getEntities();
 }
