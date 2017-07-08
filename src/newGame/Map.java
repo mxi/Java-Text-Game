@@ -305,8 +305,8 @@ public class Map implements MapInterface {
 			for(int count = 0; count <= length; count++)
 			{
 				buffer.setTile(Tile.WALL, StartX - 1, StartY + count);//MainGame.csi.print(StartX - 1, StartY + count, "X");
-				buffer.setTile(Tile.SPACE, StartX, StartY + count)//MainGame.csi.print(StartX, StartY + count, ".");
-				MainGame.csi.print(StartX + 1, StartY + count, "X");
+				buffer.setTile(Tile.SPACE, StartX, StartY + count);//MainGame.csi.print(StartX, StartY + count, ".");
+				buffer.setTile(Tile.WALL, StartX + 1, StartY + count);//MainGame.csi.print(StartX + 1, StartY + count, "X");
 			}if(StartY + length == DUNGEON_BOTTOM)
 			{
 				MainGame.csi.print(StartX - 1, StartY + length, "X");
