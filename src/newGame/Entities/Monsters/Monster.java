@@ -5,6 +5,7 @@ import newGame.Entities.Character;
 import newGame.Entities.Entity;
 import newGame.Entities.Shield;
 import newGame.Entities.Weapons.Melee;
+import newGame.Mapping.Tile;
 
 public abstract class Monster extends Entity {
 
@@ -187,25 +188,25 @@ public abstract class Monster extends Entity {
         int absY = Math.abs(deltaY);
 
         if(absX > absY) {
-            if (MainGame.map.getCharacter(previewMove(deltaX > 0 ? -1 : 1, 0)) != 'X')
+            if (!MainGame.map.getTile(previewMove(deltaX > 0 ? -1 : 1, 0)).similar(Tile.WALL)/*MainGame.map.getCharacter(previewMove(deltaX > 0 ? -1 : 1, 0)) != 'X'*/)
                 move(deltaX > 0 ? -1 : 1, 0);
             else
                 move(0, deltaY > 0 ? -1 : 1);
         } else if(absY > absX) {
-            if(MainGame.map.getCharacter(previewMove(0, deltaY > 0 ? -1 : 1)) != 'X')
+            if(!MainGame.map.getTile(previewMove(0, deltaY > 0 ? -1 : 1)).similar(Tile.WALL)/*MainGame.map.getCharacter(previewMove(0, deltaY > 0 ? -1 : 1)) != 'X'*/)
                 move(0, deltaY > 0 ? -1 : 1);
             else
                 move(deltaX > 0 ? -1 : 1, 0);
         }
         else {
             if(MainGame.random.nextInt(1) == 0) {
-                if (MainGame.map.getCharacter(previewMove(deltaX > 0 ? -1 : 1, 0)) != 'X')
+                if (!MainGame.map.getTile(previewMove(deltaX > 0 ? -1 : 1, 0)).similar(Tile.WALL))
                     move(deltaX > 0 ? -1 : 1, 0);
                 else
                     move(0, deltaY > 0 ? -1 : 1);
             }
             else {
-                if(MainGame.map.getCharacter(previewMove(0, deltaY > 0 ? -1 : 1)) != 'X')
+                if(!MainGame.map.getTile(previewMove(0, deltaY > 0 ? -1 : 1)).similar(Tile.WALL))
                     move(0, deltaY > 0 ? -1 : 1);
                 else
                     move(deltaX > 0 ? -1 : 1, 0);

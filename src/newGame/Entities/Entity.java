@@ -2,6 +2,7 @@ package newGame.Entities;
 
 import newGame.IntPoint;
 import newGame.MainGame;
+import newGame.Mapping.Tile;
 import sz.csi.ConsoleSystemInterface;
 
 import java.util.List;
@@ -46,12 +47,14 @@ public abstract class Entity extends Representable {
         IntPoint p1 = entity.getPosition();
         IntPoint p2 = getPosition();
 
+        // TODO: Change "MapBuffer" to "EntityBuffer" in here (This is broken for now)
+
         if(p1.getY() == p2.getY()) {
             int commonX = p1.getX();
             int maxY = Math.max(p1.getY(), p2.getY());
             int minY = Math.min(p1.getY(), p2.getY());
             for(int y = minY + 1; y < maxY; y++)
-                if(MainGame.map.getCharacter(commonX, y) == 'X')
+                if(MainGame.map.getTile(commonX, y).similar(Tile.WALL)/*MainGame.map.getCharacter(commonX, y) == 'X'*/)
                     return false;
 
             return true;
@@ -61,7 +64,7 @@ public abstract class Entity extends Representable {
             int maxX = Math.max(p1.getX(), p2.getX());
             int minX = Math.min(p1.getX(), p2.getX());
             for(int x = minX + 1; x < maxX; x++)
-                if(MainGame.map.getCharacter(x, commonY) == 'X')
+                if(MainGame.map.getTile(x, commonY).similar(Tile.WALL)/*MainGame.map.getCharacter(x, commonY) == 'X'*/)
                     return false;
 
             return true;
@@ -73,19 +76,19 @@ public abstract class Entity extends Representable {
             int maxX = Math.max(p1.getX(), p2.getX());
             int minX = Math.min(p1.getX(), p2.getX());
             for(int x = minX; x < maxX; x++)
-                if(MainGame.map.getCharacter(x, (int) Math.ceil(x * slope + intercept)) == 'X')
+                if(MainGame.map.getTile(x, (int) Math.ceil(x * slope + intercept)).similar(Tile.WALL)/*MainGame.map.getCharacter(x, (int) Math.ceil(x * slope + intercept)) == 'X'*/)
                     return false;
 
             return true;
         }
     }
 
-    public void spawn(char onWhatTile) {
+    public void spawn(Tile onWhatTile) {
         while(true) {
             int x = MainGame.random.nextInt(MainGame.map.getMapWidth()) + 1;
             int y = MainGame.random.nextInt(MainGame.map.getMapHeight()) + 1;
 
-            if(MainGame.map.getCharacter(x, y) == onWhatTile) {
+            if(MainGame.map.getTile(x, y).similar(onWhatTile)/*MainGame.map.getCharacter(x, y) == onWhatTile*/) {
                 setPosition(x, y);
                 break;
             }
@@ -346,7 +349,7 @@ public abstract class Entity extends Representable {
         }
         else {
             MainGame.map.getEntities().removeIf(entity -> entity.equals(this));
-            MainGame.map.setCharacter(prevCharOfMap, getX(), getY(), prevColorOfMap);
+            MainGame.map.setTile(Tile.SPACE, getX(), getY());//MainGame.map.setCharacter(prevCharOfMap, getX(), getY(), prevColorOfMap);
 
             if(this instanceof Character) {
                 MainGame.requestEnd();

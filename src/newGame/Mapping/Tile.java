@@ -1,28 +1,32 @@
-package newGame;
+package newGame.Mapping;
 
 import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Item;
-import newGame.Entities.Representable;
 import sz.csi.ConsoleSystemInterface;
 
 public enum Tile {
 
-    WALL(null, 'X', ConsoleSystemInterface.WHITE),
-	SPACE(null, '.', ConsoleSystemInterface.WHITE),
-	STAIR(null, '/', ConsoleSystemInterface.WHITE);
+    EMPTY(null, ' ', true, ConsoleSystemInterface.BLACK),
+    WALL(null, 'X', true, ConsoleSystemInterface.WHITE),
+	SPACE(null, '.', false, ConsoleSystemInterface.WHITE),
+	STAIR(null, '/', false, ConsoleSystemInterface.WHITE);
 
     private InventoryStack<Item> items;
     private char representable;
+    private boolean solid;
     private int colour;
 
-    Tile(InventoryStack<Item> inv, char represent, int color) {
-        items = inv;
+    Tile(InventoryStack<Item> inv, char represent, boolean isSolid, int color) {
+        if(!isSolid) {
+            items = inv;
+        }
         representable = represent;
+        solid = isSolid;
         colour = color;
     }
 
     public boolean equalsTo(Tile t) {
-        return similar(t) && t.getInventoryStack().equals(items);
+        return similar(t) && t.getInventoryStack() == getInventoryStack();
     }
 
     public boolean similar(Tile t) {
@@ -34,7 +38,8 @@ public enum Tile {
     }
 
     public void setInventoryStack(InventoryStack<Item> items) {
-        this.items = items;
+        if(!isSolid())
+            this.items = items;
     }
 
     public char getRepresentation() {
@@ -43,6 +48,14 @@ public enum Tile {
 
     public void setRepresentation(char representable) {
         this.representable = representable;
+    }
+
+    public boolean isSolid() {
+        return solid;
+    }
+
+    public void setSolid(boolean solid) {
+        this.solid = solid;
     }
 
     public int getColor() {

@@ -2,14 +2,15 @@ package newGame;
 
 import newGame.Entities.Character;
 import newGame.Entities.CharacterType;
-import newGame.Entities.Entity;
 import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Item;
 import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.Monster;
 import newGame.Entities.Weapons.LongSword;
 import newGame.Entities.Weapons.Melee;
-import newGame.Mapping.MapBuffer;
+import newGame.Mapping.Map;
+import newGame.Mapping.MapInterface;
+import newGame.Mapping.Tile;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
@@ -98,7 +99,7 @@ public class MainGame {
         character.setHealth(character.getMaxHealth());
         character.adaptToMap();
         character.setFloor(1);
-        character.spawn('.');
+        character.spawn(Tile.SPACE);
 
         LongSword ls = new LongSword();
         ls.setDamageOutput(4);
@@ -132,6 +133,7 @@ public class MainGame {
                 */
 
                 // Print Entities & Character information:
+                map.display(csi);
                 map.getEntities().forEach(e ->
                         csi.print(e.getX(), e.getY(), e.getRepresentation(), e.getColor()));
 
@@ -169,7 +171,7 @@ public class MainGame {
                         if(character.getPrevCharOfMap() == '/') {
                             csi.cls();
                             map = new Map();
-                            character.spawn('/');
+                            character.spawn(Tile.STAIR);
                         }
                         break;
                     default:
@@ -216,7 +218,7 @@ public class MainGame {
             Goblin goblin = new Goblin();
             goblin.setLevel(1);
             goblin.adaptToMap();
-            goblin.spawn('.');
+            goblin.spawn(Tile.SPACE);
             goblin.getMeleeWeapon().setDamageOutput(1);
         }
     }
