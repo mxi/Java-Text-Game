@@ -1,10 +1,11 @@
-package newGame;
+package newGame.Mapping;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import newGame.Entities.Entity;
-import newGame.Mapping.MapBuffer;
+import newGame.IntPoint;
+import newGame.MainGame;
 import sz.csi.ConsoleSystemInterface;
 
 public class Map implements MapInterface {

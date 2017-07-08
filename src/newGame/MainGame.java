@@ -2,14 +2,15 @@ package newGame;
 
 import newGame.Entities.Character;
 import newGame.Entities.CharacterType;
-import newGame.Entities.Entity;
 import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Item;
 import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.Monster;
 import newGame.Entities.Weapons.LongSword;
 import newGame.Entities.Weapons.Melee;
-import newGame.Mapping.MapBuffer;
+import newGame.Mapping.Map;
+import newGame.Mapping.MapInterface;
+import newGame.Mapping.Tile;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 

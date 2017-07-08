@@ -1,4 +1,4 @@
-package newGame;
+package newGame.Mapping;
 
 import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Item;

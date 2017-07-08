@@ -5,7 +5,7 @@ import newGame.Entities.Character;
 import newGame.Entities.Entity;
 import newGame.Entities.Shield;
 import newGame.Entities.Weapons.Melee;
-import newGame.Tile;
+import newGame.Mapping.Tile;
 
 public abstract class Monster extends Entity {
 

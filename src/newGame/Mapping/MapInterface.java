@@ -1,7 +1,7 @@
-package newGame;
+package newGame.Mapping;
 
 import newGame.Entities.Entity;
-import newGame.Mapping.MapBuffer;
+import newGame.IntPoint;
 import sz.csi.ConsoleSystemInterface;
 
 import java.util.List;

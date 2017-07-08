@@ -2,7 +2,7 @@ package newGame.Entities;
 
 import newGame.IntPoint;
 import newGame.MainGame;
-import newGame.Tile;
+import newGame.Mapping.Tile;
 import sz.csi.ConsoleSystemInterface;
 
 import java.util.List;

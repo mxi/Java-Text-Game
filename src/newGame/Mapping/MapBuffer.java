@@ -1,7 +1,5 @@
 package newGame.Mapping;
 
-import newGame.Tile;
-
 import java.util.ArrayList;
 import java.util.List;
 
