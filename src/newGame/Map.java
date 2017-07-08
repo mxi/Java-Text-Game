@@ -309,17 +309,17 @@ public class Map implements MapInterface {
 				buffer.setTile(Tile.WALL, StartX + 1, StartY + count);//MainGame.csi.print(StartX + 1, StartY + count, "X");
 			}if(StartY + length == DUNGEON_BOTTOM)
 			{
-				MainGame.csi.print(StartX - 1, StartY + length, "X");
-				MainGame.csi.print(StartX, StartY + length, "X");
-				MainGame.csi.print(StartX + 1, StartY + length, "X");
+				buffer.setTile(Tile.WALL, StartX - 1, StartY + length);//MainGame.csi.print(StartX - 1, StartY + length, "X");
+				buffer.setTile(Tile.WALL, StartX, StartY + length);//MainGame.csi.print(StartX, StartY + length, "X");
+				buffer.setTile(Tile.WALL, StartX + 1, StartY + length);//MainGame.csi.print(StartX + 1, StartY + length, "X");
 			}
 		}else if(dy == -1)
 		{
 			for(int count = 0; count <= length; count++)
 			{
-				MainGame.csi.print(StartX - 1, StartY - count, "X");
-				MainGame.csi.print(StartX, StartY - count, ".");
-				MainGame.csi.print(StartX + 1, StartY - count, "X");
+				buffer.setTile(Tile.WALL, StartX - 1, StartY - count);//MainGame.csi.print(StartX - 1, StartY - count, "X");
+				buffer.setTile(Tile.SPACE, StartX, StartY - count);//MainGame.csi.print(StartX, StartY - count, ".");
+				buffer.setTile(Tile.WALL, StartX + 1, StartY - count);//MainGame.csi.print(StartX + 1, StartY - count, "X");
 			}if(StartY - length == DUNGEON_TOP + 1)
 			{
 				MainGame.csi.print(StartX - 1, StartY - length, "X");
@@ -773,7 +773,7 @@ public class Map implements MapInterface {
 	public char getCharacter(IntPoint p) {
 		return MainGame.csi.peekChar(p.getX(), p.getY());
 	}
-
+	
 	@Override
 	public int getMapWidth() {
 		return DUNGEON_RIGHT_MAX - DUNGEON_LEFT_MAX;
