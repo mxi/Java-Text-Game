@@ -98,7 +98,7 @@ public class MainGame {
         character.setHealth(character.getMaxHealth());
         character.adaptToMap();
         character.setFloor(1);
-        character.spawn('.');
+        character.spawn(Tile.SPACE);
 
         LongSword ls = new LongSword();
         ls.setDamageOutput(4);
@@ -132,6 +132,7 @@ public class MainGame {
                 */
 
                 // Print Entities & Character information:
+                map.display(csi);
                 map.getEntities().forEach(e ->
                         csi.print(e.getX(), e.getY(), e.getRepresentation(), e.getColor()));
 
@@ -169,7 +170,7 @@ public class MainGame {
                         if(character.getPrevCharOfMap() == '/') {
                             csi.cls();
                             map = new Map();
-                            character.spawn('/');
+                            character.spawn(Tile.STAIR);
                         }
                         break;
                     default:
@@ -216,7 +217,7 @@ public class MainGame {
             Goblin goblin = new Goblin();
             goblin.setLevel(1);
             goblin.adaptToMap();
-            goblin.spawn('.');
+            goblin.spawn(Tile.SPACE);
             goblin.getMeleeWeapon().setDamageOutput(1);
         }
     }
