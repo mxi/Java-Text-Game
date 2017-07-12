@@ -17,7 +17,7 @@ public class Map implements MapInterface {
 	private int curX;
 	private int curY;
 
-	public MapBuffer buffer = new MapBuffer(DUNGEON_RIGHT_MAX - DUNGEON_LEFT_MAX, DUNGEON_BOTTOM - DUNGEON_TOP);
+	public MapBuffer buffer = new MapBuffer((DUNGEON_RIGHT_MAX - DUNGEON_LEFT_MAX) + 1, (DUNGEON_BOTTOM - DUNGEON_TOP) + 1);
 	public List<Entity> entities = new ArrayList<>();
 	private List<Room> rooms;
 	//private List<Hallway> hallways;
@@ -40,6 +40,8 @@ public class Map implements MapInterface {
 	
 	public Map()
 	{
+		buffer.fill(Tile.EMPTY);
+		buffer.printToTerminal(System.out, false);
 		curX = MainGame.random.nextInt(69) + 1;
 		curY = MainGame.random.nextInt(15) + 1;
 		rooms = new ArrayList<>();

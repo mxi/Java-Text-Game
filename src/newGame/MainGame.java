@@ -63,9 +63,9 @@ public class MainGame {
     		csi.cls();
     	}*/
 
-        // while(playing) {
-        //     new MainGame();
-        // }
+        while(playing) {
+            new MainGame();
+        }
 
         System.exit(0);
     }

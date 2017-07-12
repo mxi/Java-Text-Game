@@ -57,10 +57,7 @@ public class ArrayList2D<T> {
     public void fill(T type) {
         for(List<T> list : list2d) {
             for(int i = 0; i < list.size(); i++) {
-                final T item = list.get(i);
-                if(item == null || item != type) {
-                    list.set(i, type);
-                }
+                list.set(i, type);
             }
         }
     }
@@ -78,6 +75,10 @@ public class ArrayList2D<T> {
                 }
             }
         }
+    }
+
+    public void fillOccupiedOnly(T type) {
+        
     }
 
     /**
