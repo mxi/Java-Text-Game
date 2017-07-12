@@ -152,10 +152,7 @@ public class ArrayList2D<T> {
      * @return Object in those coordinates.
      */
     public T getElement(int x, int y) {
-        if(x < 0 || y < 0) {
-            return null;
-        }
-        if(x > width || y > height) {
+        if((x < 0 || x > width) || (y < 0 || y > height)) {
             return null;
         }
         return list2d.get(y).get(x);
