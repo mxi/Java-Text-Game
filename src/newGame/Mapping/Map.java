@@ -66,10 +66,10 @@ public class Map implements MapInterface {
 					
 						//Anything in the way?for(; X < r.X + r.Xsize - 1; X++)
 						{
-							if(buffer.getTile(X, Y).similar(Tile.WALL)/*MainGame.csi.peekChar(X, Y) == 'X'*/
-									|| buffer.getTile(X, Y + YS - 1).similar(Tile.WALL)/*MainGame.csi.peekChar(X, Y + YS - 1) == 'X'*/
-									|| buffer.getTile(X, Y).similar(Tile.SPACE)/*MainGame.csi.peekChar(X, Y) == '.'*/
-									|| buffer.getTile(X, Y + YS - 1).similar(Tile.SPACE)/*MainGame.csi.peekChar(X, Y + YS - 1) == '.'*/)
+							if(buffer.getElement(X, Y).similar(Tile.WALL)/*MainGame.csi.peekChar(X, Y) == 'X'*/
+									|| buffer.getElement(X, Y + YS - 1).similar(Tile.WALL)/*MainGame.csi.peekChar(X, Y + YS - 1) == 'X'*/
+									|| buffer.getElement(X, Y).similar(Tile.SPACE)/*MainGame.csi.peekChar(X, Y) == '.'*/
+									|| buffer.getElement(X, Y + YS - 1).similar(Tile.SPACE)/*MainGame.csi.peekChar(X, Y + YS - 1) == '.'*/)
 							{
 								x--;
 								rooms.remove(curRoom);
@@ -79,10 +79,10 @@ public class Map implements MapInterface {
 						}
 						for(X = r.X; Y < r.Y + r.Ysize - 1; Y++)
 						{
-							if(buffer.getTile(X, Y).similar(Tile.WALL)/*MainGame.csi.peekChar(X, Y) == 'X'*/
-									|| buffer.getTile(X + XS - 1, Y).similar(Tile.WALL)/*MainGame.csi.peekChar(X + XS - 1, Y) == 'X'*/
-									|| buffer.getTile(X, Y).similar(Tile.SPACE)/*MainGame.csi.peekChar(X, Y) == '.'*/
-									|| buffer.getTile(X + XS - 1, Y).similar(Tile.SPACE)/*MainGame.csi.peekChar(X + XS - 1, Y) == '.'*/)
+							if(buffer.getElement(X, Y).similar(Tile.WALL)/*MainGame.csi.peekChar(X, Y) == 'X'*/
+									|| buffer.getElement(X + XS - 1, Y).similar(Tile.WALL)/*MainGame.csi.peekChar(X + XS - 1, Y) == 'X'*/
+									|| buffer.getElement(X, Y).similar(Tile.SPACE)/*MainGame.csi.peekChar(X, Y) == '.'*/
+									|| buffer.getElement(X + XS - 1, Y).similar(Tile.SPACE)/*MainGame.csi.peekChar(X + XS - 1, Y) == '.'*/)
 							{
 								x--;
 								rooms.remove(curRoom);
@@ -95,8 +95,8 @@ public class Map implements MapInterface {
 						{
 							for(int CountB = 1; CountB <= r.Ysize; CountB++)
 							{
-								if(buffer.getTile(CountA - 1 + r.X, CountB - 1 + r.Y).similar(Tile.WALL)//MainGame.csi.peekChar(CountA - 1 + r.X, CountB - 1 + r.Y) == 'X'
-										|| buffer.getTile(CountA - 1 + r.X, CountB - 1 + r.Y).similar(Tile.SPACE)/*MainGame.csi.peekChar(CountA - 1 + r.X, CountB - 1 + r.Y) == '.'*/)
+								if(buffer.getElement(CountA - 1 + r.X, CountB - 1 + r.Y).similar(Tile.WALL)//MainGame.csi.peekChar(CountA - 1 + r.X, CountB - 1 + r.Y) == 'X'
+										|| buffer.getElement(CountA - 1 + r.X, CountB - 1 + r.Y).similar(Tile.SPACE)/*MainGame.csi.peekChar(CountA - 1 + r.X, CountB - 1 + r.Y) == '.'*/)
 								{
 									x--;
 									rooms.remove(curRoom);
@@ -112,17 +112,17 @@ public class Map implements MapInterface {
 					Y = r.Y;
 					for(X = r.X; X < r.X + r.Xsize - 1; X++)
 					{
-						buffer.setTile(Tile.WALL, X, Y);//MainGame.csi.print(X, Y, "X");
+						buffer.setElement(Tile.WALL, X, Y);//MainGame.csi.print(X, Y, "X");
 						for(YS = r.Ysize - 1; YS > 1; YS--)
 						{
-							buffer.setTile(Tile.SPACE, X, Y + YS - 1);//MainGame.csi.print(X, Y + YS - 1, ".");
+							buffer.setElement(Tile.SPACE, X, Y + YS - 1);//MainGame.csi.print(X, Y + YS - 1, ".");
 						}
-						buffer.setTile(Tile.WALL, X, Y + r.Ysize - 1);//MainGame.csi.print(X, Y + r.Ysize - 1, "X");
+						buffer.setElement(Tile.WALL, X, Y + r.Ysize - 1);//MainGame.csi.print(X, Y + r.Ysize - 1, "X");
 					}
 					for(X = r.X; Y <= r.Y + r.Ysize - 1; Y++)
 					{
-						buffer.setTile(Tile.WALL, X, Y);//MainGame.csi.print(X, Y, "X");
-						buffer.setTile(Tile.WALL, X + XS - 1, Y);MainGame.csi.print(X + XS - 1, Y, "X");
+						buffer.setElement(Tile.WALL, X, Y);//MainGame.csi.print(X, Y, "X");
+						buffer.setElement(Tile.WALL, X + XS - 1, Y);MainGame.csi.print(X + XS - 1, Y, "X");
 					}
 					curRoom++;
 				}else{
@@ -203,12 +203,12 @@ public class Map implements MapInterface {
 		if(dx == 1)
 		{
 			int length;
-			for(length = 1; !buffer.getTile(StartX + length, StartY).similar(Tile.WALL)//MainGame.csi.peekChar(StartX + length, StartY) != 'X'
-					&& !buffer.getTile(StartX + length, StartY + 1).similar(Tile.WALL)//MainGame.csi.peekChar(StartX + length, StartY + 1) != 'X'
-					&& !buffer.getTile(StartX + length, StartY - 1).similar(Tile.WALL)//MainGame.csi.peekChar(StartX + length, StartY - 1) != 'X'
+			for(length = 1; !buffer.getElement(StartX + length, StartY).similar(Tile.WALL)//MainGame.csi.peekChar(StartX + length, StartY) != 'X'
+					&& !buffer.getElement(StartX + length, StartY + 1).similar(Tile.WALL)//MainGame.csi.peekChar(StartX + length, StartY + 1) != 'X'
+					&& !buffer.getElement(StartX + length, StartY - 1).similar(Tile.WALL)//MainGame.csi.peekChar(StartX + length, StartY - 1) != 'X'
 					&& StartX + length < DUNGEON_RIGHT_MAX; length++)
 			{}
-			if(buffer.getTile(StartX + length + 1, StartY).similar(Tile.SPACE)/*MainGame.csi.peekChar(StartX + length + 1, StartY) == '.'*/)//|| StartX + length == DUNGEON_RIGHT_MAX)
+			if(buffer.getElement(StartX + length + 1, StartY).similar(Tile.SPACE)/*MainGame.csi.peekChar(StartX + length + 1, StartY) == '.'*/)//|| StartX + length == DUNGEON_RIGHT_MAX)
 			{
 				BuildHall(dx, dy, StartX, StartY, length);
 				return true;
@@ -219,14 +219,14 @@ public class Map implements MapInterface {
 		else if(dx == -1)
 		{
 			int length;
-			for(length = 1; !buffer.getTile(StartX - length, StartY).similar(Tile.WALL)//MainGame.csi.peekChar(StartX - length, StartY) != 'X'
-					&& !buffer.getTile(StartX - length, StartY + 1).similar(Tile.WALL)//MainGame.csi.peekChar(StartX - length, StartY + 1) != 'X'
-					&& !buffer.getTile(StartX - length, StartY - 1).similar(Tile.WALL)//MainGame.csi.peekChar(StartX - length, StartY - 1) != 'X'
+			for(length = 1; !buffer.getElement(StartX - length, StartY).similar(Tile.WALL)//MainGame.csi.peekChar(StartX - length, StartY) != 'X'
+					&& !buffer.getElement(StartX - length, StartY + 1).similar(Tile.WALL)//MainGame.csi.peekChar(StartX - length, StartY + 1) != 'X'
+					&& !buffer.getElement(StartX - length, StartY - 1).similar(Tile.WALL)//MainGame.csi.peekChar(StartX - length, StartY - 1) != 'X'
 					&& StartX - length > DUNGEON_LEFT_MAX + 1; length++)
 			{}//System.out.println(length);
 			if(StartX - length > DUNGEON_LEFT_MAX)
 			{
-				if(buffer.getTile(StartX - length - 1, StartY).similar(Tile.SPACE)/*MainGame.csi.peekChar(StartX - length - 1, StartY) == '.'*/)//|| StartX - length == DUNGEON_LEFT_MAX + 1)
+				if(buffer.getElement(StartX - length - 1, StartY).similar(Tile.SPACE)/*MainGame.csi.peekChar(StartX - length - 1, StartY) == '.'*/)//|| StartX - length == DUNGEON_LEFT_MAX + 1)
 				{
 					BuildHall(dx, dy, StartX, StartY, length);
 					return true;
@@ -240,12 +240,12 @@ public class Map implements MapInterface {
 		else if(dy == 1)
 		{
 			int length;
-			for(length = 1; !buffer.getTile(StartX, StartY + length).similar(Tile.WALL)//MainGame.csi.peekChar(StartX, StartY + length) != 'X'
-					&& !buffer.getTile(StartX - 1, StartY + length).similar(Tile.WALL)//MainGame.csi.peekChar(StartX - 1, StartY + length) != 'X'
-					&& !buffer.getTile(StartX + 1, StartY + length).similar(Tile.WALL)//MainGame.csi.peekChar(StartX + 1, StartY + length) != 'X'
+			for(length = 1; !buffer.getElement(StartX, StartY + length).similar(Tile.WALL)//MainGame.csi.peekChar(StartX, StartY + length) != 'X'
+					&& !buffer.getElement(StartX - 1, StartY + length).similar(Tile.WALL)//MainGame.csi.peekChar(StartX - 1, StartY + length) != 'X'
+					&& !buffer.getElement(StartX + 1, StartY + length).similar(Tile.WALL)//MainGame.csi.peekChar(StartX + 1, StartY + length) != 'X'
 					&& StartY + length < DUNGEON_BOTTOM; length++)
 			{  }
-			if(buffer.getTile(StartX, StartY + length + 1).similar(Tile.SPACE)//MainGame.csi.peekChar(StartX, StartY + length + 1) == '.'
+			if(buffer.getElement(StartX, StartY + length + 1).similar(Tile.SPACE)//MainGame.csi.peekChar(StartX, StartY + length + 1) == '.'
 					)//|| StartY + length == DUNGEON_BOTTOM)
 			{
 				BuildHall(dx, dy, StartX, StartY, length);
@@ -257,14 +257,14 @@ public class Map implements MapInterface {
 		else if(dy == -1)
 		{
 			int length;
-			for(length = 1; !buffer.getTile(StartX, StartY - length).similar(Tile.WALL)//MainGame.csi.peekChar(StartX, StartY - length) != 'X'
-					&& !buffer.getTile(StartX, StartY - length).similar(Tile.WALL)//MainGame.csi.peekChar(StartX, StartY - length) != 'X'
-					&& !buffer.getTile(StartX, StartY - length).similar(Tile.WALL)//MainGame.csi.peekChar(StartX, StartY - length) != 'X'
+			for(length = 1; !buffer.getElement(StartX, StartY - length).similar(Tile.WALL)//MainGame.csi.peekChar(StartX, StartY - length) != 'X'
+					&& !buffer.getElement(StartX, StartY - length).similar(Tile.WALL)//MainGame.csi.peekChar(StartX, StartY - length) != 'X'
+					&& !buffer.getElement(StartX, StartY - length).similar(Tile.WALL)//MainGame.csi.peekChar(StartX, StartY - length) != 'X'
 					&& StartY - length > DUNGEON_TOP + 1; length++)
 			{}
 			if(StartY - length > DUNGEON_TOP)
 			{
-				if(buffer.getTile(StartX, StartY - length).similar(Tile.SPACE))//MainGame.csi.peekChar(StartX, StartY - length - 1) == '.'
+				if(buffer.getElement(StartX, StartY - length).similar(Tile.SPACE))//MainGame.csi.peekChar(StartX, StartY - length - 1) == '.'
 					// )//|| StartY - length == DUNGEON_TOP + 1)
 				{
 					BuildHall(dx, dy, StartX, StartY, length);
@@ -285,53 +285,53 @@ public class Map implements MapInterface {
 		{
 			for(int count = 0; count <= length; count++)
 			{
-				buffer.setTile(Tile.WALL, StartX + count, StartY - 1);//MainGame.csi.print(StartX + count, StartY - 1, "X");
-				buffer.setTile(Tile.SPACE, StartX + count, StartY);//MainGame.csi.print(StartX + count, StartY, ".");
-				buffer.setTile(Tile.WALL, StartX + count, StartY + 1);//MainGame.csi.print(StartX + count, StartY + 1, "X");
+				buffer.setElement(Tile.WALL, StartX + count, StartY - 1);//MainGame.csi.print(StartX + count, StartY - 1, "X");
+				buffer.setElement(Tile.SPACE, StartX + count, StartY);//MainGame.csi.print(StartX + count, StartY, ".");
+				buffer.setElement(Tile.WALL, StartX + count, StartY + 1);//MainGame.csi.print(StartX + count, StartY + 1, "X");
 			}if(StartX + length ==  DUNGEON_RIGHT_MAX)
 			{
-				buffer.setTile(Tile.WALL, StartX + length, StartY - 1);//MainGame.csi.print(StartX + length, StartY - 1, "X");
-				buffer.setTile(Tile.WALL, StartX + length, StartY);//MainGame.csi.print(StartX + length, StartY, "X");
-				buffer.setTile(Tile.WALL, StartX + length, StartY + 1);//MainGame.csi.print(StartX + length, StartY + 1, "X");
+				buffer.setElement(Tile.WALL, StartX + length, StartY - 1);//MainGame.csi.print(StartX + length, StartY - 1, "X");
+				buffer.setElement(Tile.WALL, StartX + length, StartY);//MainGame.csi.print(StartX + length, StartY, "X");
+				buffer.setElement(Tile.WALL, StartX + length, StartY + 1);//MainGame.csi.print(StartX + length, StartY + 1, "X");
 			}
 		}else if(dx == -1)
 		{
 			for(int count = 0; count <= length; count++)
 			{
-				buffer.setTile(Tile.WALL, StartX - count, StartY - 1);//MainGame.csi.print(StartX - count, StartY - 1, "X");
-				buffer.setTile(Tile.SPACE, StartX - count, StartY);//MainGame.csi.print(StartX - count, StartY, ".");
-				buffer.setTile(Tile.WALL, StartX - count, StartY + 1);//MainGame.csi.print(StartX - count, StartY + 1, "X");
+				buffer.setElement(Tile.WALL, StartX - count, StartY - 1);//MainGame.csi.print(StartX - count, StartY - 1, "X");
+				buffer.setElement(Tile.SPACE, StartX - count, StartY);//MainGame.csi.print(StartX - count, StartY, ".");
+				buffer.setElement(Tile.WALL, StartX - count, StartY + 1);//MainGame.csi.print(StartX - count, StartY + 1, "X");
 			}if(StartX - length ==  DUNGEON_LEFT_MAX + 1)
 			{
-				buffer.setTile(Tile.WALL, StartX - length, StartY - 1);//MainGame.csi.print(StartX - length, StartY - 1, "X");
-				buffer.setTile(Tile.WALL, StartX - length, StartY);//MainGame.csi.print(StartX - length, StartY, "X");
-				buffer.setTile(Tile.WALL, StartX - length, StartY + 1);//MainGame.csi.print(StartX - length, StartY + 1, "X");
+				buffer.setElement(Tile.WALL, StartX - length, StartY - 1);//MainGame.csi.print(StartX - length, StartY - 1, "X");
+				buffer.setElement(Tile.WALL, StartX - length, StartY);//MainGame.csi.print(StartX - length, StartY, "X");
+				buffer.setElement(Tile.WALL, StartX - length, StartY + 1);//MainGame.csi.print(StartX - length, StartY + 1, "X");
 			}
 		}else if(dy == 1)
 		{
 			for(int count = 0; count <= length; count++)
 			{
-				buffer.setTile(Tile.WALL, StartX - 1, StartY + count);//MainGame.csi.print(StartX - 1, StartY + count, "X");
-				buffer.setTile(Tile.SPACE, StartX, StartY + count);//MainGame.csi.print(StartX, StartY + count, ".");
-				buffer.setTile(Tile.WALL, StartX + 1, StartY + count);//MainGame.csi.print(StartX + 1, StartY + count, "X");
+				buffer.setElement(Tile.WALL, StartX - 1, StartY + count);//MainGame.csi.print(StartX - 1, StartY + count, "X");
+				buffer.setElement(Tile.SPACE, StartX, StartY + count);//MainGame.csi.print(StartX, StartY + count, ".");
+				buffer.setElement(Tile.WALL, StartX + 1, StartY + count);//MainGame.csi.print(StartX + 1, StartY + count, "X");
 			}if(StartY + length == DUNGEON_BOTTOM)
 			{
-				buffer.setTile(Tile.WALL, StartX - 1, StartY + length);//MainGame.csi.print(StartX - 1, StartY + length, "X");
-				buffer.setTile(Tile.WALL, StartX, StartY + length);//MainGame.csi.print(StartX, StartY + length, "X");
-				buffer.setTile(Tile.WALL, StartX + 1, StartY + length);//MainGame.csi.print(StartX + 1, StartY + length, "X");
+				buffer.setElement(Tile.WALL, StartX - 1, StartY + length);//MainGame.csi.print(StartX - 1, StartY + length, "X");
+				buffer.setElement(Tile.WALL, StartX, StartY + length);//MainGame.csi.print(StartX, StartY + length, "X");
+				buffer.setElement(Tile.WALL, StartX + 1, StartY + length);//MainGame.csi.print(StartX + 1, StartY + length, "X");
 			}
 		}else if(dy == -1)
 		{
 			for(int count = 0; count <= length; count++)
 			{
-				buffer.setTile(Tile.WALL, StartX - 1, StartY - count);//MainGame.csi.print(StartX - 1, StartY - count, "X");
-				buffer.setTile(Tile.SPACE, StartX, StartY - count);//MainGame.csi.print(StartX, StartY - count, ".");
-				buffer.setTile(Tile.WALL, StartX + 1, StartY - count);//MainGame.csi.print(StartX + 1, StartY - count, "X");
+				buffer.setElement(Tile.WALL, StartX - 1, StartY - count);//MainGame.csi.print(StartX - 1, StartY - count, "X");
+				buffer.setElement(Tile.SPACE, StartX, StartY - count);//MainGame.csi.print(StartX, StartY - count, ".");
+				buffer.setElement(Tile.WALL, StartX + 1, StartY - count);//MainGame.csi.print(StartX + 1, StartY - count, "X");
 			}if(StartY - length == DUNGEON_TOP + 1)
 			{
-				buffer.setTile(Tile.WALL, StartX - 1, StartY - length);//MainGame.csi.print(StartX - 1, StartY - length, "X");
-				buffer.setTile(Tile.WALL, StartX, StartY - length);//MainGame.csi.print(StartX, StartY - length, "X");
-				buffer.setTile(Tile.WALL, StartX + 1, StartY - length);//MainGame.csi.print(StartX + 1, StartY - length, "X");
+				buffer.setElement(Tile.WALL, StartX - 1, StartY - length);//MainGame.csi.print(StartX - 1, StartY - length, "X");
+				buffer.setElement(Tile.WALL, StartX, StartY - length);//MainGame.csi.print(StartX, StartY - length, "X");
+				buffer.setElement(Tile.WALL, StartX + 1, StartY - length);//MainGame.csi.print(StartX + 1, StartY - length, "X");
 			}
 		}
 	}
@@ -716,30 +716,30 @@ public class Map implements MapInterface {
 	{
 		for(int x = 0; x < DUNGEON_RIGHT_MAX + 1; x++)
 		{
-			if(buffer.getTile(x, DUNGEON_TOP).similar(Tile.SPACE)/*MainGame.csi.peekChar(x, DUNGEON_TOP) == '.'*/)
+			if(buffer.getElement(x, DUNGEON_TOP).similar(Tile.SPACE)/*MainGame.csi.peekChar(x, DUNGEON_TOP) == '.'*/)
 			{
-				buffer.setTile(Tile.WALL, x, DUNGEON_TOP);//MainGame.csi.print(x, DUNGEON_TOP, "X");
+				buffer.setElement(Tile.WALL, x, DUNGEON_TOP);//MainGame.csi.print(x, DUNGEON_TOP, "X");
 			}
 		}
 		for(int x = 0; x < DUNGEON_RIGHT_MAX + 1; x++)
 		{
-			if(buffer.getTile(x, DUNGEON_BOTTOM).similar(Tile.SPACE)/*MainGame.csi.peekChar(x, DUNGEON_BOTTOM) == '.'*/)
+			if(buffer.getElement(x, DUNGEON_BOTTOM).similar(Tile.SPACE)/*MainGame.csi.peekChar(x, DUNGEON_BOTTOM) == '.'*/)
 			{
-				buffer.setTile(Tile.WALL, x, DUNGEON_BOTTOM);//MainGame.csi.print(x, DUNGEON_BOTTOM, "X");
+				buffer.setElement(Tile.WALL, x, DUNGEON_BOTTOM);//MainGame.csi.print(x, DUNGEON_BOTTOM, "X");
 			}
 		}
 		for(int y = 0; y < DUNGEON_BOTTOM + 1; y++)
 		{
-			if(buffer.getTile(0, y).similar(Tile.SPACE)/*MainGame.csi.peekChar(0, y) == '.'*/)
+			if(buffer.getElement(0, y).similar(Tile.SPACE)/*MainGame.csi.peekChar(0, y) == '.'*/)
 			{
-				buffer.setTile(Tile.WALL, 0, y);//MainGame.csi.print(0, y, "X");
+				buffer.setElement(Tile.WALL, 0, y);//MainGame.csi.print(0, y, "X");
 			}
 		}
 		for(int y = 0; y < DUNGEON_BOTTOM + 1; y++)
 		{
-			if(buffer.getTile(DUNGEON_RIGHT_MAX, y).similar(Tile.SPACE)/*MainGame.csi.peekChar(DUNGEON_RIGHT_MAX, y) == '.'*/)
+			if(buffer.getElement(DUNGEON_RIGHT_MAX, y).similar(Tile.SPACE)/*MainGame.csi.peekChar(DUNGEON_RIGHT_MAX, y) == '.'*/)
 			{
-				buffer.setTile(Tile.WALL, DUNGEON_RIGHT_MAX, y);//MainGame.csi.print(DUNGEON_RIGHT_MAX, y, "X");
+				buffer.setElement(Tile.WALL, DUNGEON_RIGHT_MAX, y);//MainGame.csi.print(DUNGEON_RIGHT_MAX, y, "X");
 			}
 		}
 
@@ -749,11 +749,11 @@ public class Map implements MapInterface {
 			Room StairRoom = rooms.get(MainGame.random.nextInt(rooms.size()));
 			int StairX = StairRoom.X + 1 + MainGame.random.nextInt(StairRoom.Xsize - 1);
 			int StairY = StairRoom.Y + 1 + MainGame.random.nextInt(StairRoom.Ysize - 1);
-			if(buffer.getTile(StairX, StairY).similar(Tile.WALL)/*MainGame.csi.peekChar(StairX, StairY) == 'X'*/)
+			if(buffer.getElement(StairX, StairY).similar(Tile.WALL)/*MainGame.csi.peekChar(StairX, StairY) == 'X'*/)
 			{
 				continue;
 			}
-			buffer.setTile(Tile.STAIR, StairX, StairY);//MainGame.csi.print(StairX , StairY, "/");
+			buffer.setElement(Tile.STAIR, StairX, StairY);//MainGame.csi.print(StairX , StairY, "/");
 			break;
 		}
 	}
@@ -765,22 +765,22 @@ public class Map implements MapInterface {
 
 	@Override
 	public Tile getTile(int x, int y) {
-		return buffer.getTile(x, y);
+		return buffer.getElement(x, y);
 	}
 
 	@Override
 	public Tile getTile(IntPoint p) {
-		return buffer.getTile(p.getX(), p.getY());
+		return buffer.getElement(p.getX(), p.getY());
 	}
 
 	@Override
 	public void setTile(Tile t, int x, int y) {
-		buffer.setTile(t, x, y);
+		buffer.setElement(t, x, y);
 	}
 
 	@Override
 	public void setTile(Tile t, IntPoint p) {
-		buffer.setTile(t, p.getX(), p.getY());
+		buffer.setElement(t, p.getX(), p.getY());
 	}
 	
 	@Override
@@ -794,20 +794,6 @@ public class Map implements MapInterface {
 		return count;
 	}
 
-	@Override
-<<<<<<< HEAD:src/newGame/Map.java
-	public char getCharacter(int x, int y) {
-		return MainGame.csi.peekChar(x, y);
-	}
-
-	@Override
-	public char getCharacter(IntPoint p) {
-		return MainGame.csi.peekChar(p.getX(), p.getY());
-	}
-	
-	@Override
-=======
->>>>>>> ee0f9350753566ed1338a3d826de8650f3403ef8:src/newGame/Mapping/Map.java
 	public int getMapWidth() {
 		return DUNGEON_RIGHT_MAX - DUNGEON_LEFT_MAX;
 	}
@@ -846,7 +832,7 @@ public class Map implements MapInterface {
 	public void display(ConsoleSystemInterface csi) {
 		for(int i = 1; i <= buffer.getWidth(); i++) {
 			for(int j = 1; j <= buffer.getHeight(); j++) {
-				final Tile t = buffer.getTile(i - 1, j - 1);
+				final Tile t = buffer.getElement(i - 1, j - 1);
 				csi.print(i, j, t.getRepresentation(), t.getColor());
 			}
 		}

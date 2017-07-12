@@ -5,6 +5,7 @@ public class LevelUp {
 	
 	public int levelUpAmount(Character c)
 	{
-		return c.getexp + 1;
+		// return c.getexp + 1;
+		return 0;
 	}
 }

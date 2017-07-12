@@ -8,12 +8,16 @@ import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.Monster;
 import newGame.Entities.Weapons.LongSword;
 import newGame.Entities.Weapons.Melee;
+import newGame.Mapping.ArrayList2D;
 import newGame.Mapping.Map;
 import newGame.Mapping.MapInterface;
 import newGame.Mapping.Tile;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class MainGame {
@@ -42,17 +46,13 @@ public class MainGame {
         csi.print(x, y, text, color);
     }
 
-    public static Random random; // Random object
-    public static ConsoleSystemInterface csi; // Window (console interface)
+    public static Random random = new Random(); // Random object
+    public static ConsoleSystemInterface csi;// = new WSwingConsoleInterface(); // Window (console interface)
     public static MapInterface map; // Map of the game.
 
     private static Character character; // Character of the game.
 
     public static void main(String[] args) {
-    	//new MainGame();
-        random = new Random(); // Creates a new instance of the Random object
-        csi = new WSwingConsoleInterface(); // Creates a new instance of WSwingConsoleInterface.
-    	
         /*for(int i = 7;; i++)
     	{
     		random.setSeed(i);
@@ -62,14 +62,12 @@ public class MainGame {
     		csi.waitKey(10);
     		csi.cls();
     	}*/
-    	
-    	
-    	//new MainGame();
-        while(playing) {
-            new MainGame();
-        }
 
-        //System.exit(0);
+        // while(playing) {
+        //     new MainGame();
+        // }
+
+        System.exit(0);
     }
 
     private MainGame() {
@@ -196,21 +194,12 @@ public class MainGame {
     }
 
     private void runAI(Character c) {
-        /*
-        map.getEntities().forEach(entity -> {
-            if(entity instanceof Monster)
-            	if(((Monster) entity).FindMode)
-            		((Monster) entity).findAI(character, random.nextInt(5), 10/*((Monster) entity).Persistance);
-            	else
-            		((Monster) entity).performAI(character);
-        });
-        */
         map.getEntities().forEach(entity -> {
             if(entity instanceof Monster)
             	if(((Monster) entity).findMode)
             		((Monster) entity).findAI(character);
             	else
-            		((Monster) entity).chaseAI(character);//((Monster) entity).findAI(character, 0, 100);//performAI(c);
+            		((Monster) entity).chaseAI(character);
         });
 
         // Spawning monsters
