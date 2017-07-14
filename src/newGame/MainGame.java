@@ -48,10 +48,9 @@ public class MainGame {
     }
 
     public static Random random = new Random(); // Random object
-    public static ConsoleSystemInterface csi;//= new WSwingConsoleInterface(); // Window (console interface)
+    public static ConsoleSystemInterface csi = new WSwingConsoleInterface(); // Window (console interface)
     public static MapInterface map; // Map of the game.
-
-    private static Character character; // Character of the game.
+    public static Character character; // Character of the game.
 
     public static void main(String[] args) {
         /*for(int i = 7;; i++)
@@ -64,9 +63,9 @@ public class MainGame {
     		csi.cls();
     	}*/
 
-        //while(playing) {
-        //     new MainGame();
-        //}
+        while(playing) {
+             new MainGame();
+        }
 
         System.exit(0);
     }
@@ -91,7 +90,7 @@ public class MainGame {
         csi.refresh();
 
         requestedEnd = false;
-        map = new Map();
+        map = fetchMap();
 
         character = new Character("Justin Li", CharacterType.Wizard);
         character.setMaxHealth(25);
@@ -131,11 +130,8 @@ public class MainGame {
                 * entities/game objects on the window itself.
                 */
 
-                // Print Entities & Character information:
-                map.display(csi);
-                map.getEntities().forEach(e ->
-                        csi.print(e.getX(), e.getY(), e.getRepresentation(), e.getColor()));
-
+                // Renders the world:
+                map.render(csi);
                 character.displayInformation();
 
                 csi.refresh();
@@ -167,9 +163,9 @@ public class MainGame {
                     case 10: // Use item on floor ('Enter')
                         // Creates a new map interface/object when the
                         // player presses the enter on a stair character.
-                        if(character.getPrevCharOfMap() == '/') {
+                        if(map.getTile(character.getPosition()).equalsTo(Tile.STAIR)) {
                             csi.cls();
-                            map = new Map();
+                            map = fetchMap();
                             character.spawn(Tile.STAIR);
                         }
                         break;
@@ -194,13 +190,19 @@ public class MainGame {
         }
     }
 
+    private MapInterface fetchMap() {
+        final Map map = new Map();
+        map.setRenderingLightSource(true);
+        map.setLightSourceRadius(5.0f);
+        return map;
+    }
+
     private void runAI(Character c) {
         map.getEntities().forEach(entity -> {
-            if(entity instanceof Monster)
-            	if(((Monster) entity).findMode)
-            		((Monster) entity).findAI(character);
-            	else
-            		((Monster) entity).chaseAI(character);
+            if(entity instanceof Monster) {
+                final Monster mon = (Monster) entity;
+                mon.performAI(character);
+            }
         });
 
         // Spawning monsters

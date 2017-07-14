@@ -13,14 +13,17 @@ public interface MapInterface {
     Tile getTile(IntPoint p);
     void setTile(Tile t, int x, int y);
     void setTile(Tile t, IntPoint p);
+    boolean isPassableTile(int x, int y);
     int getEntityCountOf(String name);
+    boolean containsEntity(int x, int y);
+    Entity getEntity(int x, int y);
     int getMapWidth();
     int getMapHeight();
     int getMinX();
     int getMinY();
     int getMaxX();
     int getMaxY();
-    void display(ConsoleSystemInterface csi);
+    void render(ConsoleSystemInterface csi);
 
     List<Entity> getEntities();
 }

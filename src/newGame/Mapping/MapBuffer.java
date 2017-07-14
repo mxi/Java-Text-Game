@@ -37,9 +37,7 @@ public class MapBuffer extends ArrayList2D<Tile> {
      * @return Position of a located tile equivalent to the one specified.
      */
     public IntPoint randomLoc(Tile oftype) {
-
-
-        final int maxAttempts = 512;
+        final int maxAttempts = 1024;
         int attempts = 0;
         int rx;
         int ry;

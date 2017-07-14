@@ -11,14 +11,21 @@ import java.util.List;
 
 public class Character extends Entity {
 
+    private static final int maxLevel = 100;
+    private static final int defExpUntilLevelUp = 1024;
+    private static final float expIncPerLevel = 1.12f;
+
     private final int MAX_INVENTORY_STACKS = 3;
     private final char[] INV_CALLER = { 'E', 'R', 'T' };
 
     private CharacterType type;
     private Shield shield;
-
     private List<InventoryStack<Item>> inventory = new ArrayList<>();
     private InventoryStack<Item> inHand;
+
+    private int level = 1;
+    private float expUntilLevelUp = defExpUntilLevelUp;
+    private float exp = 0;
 
     public Character(String iname, CharacterType itype) {
         setName(iname);
@@ -83,6 +90,44 @@ public class Character extends Entity {
         return type.Type;
     }
 
+    @Override
+    public int getLevel() {
+        return level;
+    }
+
+    @Override
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public float getExpUntilLevelUp() {
+        return expUntilLevelUp;
+    }
+
+    public void setExpUntilLevelUp(float expUntilLevelUp) {
+        this.expUntilLevelUp = expUntilLevelUp;
+    }
+
+    public float getExp() {
+        return exp;
+    }
+
+    public void setExp(float exp) {
+        this.exp = exp;
+    }
+
+    public void addExp(float xp) {
+        final float added = exp + xp;
+        if(added > expUntilLevelUp) {
+            exp = expUntilLevelUp - added;
+            expUntilLevelUp = defExpUntilLevelUp * ((float) Math.pow(expIncPerLevel, getLevel()));
+            characterUpgrade();
+        }
+        else {
+            exp = added;
+        }
+    }
+
     public void displayInformation() {
         int baseY = MainGame.map.getMapHeight() + 1;
 
@@ -125,12 +170,11 @@ public class Character extends Entity {
     }
 
     @Override
-    protected void onEntityUpgrade() {
-
-    }
-
-    @Override
     public void damage(int amount) {
         setHealth(getHealth() - (shield == null ? amount : shield.calcNewDamage(amount)));
+    }
+
+    private void characterUpgrade() {
+
     }
 }

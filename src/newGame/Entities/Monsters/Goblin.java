@@ -3,7 +3,6 @@ package newGame.Entities.Monsters;
 import newGame.Entities.Character;
 import newGame.Entities.Shield;
 import newGame.Entities.Weapons.Knife;
-import newGame.IntPoint;
 import sz.csi.ConsoleSystemInterface;
 
 public class Goblin extends Monster {
@@ -25,24 +24,13 @@ public class Goblin extends Monster {
     }
 
     @Override
-    protected void onMonsterUpgrade() {
-
-    }
-
-    @Override
     public void performAI(Character character) {
+        if(distance(character) <= getMeleeWeapon().getRange()) {
+            getMeleeWeapon().useItem();
+        }
         if(!inSight(character))
             findAI(character);
         else
             chaseAI(character);
-
-        IntPoint cpos = character.getPosition();
-        if(cpos.isEquivalentTo(previewMove(0, -1))
-                || cpos.isEquivalentTo(previewMove(1, 0))
-                || cpos.isEquivalentTo(previewMove(0, 1))
-                || cpos.isEquivalentTo(previewMove(-1, 0)))
-        {
-            getMeleeWeapon().useItem();
-        }
     }
 }
