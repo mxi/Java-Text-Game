@@ -1,5 +1,6 @@
 package newGame.Mapping;
 
+import newGame.Entities.Entity;
 import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Item;
 import sz.csi.ConsoleSystemInterface;

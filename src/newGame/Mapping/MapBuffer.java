@@ -3,6 +3,13 @@ package newGame.Mapping;
 import newGame.IntPoint;
 import newGame.MainGame;
 
+/**
+ * Provides a way to store multiple types of data
+ * in one tile of the map.
+ *
+ * (Previously used the 'char' type; it didn't allow
+ * storage of InventoryStacks)
+ */
 public class MapBuffer extends ArrayList2D<Tile> {
 
     /**
@@ -30,6 +37,8 @@ public class MapBuffer extends ArrayList2D<Tile> {
      * @return Position of a located tile equivalent to the one specified.
      */
     public IntPoint randomLoc(Tile oftype) {
+
+
         final int maxAttempts = 512;
         int attempts = 0;
         int rx;

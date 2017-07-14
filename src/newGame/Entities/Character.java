@@ -17,7 +17,7 @@ public class Character extends Entity {
     private CharacterType type;
     private Shield shield;
 
-    private List<InventoryStack<? extends Item>> inventory = new ArrayList<>();
+    private List<InventoryStack<Item>> inventory = new ArrayList<>();
     private InventoryStack<Item> inHand;
 
     public Character(String iname, CharacterType itype) {
@@ -45,14 +45,14 @@ public class Character extends Entity {
         return inventory.get(index);
     }
 
-    public void setStack(InventoryStack<? extends Item> stack, int index) {
+    public void setStack(InventoryStack<Item> stack, int index) {
         if(index >= MAX_INVENTORY_STACKS)
             return;
 
         inventory.set(index, stack);
     }
 
-    public void addStack(InventoryStack<? extends Item> stack) {
+    public void addStack(InventoryStack<Item> stack) {
         if(inventory.size() >= MAX_INVENTORY_STACKS)
             return;
 

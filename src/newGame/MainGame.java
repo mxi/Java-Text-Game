@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Predicate;
 
 public class MainGame {
 
@@ -47,7 +48,7 @@ public class MainGame {
     }
 
     public static Random random = new Random(); // Random object
-    public static ConsoleSystemInterface csi;// = new WSwingConsoleInterface(); // Window (console interface)
+    public static ConsoleSystemInterface csi;//= new WSwingConsoleInterface(); // Window (console interface)
     public static MapInterface map; // Map of the game.
 
     private static Character character; // Character of the game.
@@ -63,9 +64,9 @@ public class MainGame {
     		csi.cls();
     	}*/
 
-        while(playing) {
-            new MainGame();
-        }
+        //while(playing) {
+        //     new MainGame();
+        //}
 
         System.exit(0);
     }
