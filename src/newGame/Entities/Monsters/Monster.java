@@ -46,41 +46,6 @@ public abstract class Monster extends Entity {
         return meleeWeapon != null;
     }
 
-    @Override
-    public void onEntityUpgrade() {
-        onMonsterUpgrade();
-    }
-
-    public boolean playerInSight(Character character) {
-        for(int x = getX();; x++) {
-            if(MainGame.csi.peekChar(x, getY()) == '@')
-                return true;
-            else if(MainGame.csi.peekChar(x, getY()) == 'X')
-                break;
-        }
-        for(int x = getX();; x--) {
-            if(MainGame.csi.peekChar(x, getY()) == '@')
-                return true;
-            else if(MainGame.csi.peekChar(x, getY()) == 'X')
-            {
-            	System.out.println(getX()-x);
-                break;
-            }
-        }
-        for(int y = getY();; y--) {
-            if(MainGame.csi.peekChar(getX(), y) == '@')
-                return true;
-            else if(MainGame.csi.peekChar(getX(), y) == 'X')
-                break;
-        }
-        for(int y = getY();; y++) {
-            if(MainGame.csi.peekChar(getX(), y) == '@')
-                return true;
-            else if(MainGame.csi.peekChar(getX(), y) == 'X')
-                return false;
-        }
-    }
-
     /*
     up 0 (0,-1)  goes right
     right 1 (1,0) goes down
@@ -88,7 +53,7 @@ public abstract class Monster extends Entity {
     left 3 (-1,0) goes up
      */
 
-    public void findAI(Character character) {
+    protected void findAI(Character character) {
         if(findDirection == 3) { //left
             if(MainGame.csi.peekChar(previewMove(-1,0).x, previewMove(-1,0).y) == '.') {
                 // go left
@@ -180,7 +145,7 @@ public abstract class Monster extends Entity {
             findCount++;
     }
 
-    public void chaseAI(Character c) {
+    protected void chaseAI(Character c) {
         int deltaX = getX() - c.getX();
         int deltaY = getY() - c.getY();
 
@@ -188,12 +153,12 @@ public abstract class Monster extends Entity {
         int absY = Math.abs(deltaY);
 
         if(absX > absY) {
-            if (!MainGame.map.getTile(previewMove(deltaX > 0 ? -1 : 1, 0)).similar(Tile.WALL)/*MainGame.map.getCharacter(previewMove(deltaX > 0 ? -1 : 1, 0)) != 'X'*/)
+            if (!MainGame.map.getTile(previewMove(deltaX > 0 ? -1 : 1, 0)).isSolid())
                 move(deltaX > 0 ? -1 : 1, 0);
             else
                 move(0, deltaY > 0 ? -1 : 1);
         } else if(absY > absX) {
-            if(!MainGame.map.getTile(previewMove(0, deltaY > 0 ? -1 : 1)).similar(Tile.WALL)/*MainGame.map.getCharacter(previewMove(0, deltaY > 0 ? -1 : 1)) != 'X'*/)
+            if(!MainGame.map.getTile(previewMove(0, deltaY > 0 ? -1 : 1)).similar(Tile.WALL))
                 move(0, deltaY > 0 ? -1 : 1);
             else
                 move(deltaX > 0 ? -1 : 1, 0);
@@ -213,8 +178,6 @@ public abstract class Monster extends Entity {
             }
         }
     }
-
-    protected abstract void onMonsterUpgrade();
 
     public abstract void performAI(Character character);
 }

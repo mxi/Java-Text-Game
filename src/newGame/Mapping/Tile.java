@@ -1,12 +1,13 @@
 package newGame.Mapping;
 
+import newGame.Entities.Entity;
 import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Item;
 import sz.csi.ConsoleSystemInterface;
 
 public enum Tile {
 
-    EMPTY(null, ' ', true, ConsoleSystemInterface.BLACK),
+    EMPTY(null, '~', true, ConsoleSystemInterface.GRAY),
     WALL(null, 'X', true, ConsoleSystemInterface.WHITE),
 	SPACE(null, '.', false, ConsoleSystemInterface.WHITE),
 	STAIR(null, '/', false, ConsoleSystemInterface.WHITE);
