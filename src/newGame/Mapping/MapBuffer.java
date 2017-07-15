@@ -14,6 +14,7 @@ import newGame.MainGame;
  */
 public class MapBuffer extends ArrayList2D<Tile> {
 
+    private static final int chanceVal = 1000; // Value for MainGame.random.nextInt();
     /**
      * Default MapBuffer constructor; uses
      * default settings for the 2d ArrayList inside the
@@ -53,8 +54,7 @@ public class MapBuffer extends ArrayList2D<Tile> {
                 if(t == null || !t.equalsTo(scaton) || t.hasItems()) {
                     continue;
                 }
-                final int chance = MainGame.random.nextInt(100) + 1;
-                System.out.println(chance);
+                final int chance = MainGame.random.nextInt(chanceVal) + 1;
                 if(chance <= rarity) {
                     is = new InventoryStack<>();
                     if (cmax - cmin <= 0) {

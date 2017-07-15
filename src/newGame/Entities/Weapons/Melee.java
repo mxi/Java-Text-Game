@@ -21,7 +21,7 @@ public abstract class Melee extends Item {
 
     public Melee() {
         setRepresentation('M');
-        setColor(ConsoleSystemInterface.LEMON);
+        setColor(ConsoleSystemInterface.MAGENTA);
         setName("Melee");
         damageOutput = 1;
         swingRange = 0;

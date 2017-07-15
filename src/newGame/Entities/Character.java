@@ -4,6 +4,7 @@ import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Weapons.Fist;
 import newGame.Entities.Weapons.Melee;
 import newGame.MainGame;
+import newGame.Mapping.Tile;
 import sz.csi.ConsoleSystemInterface;
 
 import java.util.ArrayList;
@@ -140,6 +141,16 @@ public class Character extends Entity {
 
         MainGame.csi.print(25, baseY + 1, "In Hand: "); // +11
         MainGame.csi.print(25, baseY + 2, "Inventory: "); // +11
+
+        final Tile onTile = MainGame.map.getTile(getX(), getY());
+        if(onTile.hasItems()) {
+            final Item sample = onTile.getInventoryStack().sampleItem();
+            MainGame.csi.print(1, baseY + 3, "[P] Pickup: ", ConsoleSystemInterface.WHITE);
+            MainGame.csi.print(12, baseY + 3, sample.getName(), sample.getColor());
+        }
+        else {
+            MainGame.csi.print(1, baseY + 3, "Nothing to pickup.");
+        }
 
         if(inHand != null && inHand.isLoneItem() && inHand.getItem() instanceof Melee) {
             Item handled = inHand.getItem();

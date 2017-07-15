@@ -92,7 +92,7 @@ public class MainGame {
 
         requestedEnd = false;
         map = fetchMap();
-        map.getMapBuffer().scatter(new Knife(), Tile.SPACE, 1, 1, 5);
+        map.getMapBuffer().scatter(new Knife(), Tile.SPACE, 1, 1, 4);
 
         character = new Character("Justin Li", CharacterType.Wizard);
         character.setMaxHealth(25);
@@ -171,6 +171,17 @@ public class MainGame {
                             character.spawn(Tile.STAIR);
                         }
                         break;
+                    case 80: // Drop in hand ('80')
+                        break;
+                    case 68: // Inventory1 ('E')
+                        break;
+                    case 81: // Inventory2 ('R')
+                        break;
+                    case 83: // Inventory3 ('T')
+                        break;
+                    case 79: // Pickup item ('P')
+
+                        break;
                     default:
                         System.out.println(key);
                         break;
@@ -196,6 +207,7 @@ public class MainGame {
         final Map map = new Map();
         map.setRenderingLightSource(false);
         map.setLightSourceRadius(5.8f);
+        map.getMapBuffer().scatter(new Knife(), Tile.SPACE, 1, 1, 3);
         return map;
     }
 

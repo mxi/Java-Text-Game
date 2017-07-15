@@ -293,7 +293,7 @@ public abstract class Entity extends Representable {
         }
         else {
             MainGame.map.getEntities().removeIf(entity -> entity.equals(this));
-            MainGame.map.setTile(Tile.SPACE, getX(), getY());//MainGame.map.setCharacter(prevCharOfMap, getX(), getY(), prevColorOfMap);
+            MainGame.map.setTile(Tile.SPACE, getX() - 1, getY() - 1);//MainGame.map.setCharacter(prevCharOfMap, getX(), getY(), prevColorOfMap);
 
             if(this instanceof Character) {
                 MainGame.requestEnd();
