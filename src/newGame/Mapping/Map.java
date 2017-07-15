@@ -793,21 +793,8 @@ public class Map implements MapInterface {
 
 		return count;
 	}
-
-	@Override
-<<<<<<< HEAD:src/newGame/Map.java
-	public char getCharacter(int x, int y) {
-		return MainGame.csi.peekChar(x, y);
-	}
-
-	@Override
-	public char getCharacter(IntPoint p) {
-		return MainGame.csi.peekChar(p.getX(), p.getY());
-	}
 	
 	@Override
-=======
->>>>>>> ee0f9350753566ed1338a3d826de8650f3403ef8:src/newGame/Mapping/Map.java
 	public int getMapWidth() {
 		return DUNGEON_RIGHT_MAX - DUNGEON_LEFT_MAX;
 	}
