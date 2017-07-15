@@ -3,8 +3,10 @@ package newGame.Entities.Weapons;
 import newGame.Entities.Character;
 import newGame.Entities.Entity;
 import newGame.Entities.Item;
+import newGame.Entities.Monsters.Monster;
 import newGame.IntPoint;
 import newGame.MainGame;
+import sz.csi.ConsoleSystemInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,33 +19,13 @@ public abstract class Melee extends Item {
     private float swingRange;
     private float range;
 
-    private int expRewardForKill;
-    private int expRewardForHit;
-
     public Melee() {
+        setRepresentation('M');
+        setColor(ConsoleSystemInterface.LEMON);
         setName("Melee");
         damageOutput = 1;
         swingRange = 0;
         range = (float) Math.sqrt(2);
-
-        expRewardForKill = 32;
-        expRewardForHit = 3;
-    }
-
-    public int getExpRewardForKill() {
-        return expRewardForKill;
-    }
-
-    public void setExpRewardForKill(int expRewardForKill) {
-        this.expRewardForKill = expRewardForKill;
-    }
-
-    public int getExpRewardForHit() {
-        return expRewardForHit;
-    }
-
-    public void setExpRewardForHit(int expRewardForHit) {
-        this.expRewardForHit = expRewardForHit;
     }
 
     public float getSwingRange() {
@@ -77,11 +59,11 @@ public abstract class Melee extends Item {
     public void attack(Entity entity) {
         onAttack(entity);
 
-        if(entity.isDead() && getOwner() instanceof Character) {
-            rewardForKill((Character) getOwner());
+        if(entity.isDead() && entity instanceof Monster && getOwner() instanceof Character) {
+            Character c = (Character) getOwner();
+            Monster m = (Monster) entity;
+            c.addExp(m.expReward);
             entity.removeAndClean();
-        } else if(getOwner() instanceof Character) {
-            rewardForHit((Character) getOwner());
         }
     }
 
@@ -123,10 +105,6 @@ public abstract class Melee extends Item {
     }
 
     protected abstract void onAttack(Entity entity);
-
-    protected abstract void rewardForKill(Character entity);
-
-    protected abstract void rewardForHit(Character entity);
 
     @Override
     protected void onItemUse() {

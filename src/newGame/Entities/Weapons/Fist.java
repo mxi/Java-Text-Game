@@ -10,8 +10,6 @@ public class Fist extends Melee {
         setName("Fist");
         setMaxDurability(999);
         setDamageOutput(1);
-        setExpRewardForHit(1);
-        setExpRewardForKill(2);
         setRepresentation('F');
         setColor(ConsoleSystemInterface.CYAN);
     }
@@ -20,17 +18,7 @@ public class Fist extends Melee {
     protected void onAttack(Entity entity) {
         entity.damage(getDamageOutput());
 
-        if(getUsesLeft() == 1)
+        if (getUsesLeft() == 1)
             setTimesUsed(0);
-    }
-
-    @Override
-    protected void rewardForKill(Character entity) {
-        entity.addExp(getExpRewardForKill());
-    }
-
-    @Override
-    protected void rewardForHit(Character entity) {
-        entity.addExp(getExpRewardForHit());
     }
 }

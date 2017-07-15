@@ -417,6 +417,7 @@ public class ArrayList2D<T> {
                 out.write(rbrkt);
                 out.write(nline);
             }
+            out.flush();
             if(close) {
                 out.close();
             }

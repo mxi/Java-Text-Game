@@ -20,14 +20,4 @@ public class LongSword extends Melee {
     protected void onAttack(Entity entity) {
         entity.damage(getDamageOutput());
     }
-
-    @Override
-    protected void rewardForKill(Character character) {
-        character.addExp(getExpRewardForKill());
-    }
-
-    @Override
-    protected void rewardForHit(Character character) {
-        character.addExp(getExpRewardForHit());
-    }
 }

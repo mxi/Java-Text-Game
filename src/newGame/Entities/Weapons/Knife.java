@@ -23,14 +23,4 @@ public class Knife extends Melee {
     protected void onAttack(Entity entity) {
 
     }
-
-    @Override
-    protected void rewardForKill(Character character) {
-        character.addExp(getExpRewardForKill());
-    }
-
-    @Override
-    protected void rewardForHit(Character character) {
-        character.addExp(getExpRewardForHit());
-    }
 }

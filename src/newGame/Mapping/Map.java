@@ -19,7 +19,7 @@ public class Map implements MapInterface {
 	private int curX;
 	private int curY;
 
-	private MapBuffer buffer = new MapBuffer(DUNGEON_RIGHT_MAX - DUNGEON_LEFT_MAX, DUNGEON_BOTTOM - DUNGEON_TOP);
+	private MapBuffer buffer = new MapBuffer(DUNGEON_RIGHT_MAX - DUNGEON_LEFT_MAX + 1, DUNGEON_BOTTOM - DUNGEON_TOP + 1);
 	private List<Entity> entities = new ArrayList<>();
 	private List<Room> rooms;
 	private boolean renderLightSource = false; // Whether to have the character be the light source of the map.
@@ -117,17 +117,17 @@ public class Map implements MapInterface {
 					Y = r.Y;
 					for(X = r.X; X < r.X + r.Xsize - 1; X++)
 					{
-						buffer.setElement(Tile.WALL, X, Y);//MainGame.csi.print(X, Y, "X");
+						buffer.setElement(Tile.wall(), X, Y);//MainGame.csi.print(X, Y, "X");
 						for(YS = r.Ysize - 1; YS > 1; YS--)
 						{
-							buffer.setElement(Tile.SPACE, X, Y + YS - 1);//MainGame.csi.print(X, Y + YS - 1, ".");
+							buffer.setElement(Tile.space(), X, Y + YS - 1);//MainGame.csi.print(X, Y + YS - 1, ".");
 						}
-						buffer.setElement(Tile.WALL, X, Y + r.Ysize - 1);//MainGame.csi.print(X, Y + r.Ysize - 1, "X");
+						buffer.setElement(Tile.wall(), X, Y + r.Ysize - 1);//MainGame.csi.print(X, Y + r.Ysize - 1, "X");
 					}
 					for(X = r.X; Y <= r.Y + r.Ysize - 1; Y++)
 					{
-						buffer.setElement(Tile.WALL, X, Y);//MainGame.csi.print(X, Y, "X");
-						buffer.setElement(Tile.WALL, X + XS - 1, Y);MainGame.csi.print(X + XS - 1, Y, "X");
+						buffer.setElement(Tile.wall(), X, Y);//MainGame.csi.print(X, Y, "X");
+						buffer.setElement(Tile.wall(), X + XS - 1, Y);MainGame.csi.print(X + XS - 1, Y, "X");
 					}
 					curRoom++;
 				}else{
@@ -290,53 +290,53 @@ public class Map implements MapInterface {
 		{
 			for(int count = 0; count <= length; count++)
 			{
-				buffer.setElement(Tile.WALL, StartX + count, StartY - 1);//MainGame.csi.print(StartX + count, StartY - 1, "X");
-				buffer.setElement(Tile.SPACE, StartX + count, StartY);//MainGame.csi.print(StartX + count, StartY, ".");
-				buffer.setElement(Tile.WALL, StartX + count, StartY + 1);//MainGame.csi.print(StartX + count, StartY + 1, "X");
+				buffer.setElement(Tile.wall(), StartX + count, StartY - 1);//MainGame.csi.print(StartX + count, StartY - 1, "X");
+				buffer.setElement(Tile.space(), StartX + count, StartY);//MainGame.csi.print(StartX + count, StartY, ".");
+				buffer.setElement(Tile.wall(), StartX + count, StartY + 1);//MainGame.csi.print(StartX + count, StartY + 1, "X");
 			}if(StartX + length ==  DUNGEON_RIGHT_MAX)
 			{
-				buffer.setElement(Tile.WALL, StartX + length, StartY - 1);//MainGame.csi.print(StartX + length, StartY - 1, "X");
-				buffer.setElement(Tile.WALL, StartX + length, StartY);//MainGame.csi.print(StartX + length, StartY, "X");
-				buffer.setElement(Tile.WALL, StartX + length, StartY + 1);//MainGame.csi.print(StartX + length, StartY + 1, "X");
+				buffer.setElement(Tile.wall(), StartX + length, StartY - 1);//MainGame.csi.print(StartX + length, StartY - 1, "X");
+				buffer.setElement(Tile.wall(), StartX + length, StartY);//MainGame.csi.print(StartX + length, StartY, "X");
+				buffer.setElement(Tile.wall(), StartX + length, StartY + 1);//MainGame.csi.print(StartX + length, StartY + 1, "X");
 			}
 		}else if(dx == -1)
 		{
 			for(int count = 0; count <= length; count++)
 			{
-				buffer.setElement(Tile.WALL, StartX - count, StartY - 1);//MainGame.csi.print(StartX - count, StartY - 1, "X");
-				buffer.setElement(Tile.SPACE, StartX - count, StartY);//MainGame.csi.print(StartX - count, StartY, ".");
-				buffer.setElement(Tile.WALL, StartX - count, StartY + 1);//MainGame.csi.print(StartX - count, StartY + 1, "X");
+				buffer.setElement(Tile.wall(), StartX - count, StartY - 1);//MainGame.csi.print(StartX - count, StartY - 1, "X");
+				buffer.setElement(Tile.space(), StartX - count, StartY);//MainGame.csi.print(StartX - count, StartY, ".");
+				buffer.setElement(Tile.wall(), StartX - count, StartY + 1);//MainGame.csi.print(StartX - count, StartY + 1, "X");
 			}if(StartX - length ==  DUNGEON_LEFT_MAX + 1)
 			{
-				buffer.setElement(Tile.WALL, StartX - length, StartY - 1);//MainGame.csi.print(StartX - length, StartY - 1, "X");
-				buffer.setElement(Tile.WALL, StartX - length, StartY);//MainGame.csi.print(StartX - length, StartY, "X");
-				buffer.setElement(Tile.WALL, StartX - length, StartY + 1);//MainGame.csi.print(StartX - length, StartY + 1, "X");
+				buffer.setElement(Tile.wall(), StartX - length, StartY - 1);//MainGame.csi.print(StartX - length, StartY - 1, "X");
+				buffer.setElement(Tile.wall(), StartX - length, StartY);//MainGame.csi.print(StartX - length, StartY, "X");
+				buffer.setElement(Tile.wall(), StartX - length, StartY + 1);//MainGame.csi.print(StartX - length, StartY + 1, "X");
 			}
 		}else if(dy == 1)
 		{
 			for(int count = 0; count <= length; count++)
 			{
-				buffer.setElement(Tile.WALL, StartX - 1, StartY + count);//MainGame.csi.print(StartX - 1, StartY + count, "X");
-				buffer.setElement(Tile.SPACE, StartX, StartY + count);//MainGame.csi.print(StartX, StartY + count, ".");
-				buffer.setElement(Tile.WALL, StartX + 1, StartY + count);//MainGame.csi.print(StartX + 1, StartY + count, "X");
+				buffer.setElement(Tile.wall(), StartX - 1, StartY + count);//MainGame.csi.print(StartX - 1, StartY + count, "X");
+				buffer.setElement(Tile.space(), StartX, StartY + count);//MainGame.csi.print(StartX, StartY + count, ".");
+				buffer.setElement(Tile.wall(), StartX + 1, StartY + count);//MainGame.csi.print(StartX + 1, StartY + count, "X");
 			}if(StartY + length == DUNGEON_BOTTOM)
 			{
-				buffer.setElement(Tile.WALL, StartX - 1, StartY + length);//MainGame.csi.print(StartX - 1, StartY + length, "X");
-				buffer.setElement(Tile.WALL, StartX, StartY + length);//MainGame.csi.print(StartX, StartY + length, "X");
-				buffer.setElement(Tile.WALL, StartX + 1, StartY + length);//MainGame.csi.print(StartX + 1, StartY + length, "X");
+				buffer.setElement(Tile.wall(), StartX - 1, StartY + length);//MainGame.csi.print(StartX - 1, StartY + length, "X");
+				buffer.setElement(Tile.wall(), StartX, StartY + length);//MainGame.csi.print(StartX, StartY + length, "X");
+				buffer.setElement(Tile.wall(), StartX + 1, StartY + length);//MainGame.csi.print(StartX + 1, StartY + length, "X");
 			}
 		}else if(dy == -1)
 		{
 			for(int count = 0; count <= length; count++)
 			{
-				buffer.setElement(Tile.WALL, StartX - 1, StartY - count);//MainGame.csi.print(StartX - 1, StartY - count, "X");
-				buffer.setElement(Tile.SPACE, StartX, StartY - count);//MainGame.csi.print(StartX, StartY - count, ".");
-				buffer.setElement(Tile.WALL, StartX + 1, StartY - count);//MainGame.csi.print(StartX + 1, StartY - count, "X");
+				buffer.setElement(Tile.wall(), StartX - 1, StartY - count);//MainGame.csi.print(StartX - 1, StartY - count, "X");
+				buffer.setElement(Tile.space(), StartX, StartY - count);//MainGame.csi.print(StartX, StartY - count, ".");
+				buffer.setElement(Tile.wall(), StartX + 1, StartY - count);//MainGame.csi.print(StartX + 1, StartY - count, "X");
 			}if(StartY - length == DUNGEON_TOP + 1)
 			{
-				buffer.setElement(Tile.WALL, StartX - 1, StartY - length);//MainGame.csi.print(StartX - 1, StartY - length, "X");
-				buffer.setElement(Tile.WALL, StartX, StartY - length);//MainGame.csi.print(StartX, StartY - length, "X");
-				buffer.setElement(Tile.WALL, StartX + 1, StartY - length);//MainGame.csi.print(StartX + 1, StartY - length, "X");
+				buffer.setElement(Tile.wall(), StartX - 1, StartY - length);//MainGame.csi.print(StartX - 1, StartY - length, "X");
+				buffer.setElement(Tile.wall(), StartX, StartY - length);//MainGame.csi.print(StartX, StartY - length, "X");
+				buffer.setElement(Tile.wall(), StartX + 1, StartY - length);//MainGame.csi.print(StartX + 1, StartY - length, "X");
 			}
 		}
 	}
@@ -723,28 +723,28 @@ public class Map implements MapInterface {
 		{
 			if(buffer.getElement(x, DUNGEON_TOP).equalsTo(Tile.SPACE)/*MainGame.csi.peekChar(x, DUNGEON_TOP) == '.'*/)
 			{
-				buffer.setElement(Tile.WALL, x, DUNGEON_TOP);//MainGame.csi.print(x, DUNGEON_TOP, "X");
+				buffer.setElement(Tile.wall(), x, DUNGEON_TOP);//MainGame.csi.print(x, DUNGEON_TOP, "X");
 			}
 		}
 		for(int x = 0; x < DUNGEON_RIGHT_MAX + 1; x++)
 		{
 			if(buffer.getElement(x, DUNGEON_BOTTOM).equalsTo(Tile.SPACE)/*MainGame.csi.peekChar(x, DUNGEON_BOTTOM) == '.'*/)
 			{
-				buffer.setElement(Tile.WALL, x, DUNGEON_BOTTOM);//MainGame.csi.print(x, DUNGEON_BOTTOM, "X");
+				buffer.setElement(Tile.wall(), x, DUNGEON_BOTTOM);//MainGame.csi.print(x, DUNGEON_BOTTOM, "X");
 			}
 		}
 		for(int y = 0; y < DUNGEON_BOTTOM + 1; y++)
 		{
 			if(buffer.getElement(0, y).equalsTo(Tile.SPACE)/*MainGame.csi.peekChar(0, y) == '.'*/)
 			{
-				buffer.setElement(Tile.WALL, 0, y);//MainGame.csi.print(0, y, "X");
+				buffer.setElement(Tile.wall(), 0, y);//MainGame.csi.print(0, y, "X");
 			}
 		}
 		for(int y = 0; y < DUNGEON_BOTTOM + 1; y++)
 		{
 			if(buffer.getElement(DUNGEON_RIGHT_MAX, y).equalsTo(Tile.SPACE)/*MainGame.csi.peekChar(DUNGEON_RIGHT_MAX, y) == '.'*/)
 			{
-				buffer.setElement(Tile.WALL, DUNGEON_RIGHT_MAX, y);//MainGame.csi.print(DUNGEON_RIGHT_MAX, y, "X");
+				buffer.setElement(Tile.wall(), DUNGEON_RIGHT_MAX, y);//MainGame.csi.print(DUNGEON_RIGHT_MAX, y, "X");
 			}
 		}
 
@@ -758,7 +758,7 @@ public class Map implements MapInterface {
 			{
 				continue;
 			}
-			buffer.setElement(Tile.STAIR, StairX, StairY);//MainGame.csi.print(StairX , StairY, "/");
+			buffer.setElement(Tile.stair(), StairX, StairY);//MainGame.csi.print(StairX , StairY, "/");
 			break;
 		}
 	}
@@ -882,7 +882,7 @@ public class Map implements MapInterface {
 				if(renderLightSource && MainGame.character.distance(i, j) > lightSourceRadius) {
 					continue;
 				}
-				if(items == null || items.getSize() == 0) {
+				if(items == null || items.getSize() <= 0) {
 					csi.print(i, j, t.getRepresentation(), t.getColor());
 				}
 				else {

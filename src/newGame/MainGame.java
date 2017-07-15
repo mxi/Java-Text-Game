@@ -6,6 +6,7 @@ import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Item;
 import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.Monster;
+import newGame.Entities.Weapons.Knife;
 import newGame.Entities.Weapons.LongSword;
 import newGame.Entities.Weapons.Melee;
 import newGame.Mapping.ArrayList2D;
@@ -91,6 +92,7 @@ public class MainGame {
 
         requestedEnd = false;
         map = fetchMap();
+        map.getMapBuffer().scatter(new Knife(), Tile.SPACE, 1, 1, 5);
 
         character = new Character("Justin Li", CharacterType.Wizard);
         character.setMaxHealth(25);
@@ -192,8 +194,8 @@ public class MainGame {
 
     private MapInterface fetchMap() {
         final Map map = new Map();
-        map.setRenderingLightSource(true);
-        map.setLightSourceRadius(5.0f);
+        map.setRenderingLightSource(false);
+        map.setLightSourceRadius(5.8f);
         return map;
     }
 

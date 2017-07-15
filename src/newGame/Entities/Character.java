@@ -97,7 +97,7 @@ public class Character extends Entity {
 
     @Override
     public void setLevel(int level) {
-        this.level = level;
+        this.level = Math.min(Math.max(level, 0), maxLevel);
     }
 
     public float getExpUntilLevelUp() {
