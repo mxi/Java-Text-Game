@@ -1,85 +1,51 @@
 package newGame.Mapping;
 
-import java.util.ArrayList;
-import java.util.List;
+import newGame.IntPoint;
+import newGame.MainGame;
 
-public class MapBuffer {
+/**
+ * Provides a way to store multiple types of data
+ * in one tile of the map.
+ *
+ * (Previously used the 'char' type; it didn't allow
+ * storage of InventoryStacks)
+ */
+public class MapBuffer extends ArrayList2D<Tile> {
 
-    private List<List<Tile>> tiles;
-    private int width;
-    private int height;
-
+    /**
+     * Default MapBuffer constructor; uses
+     * default settings for the 2d ArrayList inside the
+     * ArrayList2D default constructor.
+     */
     public MapBuffer() {
-        tiles = new ArrayList<>();
-        width = 0;
-        height = 0;
+        super();
     }
 
+    /**
+     * Constructor that will initialize the super class with
+     * the width and height parameters.
+     * @param width Width of the map buffer.
+     * @param height Height of the map buffer.
+     */
     public MapBuffer(int width, int height) {
-        tiles = new ArrayList<>();
-        setHeight(height);
-        setWidth(width);
+        super(width, height);
     }
 
-    public void setTile(Tile t, int x, int y) {
-        if(y >= tiles.size()) {
-            setHeight(y);
+    /**
+     * Randomly picks a location of a sepcified type.
+     * @param oftype Tile type to find a location on.
+     * @return Position of a located tile equivalent to the one specified.
+     */
+    public IntPoint randomLoc(Tile oftype) {
+        int rx;
+        int ry;
+        Tile t;
+        do {
+            rx = MainGame.random.nextInt(getWidth());
+            ry = MainGame.random.nextInt(getHeight());
+            t = getElement(rx, ry);
         }
-        if(x >= tiles.get(y).size()) {
-            setWidth(x);
-        }
-        tiles.get(y).set(x, t);
-    }
-
-    public Tile getTile(int x, int y) {
-        if(x < width && y < height) {
-            return tiles.get(y).get(x);
-        }
-        else {
-            return Tile.EMPTY;
-        }
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-        fitToWidth(width);
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-        fitToHeight(height);
-    }
-
-    private void fitTo(int x, int y) {
-        fitToHeight(y);
-        fitToWidth(x);
-    }
-
-    private void fitToHeight(int y) {
-        final int oldtsize = tiles.size();
-        for(int i = 0; i < (y - oldtsize) + 1; i++) {
-            final List<Tile> tileRow = new ArrayList<>();
-            for(int j = 0; j < width; j++) {
-                tileRow.add(Tile.EMPTY);
-            }
-            tiles.add(tileRow);
-        }
-    }
-
-    private void fitToWidth(int x) {
-        for(List<Tile> tileRow : tiles) {
-            final int oldrsize = tileRow.size();
-            for(int i = 0; i < (x - oldrsize) + 1; i++) {
-                tileRow.add(Tile.EMPTY);
-            }
-        }
+        while(!t.equalsTo(oftype));
+        return new IntPoint(rx, ry);
     }
 }

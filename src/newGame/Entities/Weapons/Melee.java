@@ -14,7 +14,8 @@ public abstract class Melee extends Item {
     private static final double singleRange = Math.sqrt(2);
 
     private int damageOutput;
-    private int swingRange;
+    private float swingRange;
+    private float range;
 
     private int expRewardForKill;
     private int expRewardForHit;
@@ -23,6 +24,7 @@ public abstract class Melee extends Item {
         setName("Melee");
         damageOutput = 1;
         swingRange = 0;
+        range = (float) Math.sqrt(2);
 
         expRewardForKill = 32;
         expRewardForHit = 3;
@@ -44,12 +46,20 @@ public abstract class Melee extends Item {
         this.expRewardForHit = expRewardForHit;
     }
 
-    public int getSwingRange() {
+    public float getSwingRange() {
         return swingRange;
     }
 
-    public void setSwingRange(int swingRange) {
+    public void setSwingRange(float swingRange) {
         this.swingRange = swingRange;
+    }
+
+    public float getRange() {
+        return range;
+    }
+
+    public void setRange(float r) {
+        range = r;
     }
 
     public boolean isSwingWeapon() {
