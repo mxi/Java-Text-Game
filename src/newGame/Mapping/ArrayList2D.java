@@ -97,15 +97,15 @@ public class ArrayList2D<T> {
      * @return Percentage of space used in 2d array.
      */
     public float getPercentageUsed() {
-        return ((float) getElementCount() / (float) getSpace()) * (float) 100;
+        return ((float) getElementCount() / (float) getSpace()) * 100f;
     }
 
     /**
-     * Getst he percentage of space available in the 2d array.
+     * Gets the percentage of space available in the 2d array.
      * @return Percentage of space available in 2d array.
      */
     public float getPercentageFree() {
-        return (float) 100 - getPercentageUsed();
+        return 100f - getPercentageUsed();
     }
 
     /**

@@ -37,8 +37,6 @@ public class MapBuffer extends ArrayList2D<Tile> {
      * @return Position of a located tile equivalent to the one specified.
      */
     public IntPoint randomLoc(Tile oftype) {
-        final int maxAttempts = 1024;
-        int attempts = 0;
         int rx;
         int ry;
         Tile t;
@@ -46,9 +44,8 @@ public class MapBuffer extends ArrayList2D<Tile> {
             rx = MainGame.random.nextInt(getWidth());
             ry = MainGame.random.nextInt(getHeight());
             t = getElement(rx, ry);
-            attempts++;
         }
-        while(!t.equalsTo(oftype) && attempts <= maxAttempts);
+        while(!t.equalsTo(oftype));
         return new IntPoint(rx, ry);
     }
 }
