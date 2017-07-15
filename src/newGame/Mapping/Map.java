@@ -17,18 +17,18 @@ public class Map implements MapInterface {
 	private int curX;
 	private int curY;
 
-	public MapBuffer buffer = new MapBuffer(DUNGEON_RIGHT_MAX - DUNGEON_LEFT_MAX, DUNGEON_BOTTOM - DUNGEON_TOP);
-	public List<Entity> entities = new ArrayList<>();
+	private MapBuffer buffer = new MapBuffer(DUNGEON_RIGHT_MAX - DUNGEON_LEFT_MAX, DUNGEON_BOTTOM - DUNGEON_TOP);
+	private List<Entity> entities = new ArrayList<>();
 	private List<Room> rooms;
 	//private List<Hallway> hallways;
 
-	public class Room
+	private class Room
 	{
-		public int Xsize = MainGame.random.nextInt(9) + 7;
-		public int Ysize = MainGame.random.nextInt(9) + 7;
+		private int Xsize = MainGame.random.nextInt(9) + 7;
+		private int Ysize = MainGame.random.nextInt(9) + 7;
 		// min size are 6 by 6, and max size are 15 by 15
-		public int X = curX;
-		public int Y = curY;
+		private int X = curX;
+		private int Y = curY;
 		// the x and y cords are found in the top left corner
 	}
 	
@@ -40,8 +40,8 @@ public class Map implements MapInterface {
 	
 	public Map()
 	{
-		curX = MainGame.random.nextInt(69) + 1;
-		curY = MainGame.random.nextInt(15) + 1;
+		curX = MainGame.random.nextInt(buffer.getWidth()) + 1;
+		curY = MainGame.random.nextInt(buffer.getHeight()) + 1;
 		rooms = new ArrayList<>();
 		//hallways = new ArrayList<>();
 		int curRoom = 0;
