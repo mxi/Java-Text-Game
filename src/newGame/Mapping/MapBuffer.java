@@ -87,7 +87,7 @@ public class MapBuffer extends ArrayList2D<Tile> {
             ry = MainGame.random.nextInt(getHeight());
             t = getElement(rx, ry);
         }
-        while(!t.equalsTo(oftype));
+        while(t == null || !t.equalsTo(oftype));
         return new IntPoint(rx, ry);
     }
 }

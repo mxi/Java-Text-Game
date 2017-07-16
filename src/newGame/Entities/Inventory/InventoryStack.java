@@ -10,11 +10,9 @@ import java.util.Stack;
 public class InventoryStack<T extends Item> {
 
     private Stack<T> items;
-    private String name;
     private int limit;
     public InventoryStack() {
         items = new Stack<>();
-        name = "InvStack";
         limit = 1;
     }
 
@@ -41,11 +39,7 @@ public class InventoryStack<T extends Item> {
     }
 
     public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return getSize() == 0 ? "Empty" : sampleItem().getName();
     }
 
     public int getLimit() {
@@ -56,35 +50,33 @@ public class InventoryStack<T extends Item> {
         this.limit = limit < 1 ? 1 : limit;
     }
 
-    public int getAmount() {
-        return items.size();
-    }
-
     public T getNext() {
-        if(getAmount() > 0)
+        if(getSize() > 0)
             return items.peek();
         else
             return null;
     }
 
     public T removeNext() {
-        if(getAmount() > 0)
+        if(getSize() > 0)
             return items.pop();
         else
             return null;
     }
 
     public void addNext(T item) {
-        if(getAmount() + 1 <= getLimit())
+        if(getSize() + 1 <= getLimit())
             items.add(item);
     }
 
     public void addAll(InventoryStack<T> stack) {
-        while(stack.getAmount() != 0)
+        while(stack.getSize() != 0)
             addNext(stack.getNext());
     }
 
     public void addAll(T... itemList) {
-        items.addAll(Arrays.asList(itemList));
+        for(T item : itemList) {
+            addNext(item);
+        }
     }
 }

@@ -48,10 +48,10 @@ public class MainGame {
         csi.print(x, y, text, color);
     }
 
-    public static Random random = new Random(); // Random object
-    public static ConsoleSystemInterface csi = new WSwingConsoleInterface(); // Window (console interface)
-    public static MapInterface map; // Map of the game.
-    public static Character character; // Character of the game.
+    public static volatile Random random = new Random(); // Random object
+    public static volatile ConsoleSystemInterface csi = new WSwingConsoleInterface(); // Window (console interface)
+    public static volatile MapInterface map; // Map of the game.
+    public static volatile Character character; // Character of the game.
 
     public static void main(String[] args) {
         /*for(int i = 7;; i++)
@@ -101,11 +101,19 @@ public class MainGame {
         character.setFloor(1);
         character.spawn(Tile.SPACE);
 
-        LongSword ls = new LongSword();
-        ls.setDamageOutput(4);
-        ls.setMaxDurability(125);
+        InventoryStack<Item> i1 = new InventoryStack<>();
+        i1.addNext(new LongSword());
 
-        character.setItemsInHand(ls.toInventoryStack());
+        InventoryStack<Item> i2 = new InventoryStack<>();
+        i2.addNext(new LongSword());
+
+        InventoryStack<Item> i3 = new InventoryStack<>();
+        i3.addNext(new LongSword());
+
+        character.addStack(i1);
+        character.addStack(i2);
+        character.addStack(i3);
+        character.setItemsInHand(new LongSword().toInventoryStack());
     }
 
     private void start() {
@@ -127,6 +135,11 @@ public class MainGame {
                     break;
                 }
 
+                /**
+                 * Decides whether the 'performAI' function
+                 * gets called or not.
+                 */
+                boolean performAi = true;
                 /*
                 * Beginning portion of this loop will display all of the
                 * entities/game objects on the window itself.
@@ -158,7 +171,7 @@ public class MainGame {
                         break;
                     case 40: // Use item ('Space bar')
                         InventoryStack<Item> inHand = character.getItemsInHand();
-                        if(inHand.isLoneItem() && inHand.getItem() instanceof Melee)
+                        if(inHand != null && inHand.isLoneItem() && inHand.getItem() instanceof Melee)
                             inHand.getItem().useItem();
 
                         break;
@@ -171,16 +184,47 @@ public class MainGame {
                             character.spawn(Tile.STAIR);
                         }
                         break;
-                    case 80: // Drop in hand ('80')
+                    case 80: // Drop in hand ('Q')
+                        final InventoryStack<Item> inhand = character.getItemsInHand();
+                        if(inhand != null && inhand.getSize() > 0) {
+                            character.dropItemInHand();
+                        }
                         break;
                     case 68: // Inventory1 ('E')
+                        final InventoryStack<Item> slotE = character.getStack(0);
+                        if(slotE != null && slotE.getSize() > 0) {
+                            final InventoryStack<Item> curinhand = character.getItemsInHand();
+                            character.setItemsInHand(slotE);
+                            character.setStack(curinhand, 0);
+                        }
                         break;
                     case 81: // Inventory2 ('R')
+                        final InventoryStack<Item> slotR = character.getStack(0);
+                        if(slotR != null && slotR.getSize() > 0) {
+                            final InventoryStack<Item> curinhand = character.getItemsInHand();
+                            character.setItemsInHand(slotR);
+                            character.setStack(curinhand, 0);
+                        }
                         break;
                     case 83: // Inventory3 ('T')
+                        final InventoryStack<Item> slotT = character.getStack(0);
+                        if(slotT != null && slotT.getSize() > 0) {
+                            System.out.println("Setting");
+                            final InventoryStack<Item> curinhand = character.getItemsInHand();
+                            character.setItemsInHand(slotT);
+                            character.setStack(curinhand, 0);
+                        }
                         break;
                     case 79: // Pickup item ('P')
-
+                        final InventoryStack<Item> items = map.getTile(character.getPosition()).getInventoryStack();
+                        if(items != null && items.getSize() > 0) {
+                            if(character.isInventoryFull()) {
+                                character.dropStack(0);
+                            }
+                            character.addStack(items);
+                            map.getTile(character.getPosition()).setInventoryStack(null);
+                            performAi = false;
+                        }
                         break;
                     default:
                         System.out.println(key);
@@ -192,7 +236,9 @@ public class MainGame {
                 * This will move monsters, spawn monsters, update the
                 * character, and spawn more items.
                 */
-                runAI(character);
+                if(performAi) {
+                    runAI(character);
+                }
             }
 
             // Runs the game over screen:
@@ -220,13 +266,22 @@ public class MainGame {
         });
 
         // Spawning monsters
-        if(random.nextInt(101) <= Goblin.SPAWN_CHANCE && map.getEntityCountOf(Goblin.NAME) < Goblin.LIMIT) {
+        if(shouldSpawnMob(Goblin.SPAWN_CHANCE, map.getEntityCountOf(Goblin.NAME), Goblin.LIMIT)) {
             Goblin goblin = new Goblin();
-            goblin.setLevel(1);
             goblin.adaptToMap();
             goblin.spawn(Tile.SPACE);
-            goblin.getMeleeWeapon().setDamageOutput(1);
+            goblin.getMeleeWeapon().setDamageOutput(c.getLevel());
         }
+    }
+
+    /**
+     * Checks whether a monster should be able to spawn or not.
+     * @param schance Spawn chance (out of 100)
+     * @param maxec Maximum amount of the monster per map.
+     * @return Whether the mob should spawn or not.
+     */
+    private boolean shouldSpawnMob(int schance, int countinmap, int maxec) {
+        return random.nextInt(100) + 1 <= schance && countinmap < maxec;
     }
 
     private void runGameOverScreen() {

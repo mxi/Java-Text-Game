@@ -10,19 +10,19 @@ import java.io.Console;
 public class Tile {
 
     public static Tile empty() {
-        return new Tile(null, '~', true, ConsoleSystemInterface.GRAY);
+        return new Tile("Void", null, '~', true, ConsoleSystemInterface.GRAY);
     }
 
     public static Tile space() {
-        return new Tile(null, '.', false, ConsoleSystemInterface.WHITE);
+        return new Tile("Space", null, '.', false, ConsoleSystemInterface.WHITE);
     }
 
     public static Tile stair() {
-        return new Tile(null, '\\', false, ConsoleSystemInterface.WHITE);
+        return new Tile("Stair", null, '\\', false, ConsoleSystemInterface.WHITE);
     }
 
     public static Tile wall() {
-        return new Tile(null, 'X', true, ConsoleSystemInterface.WHITE);
+        return new Tile("Wall", null, 'X', true, ConsoleSystemInterface.WHITE);
     }
 
     public static final Tile EMPTY = empty();
@@ -30,15 +30,17 @@ public class Tile {
     public static final Tile STAIR = stair();
     public static final Tile WALL = wall();
 
+    private String name;
     private InventoryStack<Item> items;
     private char representable;
     private boolean solid;
     private int colour;
 
-    public Tile(InventoryStack<Item> inv, char represent, boolean isSolid, int color) {
+    public Tile(String n, InventoryStack<Item> inv, char represent, boolean isSolid, int color) {
         if(!isSolid) {
             items = inv;
         }
+        name = n;
         representable = represent;
         solid = isSolid;
         colour = color;
@@ -87,5 +89,10 @@ public class Tile {
 
     public void setColor(int colour) {
         this.colour = colour;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
