@@ -6,6 +6,8 @@ import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Item;
 import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.Monster;
+import newGame.Entities.Orbs.HealthOrb;
+import newGame.Entities.Weapons.Fist;
 import newGame.Entities.Weapons.Knife;
 import newGame.Entities.Weapons.LongSword;
 import newGame.Entities.Weapons.Melee;
@@ -100,20 +102,6 @@ public class MainGame {
         character.adaptToMap();
         character.setFloor(1);
         character.spawn(Tile.SPACE);
-
-        InventoryStack<Item> i1 = new InventoryStack<>();
-        i1.addNext(new LongSword());
-
-        InventoryStack<Item> i2 = new InventoryStack<>();
-        i2.addNext(new LongSword());
-
-        InventoryStack<Item> i3 = new InventoryStack<>();
-        i3.addNext(new LongSword());
-
-        character.addStack(i1);
-        character.addStack(i2);
-        character.addStack(i3);
-        character.setItemsInHand(new LongSword().toInventoryStack());
     }
 
     private void start() {
@@ -170,10 +158,7 @@ public class MainGame {
                         character.move(1, 0);
                         break;
                     case 40: // Use item ('Space bar')
-                        InventoryStack<Item> inHand = character.getItemsInHand();
-                        if(inHand != null && inHand.isLoneItem() && inHand.getItem() instanceof Melee)
-                            inHand.getItem().useItem();
-
+                        character.useItemInHand();
                         break;
                     case 10: // Use item on floor ('Enter')
                         // Creates a new map interface/object when the
@@ -185,46 +170,19 @@ public class MainGame {
                         }
                         break;
                     case 80: // Drop in hand ('Q')
-                        final InventoryStack<Item> inhand = character.getItemsInHand();
-                        if(inhand != null && inhand.getSize() > 0) {
-                            character.dropItemInHand();
-                        }
+                        character.dropItemInHand();
                         break;
                     case 68: // Inventory1 ('E')
-                        final InventoryStack<Item> slotE = character.getStack(0);
-                        if(slotE != null && slotE.getSize() > 0) {
-                            final InventoryStack<Item> curinhand = character.getItemsInHand();
-                            character.setItemsInHand(slotE);
-                            character.setStack(curinhand, 0);
-                        }
+                        character.tradeItemInHand(0);
                         break;
                     case 81: // Inventory2 ('R')
-                        final InventoryStack<Item> slotR = character.getStack(0);
-                        if(slotR != null && slotR.getSize() > 0) {
-                            final InventoryStack<Item> curinhand = character.getItemsInHand();
-                            character.setItemsInHand(slotR);
-                            character.setStack(curinhand, 0);
-                        }
+                        character.tradeItemInHand(1);
                         break;
                     case 83: // Inventory3 ('T')
-                        final InventoryStack<Item> slotT = character.getStack(0);
-                        if(slotT != null && slotT.getSize() > 0) {
-                            System.out.println("Setting");
-                            final InventoryStack<Item> curinhand = character.getItemsInHand();
-                            character.setItemsInHand(slotT);
-                            character.setStack(curinhand, 0);
-                        }
+                        character.tradeItemInHand(2);
                         break;
                     case 79: // Pickup item ('P')
-                        final InventoryStack<Item> items = map.getTile(character.getPosition()).getInventoryStack();
-                        if(items != null && items.getSize() > 0) {
-                            if(character.isInventoryFull()) {
-                                character.dropStack(0);
-                            }
-                            character.addStack(items);
-                            map.getTile(character.getPosition()).setInventoryStack(null);
-                            performAi = false;
-                        }
+                        character.pickupItemOnGround();
                         break;
                     default:
                         System.out.println(key);
@@ -254,6 +212,7 @@ public class MainGame {
         map.setRenderingLightSource(false);
         map.setLightSourceRadius(5.8f);
         map.getMapBuffer().scatter(new Knife(), Tile.SPACE, 1, 1, 3);
+        map.getMapBuffer().scatter(new HealthOrb(), Tile.SPACE, 1, 4, 2);
         return map;
     }
 
@@ -271,6 +230,7 @@ public class MainGame {
             goblin.adaptToMap();
             goblin.spawn(Tile.SPACE);
             goblin.getMeleeWeapon().setDamageOutput(c.getLevel());
+            goblin.setHealth(c.getLevel() * 2);
         }
     }
 

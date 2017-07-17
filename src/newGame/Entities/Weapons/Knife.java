@@ -1,6 +1,5 @@
 package newGame.Entities.Weapons;
 
-import newGame.Entities.Character;
 import newGame.Entities.Entity;
 import sz.csi.ConsoleSystemInterface;
 
@@ -12,6 +11,7 @@ public class Knife extends Melee {
         setRepresentation('K');
         setColor(ConsoleSystemInterface.RED);
         setName("Knife");
+        setDamageOutput(3);
         bypassShield = false;
     }
 
@@ -25,6 +25,6 @@ public class Knife extends Melee {
 
     @Override
     protected void onAttack(Entity entity) {
-
+        entity.damage(getDamageOutput());
     }
 }

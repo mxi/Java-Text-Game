@@ -35,11 +35,20 @@ public class Character extends Entity {
         setRepresentation('@');
         setColor(ConsoleSystemInterface.YELLOW);
         setItemsInHand(new Fist().toInventoryStack());
+        for(int i = 0; i < MAX_INVENTORY_STACKS; i++) {
+            inventory.add(new InventoryStack<>());
+        }
         type = itype;
     }
 
     public boolean isInventoryFull() {
-        return inventory.size() == MAX_INVENTORY_STACKS;
+        int qualifiedItems = 0;
+        for(InventoryStack<Item> t : inventory) {
+            if(!isEmptyInvStack(t)) {
+                qualifiedItems++;
+            }
+        }
+        return qualifiedItems == MAX_INVENTORY_STACKS;
     }
 
     public InventoryStack<Item> getItemsInHand() {
@@ -64,18 +73,55 @@ public class Character extends Entity {
     }
 
     public void addStack(InventoryStack<Item> stack) {
-        if(inventory.size() >= MAX_INVENTORY_STACKS)
-            return;
-
-        inventory.add(stack);
+        if(isInventoryFull()) {
+            dropStack(0);
+        }
+        for(int i = 0; i < inventory.size(); i++) {
+            if(isEmptyInvStack(getStack(i))) {
+                setStack(stack, i);
+                break;
+            }
+        }
     }
 
     public List<InventoryStack<Item>> getInventory() {
         return inventory;
     }
 
+    public void useItemInHand() {
+        if(inHand == null || inHand.getSize() == 0) {
+            return;
+        }
+        inHand.use(this);
+    }
+
+    public void tradeItemInHand(int forindex) {
+        final InventoryStack<Item> slot = getStack(forindex);
+        final InventoryStack<Item> curinhand = getItemsInHand();
+        if(slot == null || slot.getSize() == 0) {
+            setItemsInHand(new Fist().toInventoryStack());
+        }
+        else {
+            setItemsInHand(slot);
+        }
+        if(curinhand != null && curinhand.getSize() > 0) {
+            setStack(curinhand.sampleItem() instanceof Fist ? null : curinhand, forindex);
+        }
+        else {
+            setStack(null, forindex);
+        }
+    }
+
+    public void pickupItemOnGround() {
+        final InventoryStack<Item> items = MainGame.map.getTile(getPosition()).getInventoryStack();
+        if(items != null && items.getSize() > 0) {
+            addStack(items);
+            MainGame.map.getTile(getPosition()).setInventoryStack(null);
+        }
+    }
+
     public void dropItemInHand() {
-        if(inHand.isLoneItem() && inHand.sampleItem() == new Fist()) {
+        if((inHand == null || inHand.getSize() == 0) || (inHand.isLoneItem() && inHand.sampleItem() instanceof Fist)) {
             return;
         }
         dropInventoryStack(getItemsInHand());
@@ -204,6 +250,11 @@ public class Character extends Entity {
         }
         else if(inHand != null) {
             Item sampled = inHand.sampleItem();
+            if(sampled == null) {
+                final Fist inh = new Fist();
+                sampled = inh;
+                inHand = inh.toInventoryStack();
+            }
             MainGame.csi.print(baseX + 35, baseY + 1, sampled.getRepresentation(), sampled.getColor());
             MainGame.csi.print(baseX + 37, baseY + 1, sampled.getName() + " : Count (" + inHand.getSize() + ")");
         }
@@ -213,7 +264,7 @@ public class Character extends Entity {
 
         // Inventory Info:
         for(int i = 0; i < inventory.size(); i++) {
-            int x = 36 + (10 * i);
+            int x = 36 + (11 * i);
             InventoryStack<Item> itemStack = getStack(i);
             if(itemStack == null || itemStack.getSize() == 0) {
                 MainGame.csi.print(baseX + x - 1, baseY + 2, "0", ConsoleSystemInterface.RED);
@@ -228,7 +279,7 @@ public class Character extends Entity {
     }
 
     private void dropInventoryStack(InventoryStack<Item> stack) {
-        if(stack == null) {
+        if(stack == null || stack.getSize() == 0) {
             return;
         }
         final int distleft = getX();
@@ -250,13 +301,17 @@ public class Character extends Entity {
             }
         }
         if(freespace != null) {
-            MainGame.map.getTile(freespace).setInventoryStack(stack);
+            MainGame.map.getTile(freespace).setInventoryStack(stack.removeNext().toInventoryStack());
         }
     }
 
     @Override
     public void damage(int amount) {
         setHealth(getHealth() - (shield == null ? amount : shield.calcNewDamage(amount)));
+    }
+
+    private boolean isEmptyInvStack(InventoryStack<Item> stack) {
+        return stack == null || stack.getSize() == 0;
     }
 
     private void characterUpgrade() {

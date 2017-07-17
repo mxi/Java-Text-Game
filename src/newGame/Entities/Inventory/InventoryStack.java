@@ -1,10 +1,9 @@
 package newGame.Entities.Inventory;
 
 import newGame.Entities.Item;
-import newGame.MainGame;
-import sz.csi.ConsoleSystemInterface;
+import newGame.Entities.Character;
+import newGame.Entities.Weapons.Melee;
 
-import java.util.Arrays;
 import java.util.Stack;
 
 public class InventoryStack<T extends Item> {
@@ -77,6 +76,17 @@ public class InventoryStack<T extends Item> {
     public void addAll(T... itemList) {
         for(T item : itemList) {
             addNext(item);
+        }
+    }
+
+    public void use(Character c) {
+        if(getSize() > 0) {
+            if(sampleItem() instanceof Melee) {
+                sampleItem().useItem();
+            }
+            else {
+                removeNext().useItem();
+            }
         }
     }
 }
