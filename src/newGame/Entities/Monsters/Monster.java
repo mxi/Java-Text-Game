@@ -11,11 +11,12 @@ public abstract class Monster extends Entity {
 
     private Shield shield;
     private Melee meleeWeapon;
+    private float expRewardMax = 16;
+    private float expRewardMin = 4;
 
     protected int findPersistence = 15;
     protected int findCount = 0;
     protected int findDirection = 0;
-    public final int expReward = 8;
     public boolean findMode = false;
 
     public Monster() {
@@ -37,6 +38,26 @@ public abstract class Monster extends Entity {
     public void setMeleeWeapon(Melee meleeWeapon) {
         this.meleeWeapon = meleeWeapon;
         meleeWeapon.setOwner(this);
+    }
+
+    public float getExpRewardMax() {
+        return expRewardMax;
+    }
+
+    public void setExpRewardMax(float expRewardMax) {
+        this.expRewardMax = expRewardMax * 10;
+    }
+
+    public float getExpRewardMin() {
+        return expRewardMin;
+    }
+
+    public void setExpRewardMin(float expRewardMin) {
+        this.expRewardMin = Math.max(expRewardMin, 4) ;
+    }
+
+    public float randExp() {
+        return MainGame.random.nextInt(10 * (int) Math.floor(expRewardMax - expRewardMin)) / 10 + expRewardMin;
     }
 
     public boolean hasRangeWeapon() {

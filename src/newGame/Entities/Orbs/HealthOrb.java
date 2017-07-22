@@ -17,7 +17,6 @@ public class HealthOrb extends Item {
      * given to the player if they use it.
      */
     private int healthOutput;
-
     /**
      * Default constructor for HealthOrb;
      * initializes everything to default
@@ -28,6 +27,19 @@ public class HealthOrb extends Item {
         setColor(ConsoleSystemInterface.DARK_RED);
         setName("Health Orb");
         healthOutput = 3; // default healthOutput amount.
+    }
+
+    /**
+     * Constructor that will set the
+     * health output to whatever
+     * the caller desires.
+     * @param healthOut Health output value.
+     */
+    public HealthOrb(int healthOut) {
+        setRepresentation('+');
+        setColor(ConsoleSystemInterface.DARK_RED);
+        setName("Health Orb");
+        healthOutput = healthOut;
     }
 
     /**

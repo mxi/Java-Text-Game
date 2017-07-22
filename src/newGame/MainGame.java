@@ -6,7 +6,9 @@ import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Item;
 import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.Monster;
+import newGame.Entities.Orbs.ExpOrb;
 import newGame.Entities.Orbs.HealthOrb;
+import newGame.Entities.Shield;
 import newGame.Entities.Weapons.Fist;
 import newGame.Entities.Weapons.Knife;
 import newGame.Entities.Weapons.LongSword;
@@ -96,11 +98,12 @@ public class MainGame {
         map = fetchMap();
         map.getMapBuffer().scatter(new Knife(), Tile.SPACE, 1, 1, 4);
 
-        character = new Character("Justin Li", CharacterType.Wizard);
+        character = new Character("Player", CharacterType.Wizard);
         character.setMaxHealth(25);
         character.setHealth(character.getMaxHealth());
         character.adaptToMap();
         character.setFloor(1);
+        character.setShield(Shield.Leather);
         character.spawn(Tile.SPACE);
     }
 
@@ -211,9 +214,16 @@ public class MainGame {
         final Map map = new Map();
         map.setRenderingLightSource(false);
         map.setLightSourceRadius(5.8f);
-        map.getMapBuffer().scatter(new Knife(), Tile.SPACE, 1, 1, 3);
-        map.getMapBuffer().scatter(new HealthOrb(), Tile.SPACE, 1, 4, 2);
+        scatterMaterial(character == null ? 1 : character.getLevel());
         return map;
+    }
+
+    private void scatterMaterial(int characterLevel) {
+        Knife calcKnives = new Knife();
+        calcKnives.setDamageOutput(characterLevel + 3);
+        map.getMapBuffer().scatter(calcKnives, Tile.SPACE, 1, 1, 3);
+        map.getMapBuffer().scatter(new HealthOrb(characterLevel), Tile.SPACE, 1, 4, 2);
+        map.getMapBuffer().scatter(new ExpOrb(characterLevel), Tile.SPACE, 1, 6, 5);
     }
 
     private void runAI(Character c) {
@@ -229,7 +239,7 @@ public class MainGame {
             Goblin goblin = new Goblin();
             goblin.adaptToMap();
             goblin.spawn(Tile.SPACE);
-            goblin.getMeleeWeapon().setDamageOutput(c.getLevel());
+            goblin.getMeleeWeapon().setDamageOutput(c.getLevel() * 2);
             goblin.setHealth(c.getLevel() * 2);
         }
     }

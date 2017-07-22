@@ -267,7 +267,7 @@ public abstract class Entity extends Representable {
     }
 
     public void damage(int amount) {
-        this.health = this.health - amount < 0 ? 0 : this.health - amount;
+        this.health -= amount;
     }
 
     public boolean isDead() {

@@ -63,7 +63,7 @@ public class MapBuffer extends ArrayList2D<Tile> {
                     else {
                         amount = MainGame.random.nextInt(cmax - cmin + 1) + cmin;
                     }
-                    for(int i = 0; i < amount; i++) {
+                    for(int i = 0; i <= amount; i++) {
                         is.addNext(itemtype);
                     }
                     t.setInventoryStack(is);

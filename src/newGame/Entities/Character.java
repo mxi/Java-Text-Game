@@ -15,7 +15,8 @@ import java.util.List;
 public class Character extends Entity {
 
     private static final int maxLevel = 100;
-    private static final int defExpUntilLevelUp = 1024;
+    private static final int HpIncOnUpgrade = 6;
+    private static final int defExpUntilLevelUp = 256;
     private static final float expIncPerLevel = 1.05f;
 
     private final int MAX_INVENTORY_STACKS = 3;
@@ -130,7 +131,7 @@ public class Character extends Entity {
 
     public void dropStack(int index) {
         dropInventoryStack(getStack(index));
-        removeStack(index);
+        setStack(new InventoryStack<>(), index);
     }
 
     public void removeStack(int index) {
@@ -184,7 +185,8 @@ public class Character extends Entity {
     public void addExp(float xp) {
         final float added = exp + xp;
         if(added > expUntilLevelUp) {
-            exp = expUntilLevelUp - added;
+            setLevel(getLevel() + (int) Math.floor((added / expUntilLevelUp)));
+            exp = added % expUntilLevelUp;
             expUntilLevelUp = defExpUntilLevelUp * ((float) Math.pow(expIncPerLevel, getLevel()));
             characterUpgrade();
         }
@@ -201,7 +203,8 @@ public class Character extends Entity {
 
         // Prints everything again:
         // Main Info:
-        MainGame.csi.print(baseX, baseY, getName() + " - " + getTypeAsString() + " - Level "  + getLevel());
+        MainGame.csi.print(baseX, baseY, getName() + " | " + getTypeAsString() + " | Level "  + getLevel());
+        MainGame.csi.print(baseX + 30, baseY, "(" + getExp() + "/" + getExpUntilLevelUp() + ")", ConsoleSystemInterface.YELLOW);
         // Health Info:
         MainGame.csi.print(baseX, baseY + 1, "Health: ");
         switch(getDamageState()) {
@@ -315,6 +318,7 @@ public class Character extends Entity {
     }
 
     private void characterUpgrade() {
-
+        setMaxHealth(getMaxHealth() + HpIncOnUpgrade);
+        setShield(Shield.fromLevel(getLevel()));
     }
 }
