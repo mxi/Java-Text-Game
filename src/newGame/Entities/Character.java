@@ -256,7 +256,7 @@ public class Character extends Entity {
             if(sampled == null) {
                 final Fist inh = new Fist();
                 sampled = inh;
-                inHand = inh.toInventoryStack();
+                setItemsInHand(inh.toInventoryStack());
             }
             MainGame.csi.print(baseX + 35, baseY + 1, sampled.getRepresentation(), sampled.getColor());
             MainGame.csi.print(baseX + 37, baseY + 1, sampled.getName() + " : Count (" + inHand.getSize() + ")");
