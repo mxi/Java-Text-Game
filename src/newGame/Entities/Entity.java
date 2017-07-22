@@ -9,7 +9,12 @@ import java.util.ArrayList;
 
 public abstract class Entity extends Representable {
 
-    private int maxLevel = 30;
+    // Percentage of damage that would be considered negligible:
+    private static final float PERCENT_DAMAGE_NEGLIGIBLE = 82f;
+    // Percentage of damage that would be considered moderate:
+    private static final float PERCENT_DAMAGE_MODERATE = 38f;
+    // Percentage of damage that would be considered critical:
+    private static final float PERCENT_DAMAGE_CRITICAL = 1f;
 
     private int floor;
     private int minX;
@@ -21,12 +26,10 @@ public abstract class Entity extends Representable {
     private int maxHealth;
     private int initialHealth;
     private int health;
-    private int level;
 
     public Entity() {
         setName("Entity");
         setRepresentation('E');
-        level = 1;
         health = 25;
         initialHealth = 25;
         maxHealth = 30;
@@ -76,7 +79,7 @@ public abstract class Entity extends Representable {
 
     public void spawn(Tile onWhatTile) {
         final IntPoint rpos = MainGame.map.getMapBuffer().randomLoc(onWhatTile);
-        setPosition(rpos.getX(), rpos.getY());
+        setPosition(rpos.getX() + 1, rpos.getY() + 1);
 
         if(!MainGame.map.getEntities().contains(this))
             MainGame.map.getEntities().add(this);
@@ -126,14 +129,6 @@ public abstract class Entity extends Representable {
 
     public boolean intersects(Entity e) {
         return intersects(e.getPosition());
-    }
-
-    public int getMaxLevel() {
-        return maxLevel;
-    }
-
-    public void setMaxLevel(int maxLevel) {
-        this.maxLevel = maxLevel;
     }
 
     public void setPosition(int x, int y) {
@@ -241,14 +236,6 @@ public abstract class Entity extends Representable {
         return new IntPoint(newX, newY);
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
     public int getHealth() {
         return this.health;
     }
@@ -280,7 +267,7 @@ public abstract class Entity extends Representable {
     }
 
     public void damage(int amount) {
-        this.health = this.health - amount < 0 ? 0 : this.health - amount;
+        this.health -= amount;
     }
 
     public boolean isDead() {
@@ -293,11 +280,31 @@ public abstract class Entity extends Representable {
         }
         else {
             MainGame.map.getEntities().removeIf(entity -> entity.equals(this));
-            MainGame.map.setTile(Tile.SPACE, getX(), getY());//MainGame.map.setCharacter(prevCharOfMap, getX(), getY(), prevColorOfMap);
+            MainGame.map.setTile(Tile.SPACE, getX() - 1, getY() - 1);//MainGame.map.setCharacter(prevCharOfMap, getX(), getY(), prevColorOfMap);
 
             if(this instanceof Character) {
                 MainGame.requestEnd();
             }
+        }
+    }
+
+    /**
+     * Gets the damage state of this entity.
+     * @return Entity's health/damage state.
+     */
+    public DamageState getDamageState() {
+        final float currentdmgs = ((float) getHealth() / (float) getMaxHealth()) * 100f; // Current Damage Status
+        if(currentdmgs >= PERCENT_DAMAGE_NEGLIGIBLE) {
+            return DamageState.NEGLIGIBLE;
+        }
+        else if(currentdmgs >= PERCENT_DAMAGE_MODERATE) {
+            return DamageState.MODERATE;
+        }
+        else if(currentdmgs >= PERCENT_DAMAGE_CRITICAL) {
+            return DamageState.CRITICAL;
+        }
+        else {
+            return DamageState.FATAL;
         }
     }
 }

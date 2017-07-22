@@ -14,6 +14,7 @@ import newGame.MainGame;
  */
 public class MapBuffer extends ArrayList2D<Tile> {
 
+    private static final int chanceVal = 1000; // Value for MainGame.random.nextInt();
     /**
      * Default MapBuffer constructor; uses
      * default settings for the 2d ArrayList inside the
@@ -45,7 +46,7 @@ public class MapBuffer extends ArrayList2D<Tile> {
     public void scatter(Item itemtype, Tile scaton,  int min, int max, int rarity) {
         final int cmax = Math.max(Math.max(max, min), 1);
         final int cmin = Math.max(Math.min(max, min), 1);
-        InventoryStack<Item> is = null;
+        InventoryStack<Item> is;
         int amount = 0;
         for(int x = 0; x < getWidth(); x++) {
             for(int y = 0; y < getHeight(); y++) {
@@ -53,17 +54,16 @@ public class MapBuffer extends ArrayList2D<Tile> {
                 if(t == null || !t.equalsTo(scaton) || t.hasItems()) {
                     continue;
                 }
-                final int chance = MainGame.random.nextInt(100) + 1;
-                System.out.println(chance);
+                final int chance = MainGame.random.nextInt(chanceVal) + 1;
                 if(chance <= rarity) {
                     is = new InventoryStack<>();
                     if (cmax - cmin <= 0) {
                         amount = 1;
                     }
                     else {
-                        amount = MainGame.random.nextInt(cmax - cmin) + cmin;
+                        amount = MainGame.random.nextInt(cmax - cmin + 1) + cmin;
                     }
-                    for(int i = 0; i < amount; i++) {
+                    for(int i = 0; i <= amount; i++) {
                         is.addNext(itemtype);
                     }
                     t.setInventoryStack(is);
@@ -87,7 +87,7 @@ public class MapBuffer extends ArrayList2D<Tile> {
             ry = MainGame.random.nextInt(getHeight());
             t = getElement(rx, ry);
         }
-        while(!t.equalsTo(oftype));
+        while(t == null || !t.equalsTo(oftype));
         return new IntPoint(rx, ry);
     }
 }

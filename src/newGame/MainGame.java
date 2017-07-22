@@ -6,6 +6,10 @@ import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Item;
 import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.Monster;
+import newGame.Entities.Orbs.ExpOrb;
+import newGame.Entities.Orbs.HealthOrb;
+import newGame.Entities.Shield;
+import newGame.Entities.Weapons.Fist;
 import newGame.Entities.Weapons.Knife;
 import newGame.Entities.Weapons.LongSword;
 import newGame.Entities.Weapons.Melee;
@@ -48,10 +52,10 @@ public class MainGame {
         csi.print(x, y, text, color);
     }
 
-    public static Random random = new Random(); // Random object
-    public static ConsoleSystemInterface csi = new WSwingConsoleInterface(); // Window (console interface)
-    public static MapInterface map; // Map of the game.
-    public static Character character; // Character of the game.
+    public static volatile Random random = new Random(); // Random object
+    public static volatile ConsoleSystemInterface csi = new WSwingConsoleInterface(); // Window (console interface)
+    public static volatile MapInterface map; // Map of the game.
+    public static volatile Character character; // Character of the game.
 
     public static void main(String[] args) {
         /*for(int i = 7;; i++)
@@ -92,20 +96,15 @@ public class MainGame {
 
         requestedEnd = false;
         map = fetchMap();
-        map.getMapBuffer().scatter(new Knife(), Tile.SPACE, 1, 1, 5);
+        map.getMapBuffer().scatter(new Knife(), Tile.SPACE, 1, 1, 4);
 
-        character = new Character("Justin Li", CharacterType.Wizard);
+        character = new Character("Player", CharacterType.Wizard);
         character.setMaxHealth(25);
         character.setHealth(character.getMaxHealth());
         character.adaptToMap();
         character.setFloor(1);
+        character.setShield(Shield.Leather);
         character.spawn(Tile.SPACE);
-
-        LongSword ls = new LongSword();
-        ls.setDamageOutput(4);
-        ls.setMaxDurability(125);
-
-        character.setItemsInHand(ls.toInventoryStack());
     }
 
     private void start() {
@@ -127,6 +126,11 @@ public class MainGame {
                     break;
                 }
 
+                /**
+                 * Decides whether the 'performAI' function
+                 * gets called or not.
+                 */
+                boolean performAi = true;
                 /*
                 * Beginning portion of this loop will display all of the
                 * entities/game objects on the window itself.
@@ -157,10 +161,7 @@ public class MainGame {
                         character.move(1, 0);
                         break;
                     case 40: // Use item ('Space bar')
-                        InventoryStack<Item> inHand = character.getItemsInHand();
-                        if(inHand.isLoneItem() && inHand.getItem() instanceof Melee)
-                            inHand.getItem().useItem();
-
+                        character.useItemInHand();
                         break;
                     case 10: // Use item on floor ('Enter')
                         // Creates a new map interface/object when the
@@ -170,6 +171,21 @@ public class MainGame {
                             map = fetchMap();
                             character.spawn(Tile.STAIR);
                         }
+                        break;
+                    case 80: // Drop in hand ('Q')
+                        character.dropItemInHand();
+                        break;
+                    case 68: // Inventory1 ('E')
+                        character.tradeItemInHand(0);
+                        break;
+                    case 81: // Inventory2 ('R')
+                        character.tradeItemInHand(1);
+                        break;
+                    case 83: // Inventory3 ('T')
+                        character.tradeItemInHand(2);
+                        break;
+                    case 79: // Pickup item ('P')
+                        character.pickupItemOnGround();
                         break;
                     default:
                         System.out.println(key);
@@ -181,7 +197,9 @@ public class MainGame {
                 * This will move monsters, spawn monsters, update the
                 * character, and spawn more items.
                 */
-                runAI(character);
+                if(performAi) {
+                    runAI(character);
+                }
             }
 
             // Runs the game over screen:
@@ -194,9 +212,18 @@ public class MainGame {
 
     private MapInterface fetchMap() {
         final Map map = new Map();
-        map.setRenderingLightSource(true);
-        map.setLightSourceRadius(20.8f);//5.8
+        map.setRenderingLightSource(false);
+        map.setLightSourceRadius(5.8f);
+        scatterMaterial(character == null ? 1 : character.getLevel());
         return map;
+    }
+
+    private void scatterMaterial(int characterLevel) {
+        Knife calcKnives = new Knife();
+        calcKnives.setDamageOutput(characterLevel + 3);
+        map.getMapBuffer().scatter(calcKnives, Tile.SPACE, 1, 1, 3);
+        map.getMapBuffer().scatter(new HealthOrb(characterLevel), Tile.SPACE, 1, 4, 2);
+        map.getMapBuffer().scatter(new ExpOrb(characterLevel), Tile.SPACE, 1, 6, 5);
     }
 
     private void runAI(Character c) {
@@ -208,13 +235,23 @@ public class MainGame {
         });
 
         // Spawning monsters
-        if(random.nextInt(101) <= Goblin.SPAWN_CHANCE && map.getEntityCountOf(Goblin.NAME) < Goblin.LIMIT) {
+        if(shouldSpawnMob(Goblin.SPAWN_CHANCE, map.getEntityCountOf(Goblin.NAME), Goblin.LIMIT)) {
             Goblin goblin = new Goblin();
-            goblin.setLevel(1);
             goblin.adaptToMap();
             goblin.spawn(Tile.SPACE);
-            goblin.getMeleeWeapon().setDamageOutput(1);
+            goblin.getMeleeWeapon().setDamageOutput(c.getLevel() * 2);
+            goblin.setHealth(c.getLevel() * 2);
         }
+    }
+
+    /**
+     * Checks whether a monster should be able to spawn or not.
+     * @param schance Spawn chance (out of 100)
+     * @param maxec Maximum amount of the monster per map.
+     * @return Whether the mob should spawn or not.
+     */
+    private boolean shouldSpawnMob(int schance, int countinmap, int maxec) {
+        return random.nextInt(100) + 1 <= schance && countinmap < maxec;
     }
 
     private void runGameOverScreen() {

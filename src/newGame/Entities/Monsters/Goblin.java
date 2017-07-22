@@ -8,8 +8,8 @@ import sz.csi.ConsoleSystemInterface;
 public class Goblin extends Monster {
 
     public static final String NAME = "Goblin";
-    public static final int SPAWN_CHANCE = 15;
-    public static final int LIMIT = 4;
+    public static final int SPAWN_CHANCE = 5;
+    public static final int LIMIT = 6;
 
     public Goblin() {
         setColor(ConsoleSystemInterface.GREEN);

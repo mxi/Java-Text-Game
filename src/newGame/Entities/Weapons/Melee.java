@@ -21,7 +21,7 @@ public abstract class Melee extends Item {
 
     public Melee() {
         setRepresentation('M');
-        setColor(ConsoleSystemInterface.LEMON);
+        setColor(ConsoleSystemInterface.MAGENTA);
         setName("Melee");
         damageOutput = 1;
         swingRange = 0;
@@ -57,12 +57,22 @@ public abstract class Melee extends Item {
     }
 
     public void attack(Entity entity) {
-        onAttack(entity);
+        if(entity instanceof Character) {
+            Character e = (Character) entity;
+            if(e.getShield().wouldHit()) {
+                entity.damage(getDamageOutput());
+                onAttack(entity);
+            }
+        }
+        else {
+            entity.damage(getDamageOutput());
+            onAttack(entity);
+        }
 
         if(entity.isDead() && entity instanceof Monster && getOwner() instanceof Character) {
             Character c = (Character) getOwner();
             Monster m = (Monster) entity;
-            c.addExp(m.expReward);
+            c.addExp(m.randExp());
             entity.removeAndClean();
         }
     }
