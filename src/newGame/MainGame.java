@@ -211,9 +211,10 @@ public class MainGame {
     }
 
     private MapInterface fetchMap() {
-        final Map map = new Map();
-        map.setRenderingLightSource(false);
-        map.setLightSourceRadius(5.8f);
+        final Map m = new Map();
+        m.setRenderingLightSource(false);
+        m.setLightSourceRadius(5.8f);
+        map = m;
         scatterMaterial(character == null ? 1 : character.getLevel());
         return map;
     }
