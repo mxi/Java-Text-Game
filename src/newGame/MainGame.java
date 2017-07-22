@@ -194,8 +194,8 @@ public class MainGame {
 
     private MapInterface fetchMap() {
         final Map map = new Map();
-        map.setRenderingLightSource(false);
-        map.setLightSourceRadius(5.8f);
+        map.setRenderingLightSource(true);
+        map.setLightSourceRadius(20.8f);//5.8
         return map;
     }
 
