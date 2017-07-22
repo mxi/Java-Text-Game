@@ -1,15 +1,13 @@
 package newGame.Entities.Weapons;
 
-import newGame.Entities.Character;
 import newGame.Entities.Entity;
 import sz.csi.ConsoleSystemInterface;
 
-public class LongSword extends Melee {
-
-    public LongSword() {
-        setSwingRange(2);
-        setName("Longsword");
-        setRepresentation('L');
+public abstract class LongBow extends Ranged{
+	public LongBow() {
+        setSwingRange(0);
+        setName("Longbow");
+        setRepresentation('B');
         setColor(ConsoleSystemInterface.TEAL);
         setDamageOutput(5);
     }

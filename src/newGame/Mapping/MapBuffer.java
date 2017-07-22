@@ -63,6 +63,7 @@ public class MapBuffer extends ArrayList2D<Tile> {
                     else {
                         amount = MainGame.random.nextInt(cmax - cmin + 1) + cmin;
                     }
+                    is.setLimit(amount);
                     for(int i = 0; i <= amount; i++) {
                         is.addNext(itemtype);
                     }
