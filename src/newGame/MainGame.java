@@ -90,7 +90,7 @@ public class MainGame {
         map = fetchMap();
         map.getMapBuffer().scatter(new Knife(), Tile.SPACE, 1, 1, 4);
         map.getMapBuffer().scatter(new LongSword(), Tile.SPACE, 1, 1, 1);
-        //map.getMapBuffer().scatter(new LongBow(), Tile.SPACE, 1, 1, 1);
+        map.getMapBuffer().scatter(new LongBow(), Tile.SPACE, 1, 1, 1);
 
         character = new Character("Player", CharacterType.Wizard);
         character.setMaxHealth(25);
@@ -218,8 +218,11 @@ public class MainGame {
         calcKnives.setDamageOutput(characterLevel + 3);
         LongSword calcLSword = new LongSword();
         calcLSword.setDamageOutput(characterLevel + 5);
+        LongBow calcLBow = new LongBow();
+        calcLBow.setDamageOutput(characterLevel + 3);
         map.getMapBuffer().scatter(calcKnives, Tile.SPACE, 1, 1, 3);
         map.getMapBuffer().scatter(calcLSword, Tile.SPACE, 1, 1, 2);
+        map.getMapBuffer().scatter(calcLBow, Tile.SPACE, 1, 1, 2);
         map.getMapBuffer().scatter(new HealthOrb(characterLevel), Tile.SPACE, 1, 4, 2);
         map.getMapBuffer().scatter(new ExpOrb(characterLevel), Tile.SPACE, 1, 6, 5);
     }
