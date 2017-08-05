@@ -6,6 +6,7 @@ import newGame.Entities.Character;
 import newGame.Entities.CharacterType;
 import newGame.Entities.Shield;
 import newGame.Entities.Monsters.Goblin;
+import newGame.Entities.Monsters.HobGoblin;
 import newGame.Entities.Monsters.Monster;
 import newGame.Entities.Orbs.ExpOrb;
 import newGame.Entities.Orbs.HealthOrb;
@@ -242,6 +243,13 @@ public class MainGame {
             goblin.spawn(Tile.SPACE);
             goblin.getMeleeWeapon().setDamageOutput(c.getLevel() * 2);
             goblin.setHealth(c.getLevel() * 2);
+        }
+        if(shouldSpawnMob(HobGoblin.SPAWN_CHANCE, map.getEntityCountOf(HobGoblin.NAME), HobGoblin.LIMIT)) {
+            HobGoblin hobgoblin = new HobGoblin();
+            hobgoblin.adaptToMap();
+            hobgoblin.spawn(Tile.SPACE);
+            hobgoblin.getMeleeWeapon().setDamageOutput(c.getLevel() * 2 + 2);
+            hobgoblin.setHealth(c.getLevel() * 2 + 2);
         }
     }
 
