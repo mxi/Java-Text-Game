@@ -3,6 +3,7 @@ package newGame.Entities.Monsters;
 import newGame.Entities.Character;
 import newGame.Entities.Shield;
 import newGame.Entities.Weapons.Knife;
+import newGame.MainGame;
 import sz.csi.ConsoleSystemInterface;
 
 public class Goblin extends Monster {

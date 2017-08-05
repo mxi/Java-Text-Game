@@ -140,6 +140,10 @@ public class MainGame {
                 map.render(csi);
                 character.displayInformation();
 
+                map.getEntities().forEach(e -> {
+                    e.debugDrawPath(e.getPosition(), character.getPosition());
+                });
+
                 csi.refresh();
                 /*
                 * The next part takes in keyboard input and

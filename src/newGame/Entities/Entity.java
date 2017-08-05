@@ -3,6 +3,7 @@ package newGame.Entities;
 import newGame.IntPoint;
 import newGame.MainGame;
 import newGame.Mapping.Tile;
+import sz.csi.ConsoleSystemInterface;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -41,14 +42,12 @@ public abstract class Entity extends Representable {
         IntPoint p1 = entity.getPosition();
         IntPoint p2 = getPosition();
 
-        // TODO: Change "MapBuffer" to "EntityBuffer" in here (This is broken for now)
-
         if(p1.getY() == p2.getY()) {
             int commonX = p1.getX();
             int maxY = Math.max(p1.getY(), p2.getY());
             int minY = Math.min(p1.getY(), p2.getY());
             for(int y = minY + 1; y < maxY; y++)
-                if(MainGame.map.getTile(commonX, y).similar(Tile.WALL)/*MainGame.map.getCharacter(commonX, y) == 'X'*/)
+                if(MainGame.map.getTile(commonX, y).isSolid()/*MainGame.map.getCharacter(commonX, y) == 'X'*/)
                     return false;
 
             return true;
@@ -58,7 +57,7 @@ public abstract class Entity extends Representable {
             int maxX = Math.max(p1.getX(), p2.getX());
             int minX = Math.min(p1.getX(), p2.getX());
             for(int x = minX + 1; x < maxX; x++)
-                if(MainGame.map.getTile(x, commonY).similar(Tile.WALL)/*MainGame.map.getCharacter(x, commonY) == 'X'*/)
+                if(MainGame.map.getTile(x, commonY).isSolid()/*MainGame.map.getCharacter(x, commonY) == 'X'*/)
                     return false;
 
             return true;
@@ -69,11 +68,77 @@ public abstract class Entity extends Representable {
 
             int maxX = Math.max(p1.getX(), p2.getX());
             int minX = Math.min(p1.getX(), p2.getX());
+            int minY = Math.min(p1.getY(), p2.getY());
+            /*
             for(int x = minX; x < maxX; x++)
-                if(MainGame.map.getTile(x, (int) Math.ceil(x * slope + intercept)).similar(Tile.WALL)/*MainGame.map.getCharacter(x, (int) Math.ceil(x * slope + intercept)) == 'X'*/)
+                if(MainGame.map.getTile(x, (int) Math.ceil(x * slope + intercept)).isSolid())
                     return false;
-
+            */
+            for(int x = minX; x <=  maxX; x++) {
+                int newY = (int) Math.round(slope * x + intercept);
+                int oldY = (int) Math.round(slope * (x - 1) + intercept);
+                for(int y = oldY + 1; y <= newY; y++) {
+                    if(MainGame.map.getTile(x, y).isSolid()) {
+                        return false;
+                    }
+                }
+            }
             return true;
+        }
+    }
+
+    /**
+     * Draws a path from one point to another.
+     * @param p1 Ray point.
+     * @param p2 Destination point.
+     */
+    @Deprecated
+    public void debugDrawPath(IntPoint p1, IntPoint p2) {
+        if(p1.isEquivalentTo(p2)) {
+            return;
+        }
+        final int color = ConsoleSystemInterface.TEAL;
+        if(p1.getX() == p2.getX()) {
+            int commonX = p1.getX();
+            int maxY = Math.max(p1.getY(), p2.getY());
+            int minY = Math.min(p1.getY(), p2.getY());
+            for(int y = minY; y <= maxY; y++) {
+                final char old = MainGame.csi.peekChar(commonX, y);
+                MainGame.csi.print(commonX, y, old, color);
+                MainGame.csi.refresh();
+            }
+        }
+        else if(p1.getY() == p2.getY()) {
+            int commonY = p1.getY();
+            int maxX = Math.max(p1.getX(), p2.getX());
+            int minX = Math.min(p1.getX(), p2.getX());
+            for(int x = minX; x <= maxX; x++) {
+                final char old = MainGame.csi.peekChar(x, commonY);
+                MainGame.csi.print(x, commonY, old, color);
+                MainGame.csi.refresh();
+            }
+        }
+        else {
+            double slope = (p1.getY() - p2.getY()) / (p1.getX() - p2.getX());
+            double intercept = p1.getY() - (p1.getX() * slope);
+
+            int maxX = Math.max(p1.getX(), p2.getX());
+            int minX = Math.min(p1.getX(), p2.getX());
+            int minY = Math.min(p1.getY(), p2.getY());
+            /*
+            for(int x = minX; x < maxX; x++)
+                if(MainGame.map.getTile(x, (int) Math.ceil(x * slope + intercept)).isSolid())
+                    return false;
+            */
+            for(int x = minX; x <=  maxX; x++) {
+                int newY = (int) Math.round(slope * x + intercept);
+                int oldY = (int) Math.round(slope * (x - 1) + intercept);
+                for (int y = oldY + 1; y <= newY; y++) {
+                    final char old = MainGame.csi.peekChar(x, y);
+                    MainGame.csi.print(x, y, old, color);
+                    MainGame.csi.refresh();
+                }
+            }
         }
     }
 
