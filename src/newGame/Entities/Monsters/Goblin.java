@@ -27,9 +27,8 @@ public class Goblin extends Monster {
     @Override
     public void performAI(Character character) {
         if(distance(character) <= getMeleeWeapon().getRange()) {
-            getMeleeWeapon().useItem();
+            getMeleeWeapon().attackPlayer(character);
         }
-        System.out.println(inSight(character));
         if(!inSight(character))
             findAI(character);
         else

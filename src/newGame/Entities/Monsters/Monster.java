@@ -17,7 +17,6 @@ public abstract class Monster extends Entity {
     protected int findPersistence = 15;
     protected int findCount = 0;
     protected int findDirection = 0;
-    public boolean findMode = false;
 
     public Monster() {
 

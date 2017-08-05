@@ -58,22 +58,14 @@ public abstract class Melee extends Item {
 
     public void attack(Entity entity) {
         if(entity instanceof Character) {
-            Character e = (Character) entity;
-            if(e.getShield().wouldHit()) {
-                entity.damage(getDamageOutput());
-                onAttack(entity);
-            }
+            attackPlayer((Character) entity);
         }
         else {
             entity.damage(getDamageOutput());
             onAttack(entity);
-        }
-
-        if(entity.isDead() && entity instanceof Monster && getOwner() instanceof Character) {
-            Character c = (Character) getOwner();
-            Monster m = (Monster) entity;
-            c.addExp(m.randExp());
-            entity.removeAndClean();
+            if(entity.isDead() && entity instanceof Monster) {
+                ((Character)getOwner()).addExp(((Monster)entity).randExp());
+            }
         }
     }
 
@@ -82,9 +74,6 @@ public abstract class Melee extends Item {
             c.damage(getDamageOutput());
         else if(!isSwingWeapon() && getOwner().distance(c) <= singleRange)
             c.damage(getDamageOutput());
-
-        if(c.isDead())
-            c.removeAndClean();
     }
 
     public void attackClosest(List<Entity> entities) {

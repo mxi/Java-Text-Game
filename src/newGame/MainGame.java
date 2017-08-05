@@ -10,6 +10,7 @@ import newGame.Entities.Monsters.HobGoblin;
 import newGame.Entities.Monsters.Monster;
 import newGame.Entities.Orbs.ExpOrb;
 import newGame.Entities.Orbs.HealthOrb;
+import newGame.Entities.Weapons.FiftyCaliberMachineGun;
 import newGame.Entities.Weapons.Knife;
 import newGame.Entities.Weapons.LongBow;
 import newGame.Entities.Weapons.LongSword;
@@ -126,10 +127,14 @@ public class MainGame {
                  * gets called or not.
                  */
                 boolean performAi = true;
+
                 /*
                 * Beginning portion of this loop will display all of the
                 * entities/game objects on the window itself.
                 */
+
+                if(character.isDead())
+                    break;
 
                 // Renders the world:
                 map.render(csi);
@@ -225,6 +230,8 @@ public class MainGame {
         calcLSword.setDamageOutput(characterLevel + 5);
         LongBow calcLBow = new LongBow();
         calcLBow.setDamageOutput(characterLevel + 3);
+        FiftyCaliberMachineGun fiftyCal = new FiftyCaliberMachineGun();
+        map.getMapBuffer().scatter(fiftyCal, Tile.SPACE, 1, 1, 5);
         map.getMapBuffer().scatter(calcKnives, Tile.SPACE, 1, 1, 3);
         map.getMapBuffer().scatter(calcLSword, Tile.SPACE, 1, 1, 2);
         map.getMapBuffer().scatter(calcLBow, Tile.SPACE, 1, 1, 2);
