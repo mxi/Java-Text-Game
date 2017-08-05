@@ -11,9 +11,7 @@ public class LongSword extends Melee {
         setName("Longsword");
         setRepresentation('L');
         setColor(ConsoleSystemInterface.TEAL);
-
-        setDamageOutput(2);
-        setSwingRange(2);
+        setDamageOutput(5);
     }
 
     @Override

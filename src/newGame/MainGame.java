@@ -1,30 +1,22 @@
 package newGame;
 
+import java.util.Random;
+
 import newGame.Entities.Character;
 import newGame.Entities.CharacterType;
-import newGame.Entities.Inventory.InventoryStack;
-import newGame.Entities.Item;
+import newGame.Entities.Shield;
 import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.Monster;
 import newGame.Entities.Orbs.ExpOrb;
 import newGame.Entities.Orbs.HealthOrb;
-import newGame.Entities.Shield;
-import newGame.Entities.Weapons.Fist;
 import newGame.Entities.Weapons.Knife;
+import newGame.Entities.Weapons.LongBow;
 import newGame.Entities.Weapons.LongSword;
-import newGame.Entities.Weapons.Melee;
-import newGame.Mapping.ArrayList2D;
 import newGame.Mapping.Map;
 import newGame.Mapping.MapInterface;
 import newGame.Mapping.Tile;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Predicate;
 
 public class MainGame {
 
@@ -97,6 +89,8 @@ public class MainGame {
         requestedEnd = false;
         map = fetchMap();
         map.getMapBuffer().scatter(new Knife(), Tile.SPACE, 1, 1, 4);
+        map.getMapBuffer().scatter(new LongSword(), Tile.SPACE, 1, 1, 1);
+        map.getMapBuffer().scatter(new LongBow(), Tile.SPACE, 1, 1, 1);
 
         character = new Character("Player", CharacterType.Wizard);
         character.setMaxHealth(25);
@@ -226,7 +220,13 @@ public class MainGame {
     private void scatterMaterial(int characterLevel) {
         Knife calcKnives = new Knife();
         calcKnives.setDamageOutput(characterLevel + 3);
+        LongSword calcLSword = new LongSword();
+        calcLSword.setDamageOutput(characterLevel + 5);
+        LongBow calcLBow = new LongBow();
+        calcLBow.setDamageOutput(characterLevel + 3);
         map.getMapBuffer().scatter(calcKnives, Tile.SPACE, 1, 1, 3);
+        map.getMapBuffer().scatter(calcLSword, Tile.SPACE, 1, 1, 2);
+        map.getMapBuffer().scatter(calcLBow, Tile.SPACE, 1, 1, 2);
         map.getMapBuffer().scatter(new HealthOrb(characterLevel), Tile.SPACE, 1, 4, 2);
         map.getMapBuffer().scatter(new ExpOrb(characterLevel), Tile.SPACE, 1, 6, 5);
     }
@@ -240,7 +240,7 @@ public class MainGame {
         });
 
         // Spawning monsters
-        if(shouldSpawnMob(Goblin.SPAWN_CHANCE, map.getEntityCountOf(Goblin.NAME), Goblin.LIMIT)) {
+        if(shouldSpawnMob(Goblin.SPAWN_CHANCE, map.getEntityCountOf(Goblin.NAME), 1)) {
             Goblin goblin = new Goblin();
             goblin.adaptToMap();
             goblin.spawn(Tile.SPACE);

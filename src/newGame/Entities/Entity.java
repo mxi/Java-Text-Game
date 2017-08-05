@@ -43,43 +43,54 @@ public abstract class Entity extends Representable {
         IntPoint p2 = getPosition();
 
         if(p1.getY() == p2.getY()) {
-            int commonX = p1.getX();
-            int maxY = Math.max(p1.getY(), p2.getY());
-            int minY = Math.min(p1.getY(), p2.getY());
-            for(int y = minY + 1; y < maxY; y++)
-                if(MainGame.map.getTile(commonX, y).isSolid()/*MainGame.map.getCharacter(commonX, y) == 'X'*/)
+            int commonY = p1.getY();
+            int maxX = Math.max(p1.getX(), p2.getX());
+            int minX = Math.min(p1.getX(), p2.getX());
+            for(int x = minX + 1; x < maxX; x++)
+                if(MainGame.map.getTile(x, commonY).isSolid()/*MainGame.map.getCharacter(commonX, y) == 'X'*/)
                     return false;
 
             return true;
         }
         else if(p1.getX() == p2.getX()) {
-            int commonY = p1.getY();
-            int maxX = Math.max(p1.getX(), p2.getX());
-            int minX = Math.min(p1.getX(), p2.getX());
-            for(int x = minX + 1; x < maxX; x++)
-                if(MainGame.map.getTile(x, commonY).isSolid()/*MainGame.map.getCharacter(x, commonY) == 'X'*/)
+            int commonX = p1.getX();
+            int maxY = Math.max(p1.getY(), p2.getY());
+            int minY = Math.min(p1.getY(), p2.getY());
+            for(int y = minY + 1; y < maxY; y++)
+                if(MainGame.map.getTile(commonX, y).isSolid()/*MainGame.map.getCharacter(x, commonY) == 'X'*/)
                     return false;
 
             return true;
         }
         else {
-            double slope = (p1.getY() - p2.getY()) / (p1.getX() - p2.getX());
-            double intercept = p1.getY() - (p1.getX() * slope);
-
-            int maxX = Math.max(p1.getX(), p2.getX());
-            int minX = Math.min(p1.getX(), p2.getX());
-            int minY = Math.min(p1.getY(), p2.getY());
             /*
             for(int x = minX; x < maxX; x++)
                 if(MainGame.map.getTile(x, (int) Math.ceil(x * slope + intercept)).isSolid())
                     return false;
             */
-            for(int x = minX; x <=  maxX; x++) {
-                int newY = (int) Math.round(slope * x + intercept);
-                int oldY = (int) Math.round(slope * (x - 1) + intercept);
-                for(int y = oldY + 1; y <= newY; y++) {
-                    if(MainGame.map.getTile(x, y).isSolid()) {
-                        return false;
+            double slope = ((float) p1.getY() - (float) p2.getY()) / ((float) p1.getX() - (float) p2.getX());
+            double intercept = p1.getY() - (slope * p1.getX());
+
+            int maxX = Math.max(p1.getX(), p2.getX());
+            int minX = Math.min(p1.getX(), p2.getX());
+            int maxY = Math.max(p1.getY(), p2.getY());
+            int minY = Math.min(p1.getY(), p2.getY());
+
+            for(int x = minX; x <= maxX; x++) {
+                int nowY = (int) Math.round(slope * x + intercept);
+                int nextY = (int) Math.round(slope * (x + 1) + intercept);
+                if(nextY < nowY) {
+                    for(int y = nowY; y >= nextY && y >= minY; y--) {
+                        Tile t = MainGame.map.getTile(x, y);
+                        if(t == null || t.isSolid())
+                            return false;
+                    }
+                }
+                else {
+                    for(int y = nowY; y <= nextY && y <= maxY; y++) {
+                        Tile t = MainGame.map.getTile(x, y);
+                        if(t == null || t.isSolid())
+                            return false;
                     }
                 }
             }
@@ -97,7 +108,7 @@ public abstract class Entity extends Representable {
         if(p1.isEquivalentTo(p2)) {
             return;
         }
-        final int color = ConsoleSystemInterface.TEAL;
+        final int color = ConsoleSystemInterface.MAGENTA;
         if(p1.getX() == p2.getX()) {
             int commonX = p1.getX();
             int maxY = Math.max(p1.getY(), p2.getY());
@@ -119,27 +130,32 @@ public abstract class Entity extends Representable {
             }
         }
         else {
-            double slope = (p1.getY() - p2.getY()) / (p1.getX() - p2.getX());
-            double intercept = p1.getY() - (p1.getX() * slope);
+            double slope = ((float) p1.getY() - (float) p2.getY()) / ((float) p1.getX() - (float) p2.getX());
+            double intercept = p1.getY() - (slope * p1.getX());
 
             int maxX = Math.max(p1.getX(), p2.getX());
             int minX = Math.min(p1.getX(), p2.getX());
+            int maxY = Math.max(p1.getY(), p2.getY());
             int minY = Math.min(p1.getY(), p2.getY());
-            /*
-            for(int x = minX; x < maxX; x++)
-                if(MainGame.map.getTile(x, (int) Math.ceil(x * slope + intercept)).isSolid())
-                    return false;
-            */
-            for(int x = minX; x <=  maxX; x++) {
-                int newY = (int) Math.round(slope * x + intercept);
-                int oldY = (int) Math.round(slope * (x - 1) + intercept);
-                for (int y = oldY + 1; y <= newY; y++) {
-                    final char old = MainGame.csi.peekChar(x, y);
-                    MainGame.csi.print(x, y, old, color);
-                    MainGame.csi.refresh();
+
+            for(int x = minX; x <= maxX; x++) {
+                int nowY = (int) Math.round(slope * x + intercept);
+                int nextY = (int) Math.round(slope * (x + 1) + intercept);
+                if(nextY < nowY) {
+                    for(int y = nowY; y >= nextY && y >= minY; y--) {
+                        final char prev = MainGame.csi.peekChar(x, y);
+                        MainGame.csi.print(x, y, prev, color);
+                    }
+                }
+                else {
+                    for(int y = nowY; y <= nextY && y <= maxY; y++) {
+                        final char prev = MainGame.csi.peekChar(x, y);
+                        MainGame.csi.print(x, y, prev, color);
+                    }
                 }
             }
         }
+        MainGame.csi.refresh();
     }
 
     public void spawn(Tile onWhatTile) {
