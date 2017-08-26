@@ -9,6 +9,7 @@ import newGame.MainGame;
 import sz.csi.ConsoleSystemInterface;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 public abstract class Melee extends Item {
@@ -58,6 +59,9 @@ public abstract class Melee extends Item {
 
     public void attack(Entity entity) {
         entity.damage(getDamageOutput());
+        if(entity.isDead() && getOwner() != null && getOwner() instanceof Character) {
+            ((Character)getOwner()).addExp(((Monster)entity).randExp());
+        }
         onAttack(entity);
     }
 
@@ -86,14 +90,25 @@ public abstract class Melee extends Item {
         }
 
         boolean isMonster = getOwner() instanceof Monster;
-        for(Entity e : entities) {
-            if(e == getOwner() || (e instanceof Monster && isMonster))
+        for(int i = 0; i < entities.size(); i++) {
+            Entity e = entities.get(i);
+            if(e == getOwner() || (e instanceof  Monster && isMonster))
                 continue;
 
-            IntPoint ownerPosition = getOwner().getPosition();
-            if(e.distance(ownerPosition.getX(), ownerPosition.getY()) <= swingRange)
+            IntPoint ownerPos = getOwner().getPosition();
+            if(e.distance(ownerPos.getX(), ownerPos.getY()) <= swingRange) {
                 attack(e);
+            }
         }
+        //for(Entity e : entities) {
+        //    if(e == getOwner() || (e instanceof Monster && isMonster))
+        //        continue;
+        //
+        //    IntPoint ownerPosition = getOwner().getPosition();
+        //    if(e.distance(ownerPosition.getX(), ownerPosition.getY()) <= swingRange) {
+        //        attack(e);
+        //    }
+        //}
     }
 
     @Override

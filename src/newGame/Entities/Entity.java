@@ -5,6 +5,7 @@ import newGame.MainGame;
 import newGame.Mapping.Tile;
 import sz.csi.ConsoleSystemInterface;
 
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -343,17 +344,8 @@ public abstract class Entity extends Representable {
     }
 
     public void removeAndClean() {
-        if(this instanceof Character) {
-            MainGame.requestEnd();
-        }
-        else {
-            MainGame.map.getEntities().removeIf(entity -> entity.equals(this));
-            MainGame.map.setTile(Tile.SPACE, getX() - 1, getY() - 1);
-
-            if(this instanceof Character) {
-                MainGame.requestEnd();
-            }
-        }
+        MainGame.map.getEntities().removeIf(entity -> entity.equals(this));
+        MainGame.map.setTile(Tile.SPACE, getX() - 1, getY() - 1);
     }
 
     /**

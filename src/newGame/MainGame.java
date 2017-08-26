@@ -144,7 +144,7 @@ public class MainGame {
                 character.displayInformation();
 
                 map.getEntities().forEach(e -> {
-                    e.debugDrawPath(e.getPosition(), character.getPosition());
+                    // e.debugDrawPath(e.getPosition(), character.getPosition());
                 });
 
                 csi.refresh();

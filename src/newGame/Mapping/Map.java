@@ -3,6 +3,7 @@ package newGame.Mapping;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
 import newGame.Entities.Entity;
 import newGame.Entities.Inventory.InventoryStack;
