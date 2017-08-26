@@ -57,28 +57,17 @@ public abstract class Melee extends Item {
     }
 
     public void attack(Entity entity) {
-        if(entity instanceof Character) {
-            attackPlayer((Character) entity);
-        }
-        else {
-            entity.damage(getDamageOutput());
-            onAttack(entity);
-            if(entity.isDead() && entity instanceof Monster) {
-                ((Character)getOwner()).addExp(((Monster)entity).randExp());
-            }
-        }
-    }
-
-    public void attackPlayer(Character c) {
-        if(isSwingWeapon() && getOwner().distance(c) <= getSwingRange())
-            c.damage(getDamageOutput());
-        else if(!isSwingWeapon() && getOwner().distance(c) <= singleRange)
-            c.damage(getDamageOutput());
+        entity.damage(getDamageOutput());
+        onAttack(entity);
     }
 
     public void attackClosest(List<Entity> entities) {
         boolean attacked = false;
+        boolean isMonster = getOwner() instanceof Monster;
         for(Entity e : entities) {
+            if(e == getOwner() || (e instanceof Monster && isMonster))
+                continue;
+
             if(e.distance(getOwner()) <= singleRange) {
                 attack(e);
                 attacked = true;
@@ -96,44 +85,30 @@ public abstract class Melee extends Item {
             return;
         }
 
+        boolean isMonster = getOwner() instanceof Monster;
         for(Entity e : entities) {
+            if(e == getOwner() || (e instanceof Monster && isMonster))
+                continue;
+
             IntPoint ownerPosition = getOwner().getPosition();
             if(e.distance(ownerPosition.getX(), ownerPosition.getY()) <= swingRange)
                 attack(e);
         }
     }
 
-    protected abstract void onAttack(Entity entity);
-
     @Override
     protected void onItemUse() {
-        if(getOwner() == null)
+        Entity owner = getOwner();
+        if(owner == null) {
             return;
-
-        List<Entity> notPlayer = new ArrayList<>();
-        Character character = null;
-        for(Entity e : MainGame.map.getEntities()) {
-            if(e instanceof Character)
-                character = (Character) e;
-            else
-                notPlayer.add(e);
         }
-
-        if(character == null)
-            return;
-
-        boolean attackerIsCharacter = getOwner() instanceof Character;
         if(isSwingWeapon()) {
-            if(attackerIsCharacter)
-                swing(notPlayer);
-            else
-                attackPlayer(character);
+            swing(MainGame.map.getEntities());
         }
         else {
-            if(attackerIsCharacter)
-                attackClosest(notPlayer);
-            else
-                attackPlayer(character);
+            attackClosest(MainGame.map.getEntities());
         }
     }
+
+    protected abstract void onAttack(Entity entity);
 }

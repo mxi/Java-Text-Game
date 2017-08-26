@@ -1,6 +1,7 @@
 package newGame.Mapping;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import newGame.Entities.Entity;
@@ -12,12 +13,15 @@ import sz.csi.ConsoleSystemInterface;
 
 public class Map implements MapInterface {
 
+	public static final java.util.Map<Integer, MapInterface> maps = new HashMap<>();
+
 	private final int DUNGEON_LEFT_MAX = 0; // old 10
 	private final int DUNGEON_TOP = 0; // old 3
 	private final int DUNGEON_RIGHT_MAX = 69; // old 79
 	private final int DUNGEON_BOTTOM = 19; // old 18
 	private int curX;
 	private int curY;
+	private int floor; // The level or floor of this map (like in a building).
 
 	private MapBuffer buffer = new MapBuffer(DUNGEON_RIGHT_MAX - DUNGEON_LEFT_MAX + 1, DUNGEON_BOTTOM - DUNGEON_TOP + 1);
 	private List<Entity> entities = new ArrayList<>();
@@ -42,8 +46,10 @@ public class Map implements MapInterface {
 		char direction; // R = right, L = left, U = up, D = down
 	}*/
 	
-	public Map()
+	public Map(int flr)
 	{
+		floor = flr;
+		maps.put(floor, this);
 		buffer.fill(Tile.EMPTY);
 		curX = MainGame.random.nextInt(69) + 1;
 		curY = MainGame.random.nextInt(15) + 1;
@@ -777,6 +783,11 @@ public class Map implements MapInterface {
 
 	public void setLightSourceRadius(float lightSourceRadius) {
 		this.lightSourceRadius = lightSourceRadius;
+	}
+
+	@Override
+	public int getFloor() {
+		return floor;
 	}
 
 	@Override

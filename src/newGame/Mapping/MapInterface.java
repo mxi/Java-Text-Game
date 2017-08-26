@@ -23,6 +23,7 @@ public interface MapInterface {
     int getMinY();
     int getMaxX();
     int getMaxY();
+    int getFloor();
     void render(ConsoleSystemInterface csi);
 
     List<Entity> getEntities();

@@ -62,6 +62,9 @@ public class MainGame {
     		csi.cls();
     	}*/
 
+        String user = System.getProperty("user.name");
+        Logger.newLog("C:/Users/" + user + "/Desktop/Java-Text-Game Logs/", "jtg_");
+        Logger.info("Initialized logger.");
         while(playing) {
              new MainGame();
         }
@@ -89,7 +92,7 @@ public class MainGame {
         csi.refresh();
 
         requestedEnd = false;
-        map = fetchMap();
+        map = fetchMap(1);
         map.getMapBuffer().scatter(new Knife(), Tile.SPACE, 1, 1, 4);
         map.getMapBuffer().scatter(new LongSword(), Tile.SPACE, 1, 1, 1);
         map.getMapBuffer().scatter(new LongBow(), Tile.SPACE, 1, 1, 1);
@@ -172,7 +175,18 @@ public class MainGame {
                         // player presses the enter on a stair character.
                         if(map.getTile(character.getPosition()).equalsTo(Tile.STAIR)) {
                             csi.cls();
-                            map = fetchMap();
+                            if(Map.maps.containsKey(map.getFloor() + 1))
+                                map = Map.maps.get(map.getFloor() + 1);
+                            else
+                                map = fetchMap(map.getFloor() + 1);
+                            character.spawn(Tile.STAIR);
+                        }
+                        break;
+                    case 30: // Escape key
+                        if(map.getTile(character.getPosition()).equalsTo(Tile.STAIR)
+                                && Map.maps.containsKey(map.getFloor() - 1)) {
+                            csi.cls();
+                            map = Map.maps.get(map.getFloor() - 1);
                             character.spawn(Tile.STAIR);
                         }
                         break;
@@ -214,8 +228,8 @@ public class MainGame {
         }
     }
 
-    private MapInterface fetchMap() {
-        final Map m = new Map();
+    private MapInterface fetchMap(int floor) {
+        final Map m = new Map(floor);
         m.setRenderingLightSource(false);
         m.setLightSourceRadius(5.8f);
         map = m;
