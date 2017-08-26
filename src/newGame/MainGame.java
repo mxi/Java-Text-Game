@@ -7,9 +7,9 @@ import newGame.Entities.CharacterType;
 import newGame.Entities.Shield;
 import newGame.Entities.Monsters.Archer;
 import newGame.Entities.Monsters.Goblin;
-import newGame.Entities.Monsters.Golem;
 import newGame.Entities.Monsters.HobGoblin;
 import newGame.Entities.Monsters.Monster;
+import newGame.Entities.Monsters.Sniper;
 import newGame.Entities.Orbs.ExpOrb;
 import newGame.Entities.Orbs.HealthOrb;
 import newGame.Entities.Weapons.Knife;
@@ -139,6 +139,10 @@ public class MainGame {
                 map.render(csi);
                 character.displayInformation();
 
+                map.getEntities().forEach(e -> {
+                    e.debugDrawPath(e.getPosition(), character.getPosition());
+                });
+
                 csi.refresh();
                 /*
                 * The next part takes in keyboard input and
@@ -244,7 +248,7 @@ public class MainGame {
         });
 
         // Spawning monsters
-        if(shouldSpawnMob(Goblin.SPAWN_CHANCE, map.getEntityCountOf(Goblin.NAME), Goblin.LIMIT)) {
+        if(shouldSpawnMob(Goblin.SPAWN_CHANCE, map.getEntityCountOf(Goblin.NAME), 1)) {
             Goblin goblin = new Goblin();
             goblin.adaptToMap();
             goblin.spawn(Tile.SPACE);
@@ -264,6 +268,13 @@ public class MainGame {
             archer.spawn(Tile.SPACE);
             archer.getMeleeWeapon().setDamageOutput(c.getLevel() * 2 + 1);
             archer.setHealth(c.getLevel() * 2);
+        }
+        if(shouldSpawnMob(Sniper.SPAWN_CHANCE, map.getEntityCountOf(Sniper.NAME), Sniper.LIMIT)) {
+            Sniper sniper = new Sniper();
+            sniper.adaptToMap();
+            sniper.spawn(Tile.SPACE);
+            sniper.getMeleeWeapon().setDamageOutput(c.getLevel() * 2 + 1);
+            sniper.setHealth(c.getLevel() * 2);
         }
     }
 
