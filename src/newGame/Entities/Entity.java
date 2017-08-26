@@ -63,11 +63,6 @@ public abstract class Entity extends Representable {
             return true;
         }
         else {
-            /*
-            for(int x = minX; x < maxX; x++)
-                if(MainGame.map.getTile(x, (int) Math.ceil(x * slope + intercept)).isSolid())
-                    return false;
-            */
             double slope = ((float) p1.getY() - (float) p2.getY()) / ((float) p1.getX() - (float) p2.getX());
             double intercept = p1.getY() - (slope * p1.getX());
 
@@ -303,17 +298,6 @@ public abstract class Entity extends Representable {
     public IntPoint previewMove(int deltaX, int deltaY) {
         int newX = getX() + deltaX;
         int newY = getY() + deltaY;
-        /*
-        if(newX < getMinX())
-            newX = getMinX();
-        else if(newX > getMaxX())
-            newX = getMaxX();
-
-        if(newY < getMinY())
-            newY = getMinY();
-        else if(newY > getMaxY())
-            newY = getMaxY();
-        */
         return new IntPoint(newX, newY);
     }
 
@@ -349,6 +333,9 @@ public abstract class Entity extends Representable {
 
     public void damage(int amount) {
         this.health -= amount;
+        if(isDead()) {
+            removeAndClean();
+        }
     }
 
     public boolean isDead() {
@@ -361,7 +348,7 @@ public abstract class Entity extends Representable {
         }
         else {
             MainGame.map.getEntities().removeIf(entity -> entity.equals(this));
-            MainGame.map.setTile(Tile.SPACE, getX() - 1, getY() - 1);//MainGame.map.setCharacter(prevCharOfMap, getX(), getY(), prevColorOfMap);
+            MainGame.map.setTile(Tile.SPACE, getX() - 1, getY() - 1);
 
             if(this instanceof Character) {
                 MainGame.requestEnd();

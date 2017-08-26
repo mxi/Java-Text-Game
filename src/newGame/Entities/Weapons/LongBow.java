@@ -5,10 +5,10 @@ import java.util.List;
 import newGame.Entities.Entity;
 import sz.csi.ConsoleSystemInterface;
 
-public class LongBow extends Melee{
+public class LongBow extends Melee {
 	public LongBow() {
         setSwingRange(0);
-        setName("Longbow");
+        setName("LongBow");
         setRepresentation('B');
         setColor(ConsoleSystemInterface.TEAL);
         setDamageOutput(3);

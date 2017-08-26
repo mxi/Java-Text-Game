@@ -5,7 +5,6 @@ import newGame.Entities.Weapons.Fist;
 import newGame.Entities.Weapons.Melee;
 import newGame.IntPoint;
 import newGame.MainGame;
-import newGame.Mapping.MapInterface;
 import newGame.Mapping.Tile;
 import sz.csi.ConsoleSystemInterface;
 
@@ -285,12 +284,12 @@ public class Character extends Entity {
         if(stack == null || stack.getSize() == 0) {
             return;
         }
-        final int distleft = getX();
-        final int disttop = getY();
-        final int distright = MainGame.map.getMapWidth() - distleft;
-        final int distbottom = MainGame.map.getMapHeight() - disttop;
-        int shortest = Math.min(Math.min(distleft, disttop), Math.min(distright, distbottom));
-        IntPoint freespace = null;
+        final int distleft = getX(); // Character X's distance from 0
+        final int disttop = getY(); // Character Y's distance from 0
+        final int distright = MainGame.map.getMapWidth() - distleft; // Character X's distance from map width
+        final int distbottom = MainGame.map.getMapHeight() - disttop; // Character Y's distance from map height
+        int shortest = Math.min(Math.min(distleft, disttop), Math.min(distright, distbottom)); // Shortest of 4 distances
+        IntPoint freespace = null; // Allocated object to store a free space point.
         scanner:
         for(int i = 1; i < shortest; i++) {
             for(int x = distleft - i; x < distleft + i; x++) {
