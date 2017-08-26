@@ -16,6 +16,6 @@ public class FiftyCaliberMachineGun extends Melee {
 
     @Override
     protected void onAttack(Entity entity) {
-        entity.damage(getDamageOutput());
+
     }
 }
