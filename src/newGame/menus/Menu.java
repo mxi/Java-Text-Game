@@ -53,11 +53,7 @@ public class Menu {
     public static void updateShown(int key) {
         for(int i = 0; i < menus.size(); i++) {
             Menu m = menus.get(i);
-            if(m.isAwaitingDestruction()) {
-                menus.remove(i);
-                i--;
-            }
-            else if(m.isShown()) {
+            if(m.isShown() && !m.isAwaitingDestruction()) {
                 m.update(key);
                 break;
             }
@@ -65,8 +61,9 @@ public class Menu {
     }
 
     // Data members for the menu list.
+    private Runnable onClose; // Actions that will occur before this menu objects closes.
     private List<MenuComponent> menuComponents = new ArrayList<>();
-    private int focusedComponent = 0;
+    private int focusedComponent = -1;
     private String title;
 
     private int width;
@@ -98,20 +95,56 @@ public class Menu {
     }
 
     /**
+     * Gets the X position of this menu object.
+     * @return X value of the position of the menu object.
+     */
+    public int getLocationX() {
+        return locationX;
+    }
+
+    /**
+     * Gets the Y position of this menu object.
+     * @return Y vvalue of the position of the menu object.
+     */
+    public int getLocationY() {
+        return locationY;
+    }
+
+    /**
+     * Gets the left most corner of this menu scene X.
+     * @return Scene X
+     */
+    public int getSceneX() {
+        return locationX + 1;
+    }
+
+    /**
+     * Gets the top most corner of this menu scene Y.
+     * @return Scene Y
+     */
+    public int getSceneY() {
+        return locationY + 3;
+    }
+
+    /**
      * Renders the menu onto the screen.
      */
     public void draw() {
         MainGame.clearCsi(locationX, locationY, width, height);
         for(int x = 0; x < width; x++) {
-            MainGame.csi.print(locationX + x, locationY, '*', ConsoleSystemInterface.WHITE);
-            MainGame.csi.print(locationX + x, locationY + 2, '*', ConsoleSystemInterface.WHITE);
-            MainGame.csi.print(locationX + x, locationY + height - 1, '*',  ConsoleSystemInterface.WHITE);
+            MainGame.csi.print(locationX + x, locationY, (char) -1, ConsoleSystemInterface.GRAY);
+            MainGame.csi.print(locationX + x, locationY + 2, (char) -1, ConsoleSystemInterface.GRAY);
+            MainGame.csi.print(locationX + x, locationY + height - 1, (char) -1,  ConsoleSystemInterface.GRAY);
             MainGame.csi.print(locationX + 1, locationY + 1, title, ConsoleSystemInterface.WHITE);
         }
         for(int y = 1; y + 1 < height; y++) {
-            MainGame.csi.print(locationX, locationY + y, '*', ConsoleSystemInterface.WHITE);
-            MainGame.csi.print(locationX + width -1, locationY + y, '*', ConsoleSystemInterface.WHITE);
+            MainGame.csi.print(locationX, locationY + y, (char) -1, ConsoleSystemInterface.GRAY);
+            MainGame.csi.print(locationX + width -1, locationY + y, (char) -1, ConsoleSystemInterface.GRAY);
         }
+        for(MenuComponent m : menuComponents)
+            if(m != null)
+                m.render(m.isFocused() ? ConsoleSystemInterface.YELLOW : ConsoleSystemInterface.WHITE);
+        MainGame.csi.refresh();
     }
 
     /**
@@ -123,11 +156,23 @@ public class Menu {
             return;
 
         draw();
-        if(key == 30) { // escape; exit menu window
-            isShown = false;
-            awaitingDestruction = true;
+        switch(key) {
+            case 30: // escape; exit menu window
+                close();
+                return;
+            case 2: // left arrow key
+                focusPreviousComponent();
+                return;
+            case 3: // right arrow key
+                focusNextComponent();
+                return;
+            default: // Do nothing.
+                break;
         }
-        System.out.println(key);
+        MenuComponent focused = getFocusedComponent();
+        if(focused != null && key > 0) {
+            focused.update(key);
+        }
     }
 
     /**
@@ -137,6 +182,32 @@ public class Menu {
      */
     private boolean isAwaitingDestruction() {
         return awaitingDestruction;
+    }
+
+    /**
+     * Gets the focused component of this Menu
+     * screen.
+     * @return Focused Menu Component object.
+     */
+    private MenuComponent getFocusedComponent() {
+        if(menuComponents.size() == 0)
+            return null;
+        else
+            return menuComponents.get(focusedComponent);
+    }
+
+    /**
+     * Adds a component to the GUI list.
+     * @param component Component to add.
+     */
+    public void addComponent(MenuComponent component) {
+        menuComponents.add(component);
+        component.parent = this;
+        component.initialize();
+        if(focusedComponent == -1) {
+            component.setFocused(true);
+            focusedComponent = 0;
+        }
     }
 
     /**
@@ -179,13 +250,26 @@ public class Menu {
     }
 
     /**
+     * Sets the actions that will occur once this
+     * menu object closes.
+     * @param onClose Actions that will run on menu close.
+     */
+    public void setOnClose(Runnable onClose) {
+        this.onClose = onClose;
+    }
+
+    /**
      * Hides and removes this menu object
      * from the menus list so that the
      * menu may never be displayed again
      * (unless a new object is created).
      */
     public void close() {
-        isShown = false;
+        awaitingDestruction = true;
+        if(onClose != null) {
+            onClose.run();
+        }
+        menuComponents.forEach(MenuComponent::destructor);
         menus.remove(this);
     }
 
@@ -224,17 +308,5 @@ public class Menu {
         if(focusedComponent < 0)
             focusedComponent = menuComponents.size() - 1;
         menuComponents.get(focusedComponent).setFocused(true);
-    }
-
-    /**
-     * Focuses only on the menu component that called
-     * to be focused.
-     * @param caller Component from which this call was made.
-     */
-    protected void focusOnlyOn(MenuComponent caller) {
-        for(int i = 0; i < menuComponents.size(); i++) {
-            if(menuComponents.get(i) != caller)
-                menuComponents.get(i).setFocused(false);
-        }
     }
 }

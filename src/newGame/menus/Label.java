@@ -1,12 +1,15 @@
 package newGame.menus;
 
+import newGame.MainGame;
+import sz.csi.ConsoleSystemInterface;
+
 /**
  * This component will display text onto
  * a menu screen.
  */
 public class Label extends MenuComponent {
 
-    private String text; // Text that will be displayed using this label.
+    private String text; // Text that will be displayed using this label
 
     /**
      * Constructor for the label class that takes in the
@@ -17,21 +20,24 @@ public class Label extends MenuComponent {
      */
     public Label(String text, int lx, int ly) {
         super(lx, ly);
+        this.text = text;
     }
 
     @Override
     protected void initialize() {
-
+        if(text == null)
+            text = "MenuComponent@Label";
     }
 
     @Override
     protected void destructor() {
-
+        // Do nothing.
     }
 
     @Override
-    protected void render() {
-
+    protected void render(int color) {
+        MainGame.csi.print(parent.getSceneX() + x, parent.getSceneY() + y,
+                text, color);
     }
 
     @Override

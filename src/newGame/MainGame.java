@@ -20,7 +20,10 @@ import newGame.Entities.Weapons.ShortBow;
 import newGame.Mapping.Map;
 import newGame.Mapping.MapInterface;
 import newGame.Mapping.Tile;
+import newGame.menus.Button;
+import newGame.menus.Label;
 import newGame.menus.Menu;
+import newGame.menus.TextField;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
@@ -109,6 +112,25 @@ public class MainGame {
         character.setFloor(1);
         character.setShield(Shield.Leather);
         character.spawn(Tile.SPACE);
+
+        Menu m = new Menu(40, 19);
+        m.setTitle("Epic Window");
+        m.setShown(true);
+        m.setOnClose(() -> System.out.println("Closed"));
+
+        Label l = new Label("Epic man", 0, 0);
+        m.addComponent(l);
+
+        Label l2 = new Label("Epic man 2", 0, 1);
+        m.addComponent(l2);
+
+        TextField tf = new TextField(0, 2, 13);
+        tf.setText("Bonjour");
+        m.addComponent(tf);
+
+        Button b = new Button("Hello", 0, 7);
+        b.setOnAction(() -> System.out.println("Works"));
+        m.addComponent(b);
     }
 
     private void start() {
@@ -122,8 +144,9 @@ public class MainGame {
         synchronized (this) {
             while(true) {
                 if(Menu.hasShownMenus()) {
-                    int key = csi.inkey().code;
                     MainGame.csi.cls();
+                    Menu.updateShown(-1);
+                    int key = csi.inkey().code;
                     Menu.updateShown(key);
                     continue;
                 }

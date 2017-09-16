@@ -8,9 +8,9 @@ package newGame.menus;
 public abstract class MenuComponent {
 
     // Data members of the MenuComponent class.
-    private Menu parent;
-    private int x;
-    private int y;
+    protected Menu parent;
+    protected int x;
+    protected int y;
 
     private boolean isFocused = false; // Whether this component is focused or not.
 
@@ -41,7 +41,6 @@ public abstract class MenuComponent {
      */
     public void setFocused(boolean s) {
         isFocused = s;
-        parent.focusOnlyOn(this);
     }
 
     /**
@@ -63,8 +62,9 @@ public abstract class MenuComponent {
      * Renders this component onto the menu screen
      * (or however this component would like to
      * be rendered).
+     * @param color The color of this component depending on focus state of this component.
      */
-    protected abstract void render();
+    protected abstract void render(int color);
 
     /**
      * Updates this component (if it's focused).
