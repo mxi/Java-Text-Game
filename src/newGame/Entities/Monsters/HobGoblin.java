@@ -7,7 +7,7 @@ import newGame.Entities.Weapons.LongSword;
 import sz.csi.ConsoleSystemInterface;
 
 public class HobGoblin extends Monster{
-	 public static final String NAME = "Hobgoblin";
+	public static final String NAME = "Hobgoblin";
     public static final int SPAWN_CHANCE = 2;
     public static final int LIMIT = 6;
 
