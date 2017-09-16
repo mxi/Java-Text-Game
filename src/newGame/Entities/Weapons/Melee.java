@@ -100,15 +100,6 @@ public abstract class Melee extends Item {
                 attack(e);
             }
         }
-        //for(Entity e : entities) {
-        //    if(e == getOwner() || (e instanceof Monster && isMonster))
-        //        continue;
-        //
-        //    IntPoint ownerPosition = getOwner().getPosition();
-        //    if(e.distance(ownerPosition.getX(), ownerPosition.getY()) <= swingRange) {
-        //        attack(e);
-        //    }
-        //}
     }
 
     @Override

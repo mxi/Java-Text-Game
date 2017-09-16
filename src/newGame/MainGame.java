@@ -20,6 +20,7 @@ import newGame.Entities.Weapons.ShortBow;
 import newGame.Mapping.Map;
 import newGame.Mapping.MapInterface;
 import newGame.Mapping.Tile;
+import newGame.menus.Menu;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
@@ -108,6 +109,9 @@ public class MainGame {
         character.setFloor(1);
         character.setShield(Shield.Leather);
         character.spawn(Tile.SPACE);
+
+        //Menu menu = new Menu(25, 16);
+        //menu.setShown(true);
     }
 
     private void start() {
@@ -120,6 +124,12 @@ public class MainGame {
     private void gameLoop() {
         synchronized (this) {
             while(true) {
+
+                if(Menu.hasShownMenus()) {
+                    Menu.update();
+                    
+                    continue;
+                }
                 /**
                  * When end is requested by any object/class within the game
                  * via MainGame.requestEnd() then the thread will be killed,
@@ -247,13 +257,15 @@ public class MainGame {
         LongSword calcLSword = new LongSword();
         calcLSword.setDamageOutput(characterLevel + calcLSword.getDamageOutput());
         LongBow calcLBow = new LongBow();
-        calcLBow.setDamageOutput(characterLevel + 3);
+        calcLBow.setDamageOutput(characterLevel + calcLBow.getDamageOutput());
+        ShortBow calcSBow = new ShortBow();
+        calcSBow.setDamageOutput(characterLevel + calcSBow.getDamageOutput());
         FiftyCaliberMachineGun fiftyCal = new FiftyCaliberMachineGun();
         map.getMapBuffer().scatter(fiftyCal, Tile.SPACE, 1, 1, 5);
         map.getMapBuffer().scatter(calcKnives, Tile.SPACE, 1, 1, 3);
         map.getMapBuffer().scatter(calcLSword, Tile.SPACE, 1, 1, 2);
         map.getMapBuffer().scatter(calcLBow, Tile.SPACE, 1, 1, 2);
-        map.getMapBuffer().scatter(calcLBow, Tile.SPACE, 1, 1, 3);
+        map.getMapBuffer().scatter(calcSBow, Tile.SPACE, 1, 1, 3);
         map.getMapBuffer().scatter(new HealthOrb(characterLevel), Tile.SPACE, 1, 4, 2);
         map.getMapBuffer().scatter(new ExpOrb(characterLevel), Tile.SPACE, 1, 6, 5);
     }

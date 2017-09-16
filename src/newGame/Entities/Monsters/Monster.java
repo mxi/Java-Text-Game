@@ -14,6 +14,8 @@ public abstract class Monster extends Entity {
     private float expRewardMax = 16;
     private float expRewardMin = 4;
 
+    private boolean isFriendlyToPlayer = false;
+
     protected int findPersistence = 15;
     protected int findCount = 0;
     protected int findDirection = 0;

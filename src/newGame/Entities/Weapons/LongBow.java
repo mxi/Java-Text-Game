@@ -25,7 +25,7 @@ public class LongBow extends Melee {
     public void attackClosest(List<Entity> entities) {
         boolean attacked = false;
         for(Entity e : entities) {
-            if(e.distance(getOwner()) <= getRange()) {
+            if(e.distance(getOwner()) <= getRange() && e.distance(getOwner()) > 0) {
                 attack(e);
                 attacked = true;
                 break;
