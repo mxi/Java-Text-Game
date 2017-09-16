@@ -8,10 +8,11 @@ package newGame.menus;
 public abstract class MenuComponent {
 
     // Data members of the MenuComponent class.
+    private Menu parent;
     private int x;
     private int y;
-    private int width;
-    private int height;
+
+    private boolean isFocused = false; // Whether this component is focused or not.
 
     /**
      * The constructor for this MenuComponent
@@ -19,15 +20,28 @@ public abstract class MenuComponent {
      * location of this object.
      * @param locationX Location X.
      * @param locationY Location Y.
-     * @param w Width of this component.
-     * @param h Heigh of this component.
      */
-    public MenuComponent(int locationX, int locationY, int w, int h) {
+    public MenuComponent(int locationX, int locationY) {
         x = locationX;
         y = locationY;
-        width = w;
-        height = h;
         initialize();
+    }
+
+    /**
+     * Checks if this component is focused or not.
+     * @return Whether this component is focused or not.
+     */
+    public boolean isFocused() {
+        return isFocused;
+    }
+
+    /**
+     * Sets the focus state of this component.
+     * @param s New focus state of this component.
+     */
+    public void setFocused(boolean s) {
+        isFocused = s;
+        parent.focusOnlyOn(this);
     }
 
     /**
@@ -37,4 +51,24 @@ public abstract class MenuComponent {
      */
     protected abstract void initialize();
 
+    /**
+     * Code that executes when the menu window is
+     * closing/about to be closed so that this component
+     * can save any data that it needs or log to
+     * the logger.
+     */
+    protected abstract void destructor();
+
+    /**
+     * Renders this component onto the menu screen
+     * (or however this component would like to
+     * be rendered).
+     */
+    protected abstract void render();
+
+    /**
+     * Updates this component (if it's focused).
+     * @param key User input key.
+     */
+    protected abstract void update(int key);
 }

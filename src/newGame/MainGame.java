@@ -106,8 +106,9 @@ public class MainGame {
         character.setShield(Shield.Leather);
         character.spawn(Tile.SPACE);
 
-        Menu menu = new Menu(25, 16);
-        menu.setShown(true);
+        //Menu menu = new Menu(50, 19);
+        //menu.setTitle("My epic window that bill gates constructed in his 40s");
+        //menu.setShown(true);
     }
 
     private void start() {
@@ -120,10 +121,10 @@ public class MainGame {
     private void gameLoop() {
         synchronized (this) {
             while(true) {
-
                 if(Menu.hasShownMenus()) {
-                    Menu.update();
-                    
+                    int key = csi.inkey().code;
+                    MainGame.csi.cls();
+                    Menu.updateShown(key);
                     continue;
                 }
                 /**
@@ -240,7 +241,7 @@ public class MainGame {
 
     private MapInterface fetchMap(int floor) {
         final Map m = new Map(floor);
-        m.setRenderingLightSource(false);
+        m.setRenderingLightSource(true);
         m.setLightSourceRadius(5.8f);
         map = m;
         scatterMaterial(character == null ? 1 : character.getLevel());
