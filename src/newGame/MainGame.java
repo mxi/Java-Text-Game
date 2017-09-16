@@ -260,8 +260,8 @@ public class MainGame {
         calcLBow.setDamageOutput(characterLevel + calcLBow.getDamageOutput());
         ShortBow calcSBow = new ShortBow();
         calcSBow.setDamageOutput(characterLevel + calcSBow.getDamageOutput());
-        FiftyCaliberMachineGun fiftyCal = new FiftyCaliberMachineGun();
-        map.getMapBuffer().scatter(fiftyCal, Tile.SPACE, 1, 1, 5);
+//        FiftyCaliberMachineGun fiftyCal = new FiftyCaliberMachineGun();
+//        map.getMapBuffer().scatter(fiftyCal, Tile.SPACE, 1, 1, 5);
         map.getMapBuffer().scatter(calcKnives, Tile.SPACE, 1, 1, 3);
         map.getMapBuffer().scatter(calcLSword, Tile.SPACE, 1, 1, 2);
         map.getMapBuffer().scatter(calcLBow, Tile.SPACE, 1, 1, 2);
