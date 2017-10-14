@@ -80,6 +80,22 @@ public abstract class Animation {
     }
 
     /**
+     * Gets the elapsed tick count.
+     * @return Elapsed tick count.
+     */
+    public int getElapsedTicks() {
+        return currentTickCount;
+    }
+
+    /**
+     * Gets the elapsed time since the last animation.
+     * @return Elapsed time since the last animation.
+     */
+    public int getElapsedTimeInMilliseconds() {
+        return elapsedMilliseconds;
+    }
+
+    /**
      * Starts this animation on the current
      * thread.
      */
@@ -99,6 +115,7 @@ public abstract class Animation {
 
             if(delta >= 1) {
                 onTick();
+                currentTickCount++;
                 delta--;
             }
         }
