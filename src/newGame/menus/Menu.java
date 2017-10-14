@@ -16,7 +16,6 @@ public class Menu {
     // Global list of all of the menus that were created.
     public static List<Menu> menus = new ArrayList<>();
 
-
     /**
      * Returns the first menu in the list
      * that is shown on screen.
@@ -51,7 +50,7 @@ public class Menu {
      * @param key Key that the user pressed (-1 for refresh).
      */
     public static void updateShown(int key) {
-        for(int i = 0; i < menus.size(); i++) {
+        for(int i = menus.size() - 1; i >= 0; i--) {
             Menu m = menus.get(i);
             if(m.isShown() && !m.isAwaitingDestruction()) {
                 m.update(key);
@@ -63,6 +62,7 @@ public class Menu {
     // Data members for the menu list.
     private Runnable onClose; // Actions that will occur before this menu objects closes.
     private List<MenuComponent> menuComponents = new ArrayList<>();
+    private Menu child = null;
     private int focusedComponent = -1;
     private String title;
 
@@ -79,8 +79,9 @@ public class Menu {
      * and dimensions of this menu object.
      * @param w Width of the menu.
      * @param h Height of the menu.
+     * @param isChild Determines whether this menu will be a child or not.
      */
-    public Menu(int w, int h) {
+    public Menu(int w, int h, boolean isChild) {
         if(w > MainGame.map.getMapWidth() || h > MainGame.map.getMapHeight()) {
             System.err.println("[WARNING] Menu window out of bounds: Screen=" + MainGame.map.getMapWidth()
                 + ", " + MainGame.map.getMapHeight() + " | Menu=" + w + ", " + h);
@@ -91,7 +92,8 @@ public class Menu {
         height = h < 6 ? 6 : h;
         locationX = (MainGame.map.getMapWidth() / 2) - (width / 2);
         locationY = (MainGame.map.getMapHeight() / 2) - (height / 2);
-        menus.add(this);
+        if(!isChild)
+            menus.add(this);
     }
 
     /**
@@ -154,6 +156,10 @@ public class Menu {
     public void update(int key) {
         if(awaitingDestruction)
             return;
+        else if(child != null) {
+            child.update(key);
+            return;
+        }
 
         draw();
         switch(key) {
@@ -197,16 +203,40 @@ public class Menu {
     }
 
     /**
+     * Adds a menu that will overlay this current menu
+     * (may be used for things like confirmation or something).
+     * @param m Another menu box.
+     */
+    public void setChildMenu(Menu m) {
+        if(m.isAwaitingDestruction())
+            return;
+        child = m;
+    }
+
+    /**
+     * Closes the child menu box.
+     * (if there is one).
+     */
+    public void closeChildMenu() {
+        if(child != null)
+            child.close();
+    }
+
+    /**
      * Adds a component to the GUI list.
      * @param component Component to add.
      */
     public void addComponent(MenuComponent component) {
+        if(menuComponents.contains(component)) {
+            System.err.println("[WARNING] This menu already contains component hash " + component.hashCode());
+            return;
+        }
         menuComponents.add(component);
         component.parent = this;
         component.initialize();
-        if(focusedComponent == -1) {
+        if(focusedComponent == -1 && component.isFocusable()) {
             component.setFocused(true);
-            focusedComponent = 0;
+            focusedComponent = menuComponents.size() - 1;
         }
     }
 
@@ -281,14 +311,26 @@ public class Menu {
      * menuComponents list.
      */
     public void focusNextComponent() {
-        if(menuComponents.size() <= 1) {
+        if(menuComponents.size() <= 1 || focusedComponent == -1) {
             return;
         }
         menuComponents.get(focusedComponent).setFocused(false);
-        focusedComponent++;
-        if(focusedComponent >= menuComponents.size())
-            focusedComponent = 0;
-        menuComponents.get(focusedComponent).setFocused(true);
+        List<Integer> focusableComponents = new ArrayList<>();
+        for(int i = 0; i < menuComponents.size(); i++) {
+            MenuComponent component = menuComponents.get(i);
+            if(component.isFocusable())
+                focusableComponents.add(i);
+        }
+        boolean found = false;
+        for(int i : focusableComponents) {
+            if(i > focusedComponent) {
+                found = true;
+                menuComponents.get(i).setFocused(true);
+                focusedComponent = i;
+            }
+        }
+        if(!found)
+            menuComponents.get(focusableComponents.get(0)).setFocused(true);
     }
 
     /**
@@ -300,13 +342,25 @@ public class Menu {
      * decrement from there over the components again.
      */
     public void focusPreviousComponent() {
-        if(menuComponents.size() <= 1) {
+        if(menuComponents.size() <= 1 || focusedComponent == -1) {
             return;
         }
         menuComponents.get(focusedComponent).setFocused(false);
-        focusedComponent--;
-        if(focusedComponent < 0)
-            focusedComponent = menuComponents.size() - 1;
-        menuComponents.get(focusedComponent).setFocused(true);
+        List<Integer> focusableComponents = new ArrayList<>();
+        for(int i = menuComponents.size() - 1; i >= 0; i--) {
+            MenuComponent component = menuComponents.get(i);
+            if(component.isFocusable())
+                focusableComponents.add(i);
+        }
+        boolean found = false;
+        for(int i : focusableComponents) {
+            if(i < focusedComponent) {
+                found = true;
+                menuComponents.get(i).setFocused(true);
+                focusedComponent = i;
+            }
+        }
+        if(!found)
+            menuComponents.get(focusableComponents.get(focusableComponents.size() - 1)).setFocused(true);
     }
 }

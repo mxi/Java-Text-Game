@@ -12,7 +12,6 @@ import newGame.Entities.Monsters.Monster;
 import newGame.Entities.Monsters.Sniper;
 import newGame.Entities.Orbs.ExpOrb;
 import newGame.Entities.Orbs.HealthOrb;
-import newGame.Entities.Weapons.FiftyCaliberMachineGun;
 import newGame.Entities.Weapons.Knife;
 import newGame.Entities.Weapons.LongBow;
 import newGame.Entities.Weapons.LongSword;
@@ -20,10 +19,7 @@ import newGame.Entities.Weapons.ShortBow;
 import newGame.Mapping.Map;
 import newGame.Mapping.MapInterface;
 import newGame.Mapping.Tile;
-import newGame.menus.Button;
-import newGame.menus.Label;
-import newGame.menus.Menu;
-import newGame.menus.TextField;
+import newGame.menus.*;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
@@ -76,6 +72,7 @@ public class MainGame {
              new MainGame();
         }
 
+        Logger.info("Application Terminated: 0");
         System.exit(0);
     }
 
@@ -113,7 +110,7 @@ public class MainGame {
         character.setShield(Shield.Leather);
         character.spawn(Tile.SPACE);
 
-        Menu m = new Menu(40, 19);
+        Menu m = new Menu(40, 19, false);
         m.setTitle("Epic Window");
         m.setShown(true);
         m.setOnClose(() -> System.out.println("Closed"));
@@ -129,7 +126,7 @@ public class MainGame {
         m.addComponent(tf);
 
         Button b = new Button("Hello", 0, 7);
-        b.setOnAction(() -> System.out.println("Works"));
+        b.setOnAction(() -> m.setChildMenu(NotificationMenu.createForExistingMenu(new NotificationText("Some text"))));
         m.addComponent(b);
     }
 
@@ -150,7 +147,7 @@ public class MainGame {
                     Menu.updateShown(key);
                     continue;
                 }
-                /**
+                /*
                  * When end is requested by any object/class within the game
                  * via MainGame.requestEnd() then the thread will be killed,
                  * and will allow the main thread to continue.
@@ -159,7 +156,7 @@ public class MainGame {
                     break;
                 }
 
-                /**
+                /*
                  * Decides whether the 'performAI' function
                  * gets called or not.
                  */

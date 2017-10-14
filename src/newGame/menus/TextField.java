@@ -11,7 +11,8 @@ import sz.csi.ConsoleSystemInterface;
 public class TextField extends MenuComponent {
 
     private StringBuilder text; // String buffer to contain the text.
-    private int textLength; // The length of this text field.
+    private int tflength; // The length of this text field.
+    private int maxTextLength; // The maximum text length of the text field.
 
     /**
      * Main constructor for this text field.
@@ -21,7 +22,8 @@ public class TextField extends MenuComponent {
      */
     public TextField(int lx, int ly, int tl) {
         super(lx, ly);
-        textLength = tl;
+        tflength = tl;
+        maxTextLength = 64;
     }
 
     /**
@@ -41,6 +43,26 @@ public class TextField extends MenuComponent {
         return text.toString();
     }
 
+    /**
+     * Sets the maximum length of text that this texfield
+     * can store.
+     * @param ntl The new maximum length of text this textfield can store.
+     */
+    public void setMaxTextLength(int ntl) {
+        if(ntl < 0)
+            return;
+        maxTextLength = ntl;
+    }
+
+    /**
+     * Gets the maximum length of text that this textfield
+     * can store.
+     * @return Maximum number of characters this textfield can store.
+     */
+    public int getMaxTextLength() {
+        return maxTextLength;
+    }
+
     @Override
     protected void initialize() {
         text = new StringBuilder();
@@ -54,13 +76,13 @@ public class TextField extends MenuComponent {
     @Override
     protected void render(int color) {
         StringBuilder tfbar = new StringBuilder(); // TextField bar that indicates that this is a text field.
-        for(int i = 0; i < textLength; i++)
+        for(int i = 0; i < tflength; i++)
             tfbar.append('-');
         String disptext; // The text that will actually be displayed.
         int typeIndex; // Indicator for the user to tell which character they're on.
-        if(text.length() > textLength) {
-            disptext = text.substring(text.length() - textLength, text.length());
-            typeIndex = textLength;
+        if(text.length() > tflength) {
+            disptext = text.substring(text.length() - tflength, text.length());
+            typeIndex = tflength;
         }
         else {
             disptext = text.toString();
@@ -89,10 +111,12 @@ public class TextField extends MenuComponent {
                 text.deleteCharAt(text.length() - 1);
                 break;
             case 40: // Space character
-                text.append(' ');
+                if(text.length() < maxTextLength)
+                    text.append(' ');
                 break;
             default:
-                text.append((char) (key + 1));
+                if(text.length() < maxTextLength)
+                    text.append((char) (key + 1));
                 break;
         }
     }

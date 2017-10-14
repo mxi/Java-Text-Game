@@ -27,6 +27,7 @@ public class Label extends MenuComponent {
     protected void initialize() {
         if(text == null)
             text = "MenuComponent@Label";
+        setFocusable(false);
     }
 
     @Override

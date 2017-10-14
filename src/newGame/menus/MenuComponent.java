@@ -12,6 +12,7 @@ public abstract class MenuComponent {
     protected int x;
     protected int y;
 
+    private boolean isFocusable = true; // Whether this component can gain focus
     private boolean isFocused = false; // Whether this component is focused or not.
 
     /**
@@ -41,6 +42,23 @@ public abstract class MenuComponent {
      */
     public void setFocused(boolean s) {
         isFocused = s;
+    }
+
+    /**
+     * Determines whether this component is focusable (able to be focused)
+     * or not.
+     * @return Whether this component is focusable.
+     */
+    public boolean isFocusable() {
+        return isFocusable;
+    }
+
+    /**
+     * Sets whether this component is focusable or not.
+     * @param focusable Status of this component's focusability.
+     */
+    public void setFocusable(boolean focusable) {
+        isFocusable = focusable;
     }
 
     /**
