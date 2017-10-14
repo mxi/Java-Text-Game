@@ -8,6 +8,7 @@ package newGame.menus;
 public abstract class MenuComponent {
 
     // Data members of the MenuComponent class.
+    private String name;
     protected Menu parent;
     protected int x;
     protected int y;
@@ -26,6 +27,22 @@ public abstract class MenuComponent {
         x = locationX;
         y = locationY;
         initialize();
+    }
+
+    /**
+     * Sets the name of this component.
+     * @param name Name of this component.
+     */
+    public void setName(String name) {
+        this.name = name == null ? "MenuComponent@~Abstract" : name;
+    }
+
+    /**
+     * Gets the name of this component.
+     * @return Name of this component.
+     */
+    public String getName() {
+        return name;
     }
 
     /**

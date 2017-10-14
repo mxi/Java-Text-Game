@@ -241,6 +241,40 @@ public class Menu {
     }
 
     /**
+     * Adds an array of menu components.
+     * @param components Components to add to the menu.
+     */
+    public void addAllComponents(MenuComponent... components) {
+        for(MenuComponent c : components)
+            addComponent(c);
+    }
+
+    /**
+     * Gets a component by name.
+     * @param name Name of the component.
+     * @return Component with that name.
+     */
+    public MenuComponent getComponentByName(String name) {
+        for(MenuComponent c : menuComponents)
+            if(c != null && c.getName() != null && c.getName().equals(name))
+                return c;
+        return null;
+    }
+
+    /**
+     * Gets a collection of components with a common name.
+     * @param name Common name among all of the components.
+     * @return List of all of the components with the name.
+     */
+    public List<MenuComponent> getComponentsByName(String name) {
+        List<MenuComponent> matches = new ArrayList<>();
+        for(MenuComponent c : menuComponents)
+            if(c != null && c.getName() != null && c.getName().equals(name))
+                matches.add(c);
+        return matches;
+    }
+
+    /**
      * Gets the title of this menu window.
      * @return Title of menu window.
      */
@@ -314,23 +348,26 @@ public class Menu {
         if(menuComponents.size() <= 1 || focusedComponent == -1) {
             return;
         }
-        menuComponents.get(focusedComponent).setFocused(false);
-        List<Integer> focusableComponents = new ArrayList<>();
-        for(int i = 0; i < menuComponents.size(); i++) {
-            MenuComponent component = menuComponents.get(i);
-            if(component.isFocusable())
-                focusableComponents.add(i);
-        }
-        boolean found = false;
-        for(int i : focusableComponents) {
-            if(i > focusedComponent) {
-                found = true;
-                menuComponents.get(i).setFocused(true);
+        int prev = focusedComponent;
+        boolean hasLooped = false;
+        for(int i = focusedComponent; i < menuComponents.size(); i++) {
+            if(i == focusedComponent && hasLooped) {
+                break;
+            }
+            else if(menuComponents.get(i).isFocusable() && i != focusedComponent) {
                 focusedComponent = i;
+                break;
+            }
+
+            if(i + 1 == menuComponents.size()) {
+                hasLooped = true;
+                i = -1;
             }
         }
-        if(!found)
-            menuComponents.get(focusableComponents.get(0)).setFocused(true);
+        if(prev != focusedComponent) {
+            menuComponents.get(prev).setFocused(false);
+            menuComponents.get(focusedComponent).setFocused(true);
+        }
     }
 
     /**
@@ -345,22 +382,25 @@ public class Menu {
         if(menuComponents.size() <= 1 || focusedComponent == -1) {
             return;
         }
-        menuComponents.get(focusedComponent).setFocused(false);
-        List<Integer> focusableComponents = new ArrayList<>();
-        for(int i = menuComponents.size() - 1; i >= 0; i--) {
-            MenuComponent component = menuComponents.get(i);
-            if(component.isFocusable())
-                focusableComponents.add(i);
-        }
-        boolean found = false;
-        for(int i : focusableComponents) {
-            if(i < focusedComponent) {
-                found = true;
-                menuComponents.get(i).setFocused(true);
+        int prev = focusedComponent;
+        boolean hasLooped = false;
+        for(int i = focusedComponent; i >= 0; i--) {
+            if(i == focusedComponent && hasLooped) {
+                break;
+            }
+            else if(menuComponents.get(i).isFocusable() && i != focusedComponent) {
                 focusedComponent = i;
+                break;
+            }
+
+            if(i == 0) {
+                hasLooped = true;
+                i = menuComponents.size();
             }
         }
-        if(!found)
-            menuComponents.get(focusableComponents.get(focusableComponents.size() - 1)).setFocused(true);
+        if(prev != focusedComponent) {
+            menuComponents.get(prev).setFocused(false);
+            menuComponents.get(focusedComponent).setFocused(true);
+        }
     }
 }

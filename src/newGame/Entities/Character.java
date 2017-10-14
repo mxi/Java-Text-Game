@@ -203,7 +203,7 @@ public class Character extends Entity {
         // Prints everything again:
         // Main Info:
         MainGame.csi.print(baseX, baseY, getName() + " | " + getTypeAsString() + " | Level "  + getLevel());
-        MainGame.csi.print(baseX + 30, baseY, "(" + getExp() + "/" + getExpUntilLevelUp() + ")", ConsoleSystemInterface.YELLOW);
+        MainGame.csi.print(baseX + 30, baseY, "(" + Math.round(getExp()) + "/" + Math.round(getExpUntilLevelUp()) + ")", ConsoleSystemInterface.YELLOW);
         // Health Info:
         MainGame.csi.print(baseX, baseY + 1, "Health: ");
         switch(getDamageState()) {

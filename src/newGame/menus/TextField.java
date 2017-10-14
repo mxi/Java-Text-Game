@@ -91,8 +91,7 @@ public class TextField extends MenuComponent {
         MainGame.csi.print(parent.getSceneX() + x, parent.getSceneY() + y, disptext, color);
         MainGame.csi.print(parent.getSceneX() + x, parent.getSceneY() + y + 1, tfbar.toString(), color);
         if(isFocused()) {
-            MainGame.csi.print(parent.getSceneX() + x + typeIndex, parent.getSceneY() + y + 1, '-',
-                    ConsoleSystemInterface.RED);
+            MainGame.csi.print(parent.getSceneX() + x + typeIndex, parent.getSceneY() + y + 1, '_', color);
         }
     }
 

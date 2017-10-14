@@ -2,6 +2,7 @@ package newGame;
 
 import java.util.Random;
 
+import newGame.Animations.Animation;
 import newGame.Entities.Character;
 import newGame.Entities.CharacterType;
 import newGame.Entities.Shield;
@@ -65,15 +66,20 @@ public class MainGame {
     		csi.cls();
     	}*/
 
-        String user = System.getProperty("user.name");
-        Logger.newLog("C:/Users/" + user + "/Desktop/Java-Text-Game Logs/", "jtg_");
-        Logger.info("Initialized logger.");
-        while(playing) {
-             new MainGame();
-        }
+        Animation anim = new Animation();
+        anim.setMillisecondsPerTick(500);
+        anim.setDurationInMilliseconds(5000);
+        anim.start();
 
-        Logger.info("Application Terminated: 0");
-        System.exit(0);
+        //String user = System.getProperty("user.name");
+        //Logger.newLog("C:/Users/" + user + "/Desktop/Java-Text-Game Logs/", "jtg_");
+        //Logger.info("Initialized logger.");
+        //while(playing) {
+        //     new MainGame();
+        //}
+
+        //Logger.info("Application Terminated: 0");
+        //System.exit(0);
     }
 
     private MainGame() {
@@ -110,24 +116,29 @@ public class MainGame {
         character.setShield(Shield.Leather);
         character.spawn(Tile.SPACE);
 
+        final String characterNameTextField = "cname";
+
         Menu m = new Menu(40, 19, false);
         m.setTitle("Epic Window");
         m.setShown(true);
-        m.setOnClose(() -> System.out.println("Closed"));
+        m.setOnClose(() -> {
+            TextField nameInput = (TextField) m.getComponentByName(characterNameTextField);
+            if(nameInput.getText().length() == 0)
+                character.setName("Player");
+            else
+                character.setName(nameInput.getText());
+        });
 
-        Label l = new Label("Epic man", 0, 0);
-        m.addComponent(l);
+        Label cNameLabel = new Label("Enter character name:", 9, 3);
 
-        Label l2 = new Label("Epic man 2", 0, 1);
-        m.addComponent(l2);
+        TextField cName = new TextField(14, 4, 8);
+        cName.setName(characterNameTextField);
+        cName.setMaxTextLength(8);
 
-        TextField tf = new TextField(0, 2, 13);
-        tf.setText("Bonjour");
-        m.addComponent(tf);
+        Button confirmButton = new Button("Continue", 13, 12);
+        confirmButton.setOnAction(m::close);
 
-        Button b = new Button("Hello", 0, 7);
-        b.setOnAction(() -> m.setChildMenu(NotificationMenu.createForExistingMenu(new NotificationText("Some text"))));
-        m.addComponent(b);
+        m.addAllComponents(cNameLabel, cName, confirmButton);
     }
 
     private void start() {
@@ -261,7 +272,7 @@ public class MainGame {
 
     private MapInterface fetchMap(int floor) {
         final Map m = new Map(floor);
-        m.setRenderingLightSource(true);
+        m.setRenderingLightSource(false);
         m.setLightSourceRadius(5.8f);
         map = m;
         scatterMaterial(character == null ? 1 : character.getLevel());
@@ -296,7 +307,7 @@ public class MainGame {
         });
 
         // Spawning monsters
-        if(shouldSpawnMob(Goblin.SPAWN_CHANCE, map.getEntityCountOf(Goblin.NAME), 1)) {
+        if(shouldSpawnMob(Goblin.SPAWN_CHANCE, map.getEntityCountOf(Goblin.NAME), Goblin.LIMIT)) {
             Goblin goblin = new Goblin();
             goblin.adaptToMap();
             goblin.spawn(Tile.SPACE);

@@ -1,7 +1,6 @@
 package newGame.menus;
 
 import newGame.MainGame;
-import sz.csi.ConsoleSystemInterface;
 
 /**
  * This component will display text onto

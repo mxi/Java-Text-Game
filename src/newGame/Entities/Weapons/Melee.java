@@ -8,8 +8,6 @@ import newGame.IntPoint;
 import newGame.MainGame;
 import sz.csi.ConsoleSystemInterface;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 public abstract class Melee extends Item {
