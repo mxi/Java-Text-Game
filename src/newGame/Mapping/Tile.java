@@ -3,6 +3,7 @@ package newGame.Mapping;
 import newGame.Entities.Entity;
 import newGame.Entities.Inventory.InventoryStack;
 import newGame.Entities.Item;
+import newGame.Entities.Representable;
 import sz.csi.ConsoleSystemInterface;
 
 import java.io.Console;
@@ -89,6 +90,10 @@ public class Tile {
 
     public void setColor(int colour) {
         this.colour = colour;
+    }
+
+    public Representable getRepresentable() {
+        return new Representable(representable, colour);
     }
 
     @Override
