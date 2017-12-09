@@ -330,7 +330,9 @@ public abstract class Entity extends Representable {
     }
 
     public void heal(int amount) {
+        amount = Math.abs(amount);
         this.health = amount + this.health > this.maxHealth ? this.maxHealth : this.health + amount;
+        Animations.entityHeal(getX(), getY());
     }
 
     public void damage(int amount) {

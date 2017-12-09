@@ -2,6 +2,7 @@ package newGame;
 
 import java.util.Random;
 
+import newGame.Animations.Animations;
 import newGame.Entities.Character;
 import newGame.Entities.CharacterType;
 import newGame.Entities.Shield;
@@ -219,10 +220,10 @@ public class MainGame {
                                 map = fetchMap(map.getFloor() + 1);
                             character.spawn(Tile.STAIR);
                         }
-                        // fully heals the player when the
-                        // player presses the enter on a heal tile character.
+                        // heals the player a certain amount
+                        // of health
                         if(map.getTile(character.getPosition()).equalsTo(Tile.HEALTILE)) {
-                            character.setHealth(character.getMaxHealth());
+                            character.heal(25);
                         }
                         break;
                     case 30: // Escape key
@@ -280,7 +281,7 @@ public class MainGame {
 
     private MapInterface fetchMap(int floor) {
         final Map m = new Map(floor);
-        m.setRenderingLightSource(false);
+        m.setRenderingLightSource(true);
         m.setLightSourceRadius(5.8f);
         map = m;
         scatterMaterial(character == null ? 1 : character.getLevel());
