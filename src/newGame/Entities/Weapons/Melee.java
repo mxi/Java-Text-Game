@@ -1,5 +1,7 @@
 package newGame.Entities.Weapons;
 
+import newGame.Animations.Animations;
+import newGame.Animations.SwordSwingDirection;
 import newGame.Entities.Character;
 import newGame.Entities.Entity;
 import newGame.Entities.Item;
@@ -56,9 +58,14 @@ public abstract class Melee extends Item {
     }
 
     public void attack(Entity entity) {
+        Entity owner = getOwner();
+        if(owner != null) {
+            Animations.swordSwing(SwordSwingDirection.getFromPositionOffset(owner, entity),
+                        owner.getX(), owner.getY());
+        }
         onAttack(entity);
-        if(entity.isDead() && getOwner() != null && getOwner() instanceof Character) {
-            ((Character)getOwner()).addExp(((Monster)entity).randExp());
+        if(entity.isDead() && owner != null && owner instanceof Character) {
+            ((Character)owner).addExp(((Monster)entity).randExp());
         }
     }
 
