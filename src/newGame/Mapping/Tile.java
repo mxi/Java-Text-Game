@@ -22,6 +22,10 @@ public class Tile {
         return new Tile("Stair", null, '\\', false, ConsoleSystemInterface.WHITE);
     }
 
+    public static Tile healTile() {
+        return new Tile("healTile", null, 'O', false, ConsoleSystemInterface.CYAN);
+    }
+    
     public static Tile wall() {
         return new Tile("Wall", null, 'X', true, ConsoleSystemInterface.WHITE);
     }
@@ -30,6 +34,7 @@ public class Tile {
     public static final Tile SPACE = space();
     public static final Tile STAIR = stair();
     public static final Tile WALL = wall();
+    public static final Tile HEALTILE = healTile();
 
     private String name;
     private InventoryStack<Item> items;

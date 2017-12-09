@@ -11,8 +11,8 @@ public class ShortBow extends Melee {
         setName("Shortbow");
         setRepresentation('b');
         setColor(ConsoleSystemInterface.TEAL);
-        setDamageOutput(2);
-        setRange(5f);
+        setDamageOutput(1);
+        setRange(3f);
         setMaxDurability(10);
     }
 
