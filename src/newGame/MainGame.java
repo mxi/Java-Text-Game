@@ -2,6 +2,7 @@ package newGame;
 
 import java.util.Random;
 
+import newGame.Animations.Animation;
 import newGame.Entities.Character;
 import newGame.Entities.CharacterType;
 import newGame.Entities.Shield;
@@ -12,7 +13,6 @@ import newGame.Entities.Monsters.Monster;
 import newGame.Entities.Monsters.Sniper;
 import newGame.Entities.Orbs.ExpOrb;
 import newGame.Entities.Orbs.HealthOrb;
-import newGame.Entities.Weapons.FiftyCaliberMachineGun;
 import newGame.Entities.Weapons.Knife;
 import newGame.Entities.Weapons.LongBow;
 import newGame.Entities.Weapons.LongSword;
@@ -20,7 +20,7 @@ import newGame.Entities.Weapons.ShortBow;
 import newGame.Mapping.Map;
 import newGame.Mapping.MapInterface;
 import newGame.Mapping.Tile;
-import newGame.menus.Menu;
+import newGame.menus.*;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
@@ -66,14 +66,20 @@ public class MainGame {
     		csi.cls();
     	}*/
 
-        String user = System.getProperty("user.name");
-        Logger.newLog("C:/Users/" + user + "/Desktop/Java-Text-Game Logs/", "jtg_");
-        Logger.info("Initialized logger.");
-        while(playing) {
-             new MainGame();
-        }
+        Animation anim = new Animation();
+        anim.setMillisecondsPerTick(500);
+        anim.setDurationInMilliseconds(5000);
+        anim.start();
 
-        System.exit(0);
+        //String user = System.getProperty("user.name");
+        //Logger.newLog("C:/Users/" + user + "/Desktop/Java-Text-Game Logs/", "jtg_");
+        //Logger.info("Initialized logger.");
+        //while(playing) {
+        //     new MainGame();
+        //}
+
+        //Logger.info("Application Terminated: 0");
+        //System.exit(0);
     }
 
     private MainGame() {
@@ -110,8 +116,29 @@ public class MainGame {
         character.setShield(Shield.Leather);
         character.spawn(Tile.SPACE);
 
-        //Menu menu = new Menu(25, 16);
-        //menu.setShown(true);
+        final String characterNameTextField = "cname";
+
+        Menu m = new Menu(40, 19, false);
+        m.setTitle("Epic Window");
+        m.setShown(true);
+        m.setOnClose(() -> {
+            TextField nameInput = (TextField) m.getComponentByName(characterNameTextField);
+            if(nameInput.getText().length() == 0)
+                character.setName("Player");
+            else
+                character.setName(nameInput.getText());
+        });
+
+        Label cNameLabel = new Label("Enter character name:", 9, 3);
+
+        TextField cName = new TextField(14, 4, 8);
+        cName.setName(characterNameTextField);
+        cName.setMaxTextLength(8);
+
+        Button confirmButton = new Button("Continue", 13, 12);
+        confirmButton.setOnAction(m::close);
+
+        m.addAllComponents(cNameLabel, cName, confirmButton);
     }
 
     private void start() {
@@ -124,13 +151,14 @@ public class MainGame {
     private void gameLoop() {
         synchronized (this) {
             while(true) {
-
                 if(Menu.hasShownMenus()) {
-                    Menu.update();
-                    
+                    MainGame.csi.cls();
+                    Menu.updateShown(-1);
+                    int key = csi.inkey().code;
+                    Menu.updateShown(key);
                     continue;
                 }
-                /**
+                /*
                  * When end is requested by any object/class within the game
                  * via MainGame.requestEnd() then the thread will be killed,
                  * and will allow the main thread to continue.
@@ -139,7 +167,7 @@ public class MainGame {
                     break;
                 }
 
-                /**
+                /*
                  * Decides whether the 'performAI' function
                  * gets called or not.
                  */
@@ -284,7 +312,7 @@ public class MainGame {
         });
 
         // Spawning monsters
-        if(shouldSpawnMob(Goblin.SPAWN_CHANCE, map.getEntityCountOf(Goblin.NAME), 1)) {
+        if(shouldSpawnMob(Goblin.SPAWN_CHANCE, map.getEntityCountOf(Goblin.NAME), Goblin.LIMIT)) {
             Goblin goblin = new Goblin();
             goblin.adaptToMap();
             goblin.spawn(Tile.SPACE);

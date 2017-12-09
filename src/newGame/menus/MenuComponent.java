@@ -8,10 +8,13 @@ package newGame.menus;
 public abstract class MenuComponent {
 
     // Data members of the MenuComponent class.
-    private int x;
-    private int y;
-    private int width;
-    private int height;
+    private String name;
+    protected Menu parent;
+    protected int x;
+    protected int y;
+
+    private boolean isFocusable = true; // Whether this component can gain focus
+    private boolean isFocused = false; // Whether this component is focused or not.
 
     /**
      * The constructor for this MenuComponent
@@ -19,15 +22,60 @@ public abstract class MenuComponent {
      * location of this object.
      * @param locationX Location X.
      * @param locationY Location Y.
-     * @param w Width of this component.
-     * @param h Heigh of this component.
      */
-    public MenuComponent(int locationX, int locationY, int w, int h) {
+    public MenuComponent(int locationX, int locationY) {
         x = locationX;
         y = locationY;
-        width = w;
-        height = h;
         initialize();
+    }
+
+    /**
+     * Sets the name of this component.
+     * @param name Name of this component.
+     */
+    public void setName(String name) {
+        this.name = name == null ? "MenuComponent@~Abstract" : name;
+    }
+
+    /**
+     * Gets the name of this component.
+     * @return Name of this component.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Checks if this component is focused or not.
+     * @return Whether this component is focused or not.
+     */
+    public boolean isFocused() {
+        return isFocused;
+    }
+
+    /**
+     * Sets the focus state of this component.
+     * @param s New focus state of this component.
+     */
+    public void setFocused(boolean s) {
+        isFocused = s;
+    }
+
+    /**
+     * Determines whether this component is focusable (able to be focused)
+     * or not.
+     * @return Whether this component is focusable.
+     */
+    public boolean isFocusable() {
+        return isFocusable;
+    }
+
+    /**
+     * Sets whether this component is focusable or not.
+     * @param focusable Status of this component's focusability.
+     */
+    public void setFocusable(boolean focusable) {
+        isFocusable = focusable;
     }
 
     /**
@@ -37,4 +85,25 @@ public abstract class MenuComponent {
      */
     protected abstract void initialize();
 
+    /**
+     * Code that executes when the menu window is
+     * closing/about to be closed so that this component
+     * can save any data that it needs or log to
+     * the logger.
+     */
+    protected abstract void destructor();
+
+    /**
+     * Renders this component onto the menu screen
+     * (or however this component would like to
+     * be rendered).
+     * @param color The color of this component depending on focus state of this component.
+     */
+    protected abstract void render(int color);
+
+    /**
+     * Updates this component (if it's focused).
+     * @param key User input key.
+     */
+    protected abstract void update(int key);
 }
