@@ -768,6 +768,22 @@ public class Map implements MapInterface {
 			buffer.setElement(Tile.stair(), StairX, StairY);//MainGame.csi.print(StairX , StairY, "/");
 			break;
 		}
+		//Printing the HealTile
+		for(;;)
+		{
+			Room StairRoom = rooms.get(MainGame.random.nextInt(rooms.size()));
+			int StairX = StairRoom.X + 1 + MainGame.random.nextInt(StairRoom.Xsize - 1);
+			int StairY = StairRoom.Y + 1 + MainGame.random.nextInt(StairRoom.Ysize - 1);
+			if(buffer.getElement(StairX, StairY).equalsTo(Tile.WALL)/*MainGame.csi.peekChar(StairX, StairY) == 'X'*/)
+			{
+				continue;
+			}if(buffer.getElement(StairX, StairY).equalsTo(Tile.STAIR)/*MainGame.csi.peekChar(StairX, StairY) == 'X'*/)
+			{
+				continue;
+			}
+			buffer.setElement(Tile.healTile(), StairX, StairY);//MainGame.csi.print(StairX , StairY, "/");
+			break;
+		}
 	}
 
 	public boolean isRenderingLightSource() {

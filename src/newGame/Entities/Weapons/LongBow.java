@@ -11,8 +11,8 @@ public class LongBow extends Melee {
         setName("LongBow");
         setRepresentation('B');
         setColor(ConsoleSystemInterface.TEAL);
-        setDamageOutput(3);
-        setRange(10f);
+        setDamageOutput(2);
+        setRange(5f);
         setMaxDurability(10);
     }
 

@@ -195,6 +195,11 @@ public class MainGame {
                                 map = fetchMap(map.getFloor() + 1);
                             character.spawn(Tile.STAIR);
                         }
+                        // fully heals the player when the
+                        // player presses the enter on a heal tile character.
+                        if(map.getTile(character.getPosition()).equalsTo(Tile.HEALTILE)) {
+                            character.setHealth(character.getMaxHealth());
+                        }
                         break;
                     case 30: // Escape key
                         if(map.getTile(character.getPosition()).equalsTo(Tile.STAIR)
@@ -250,21 +255,21 @@ public class MainGame {
         scatterMaterial(character == null ? 1 : character.getLevel());
         return map;
     }
-
+    
     private void scatterMaterial(int characterLevel) {
         Knife calcKnives = new Knife();
         calcKnives.setDamageOutput(characterLevel + calcKnives.getDamageOutput());
         LongSword calcLSword = new LongSword();
         calcLSword.setDamageOutput(characterLevel + calcLSword.getDamageOutput());
-        LongBow calcLBow = new LongBow();
-        calcLBow.setDamageOutput(characterLevel + calcLBow.getDamageOutput());
+//        LongBow calcLBow = new LongBow();
+//        calcLBow.setDamageOutput(characterLevel + calcLBow.getDamageOutput());
         ShortBow calcSBow = new ShortBow();
         calcSBow.setDamageOutput(characterLevel + calcSBow.getDamageOutput());
 //        FiftyCaliberMachineGun fiftyCal = new FiftyCaliberMachineGun();
 //        map.getMapBuffer().scatter(fiftyCal, Tile.SPACE, 1, 1, 5);
         map.getMapBuffer().scatter(calcKnives, Tile.SPACE, 1, 1, 3);
         map.getMapBuffer().scatter(calcLSword, Tile.SPACE, 1, 1, 2);
-        map.getMapBuffer().scatter(calcLBow, Tile.SPACE, 1, 1, 2);
+//        map.getMapBuffer().scatter(calcLBow, Tile.SPACE, 1, 1, 2);
         map.getMapBuffer().scatter(calcSBow, Tile.SPACE, 1, 1, 3);
         map.getMapBuffer().scatter(new HealthOrb(characterLevel), Tile.SPACE, 1, 4, 2);
         map.getMapBuffer().scatter(new ExpOrb(characterLevel), Tile.SPACE, 1, 6, 5);
@@ -300,13 +305,13 @@ public class MainGame {
             archer.getMeleeWeapon().setDamageOutput(c.getLevel() * 2 + 1);
             archer.setHealth(c.getLevel() * 2);
         }
-        if(shouldSpawnMob(Sniper.SPAWN_CHANCE, map.getEntityCountOf(Sniper.NAME), Sniper.LIMIT)) {
-            Sniper sniper = new Sniper();
-            sniper.adaptToMap();
-            sniper.spawn(Tile.SPACE);
-            sniper.getMeleeWeapon().setDamageOutput(c.getLevel() * 2 + 1);
-            sniper.setHealth(c.getLevel() * 2);
-        }
+//        if(shouldSpawnMob(Sniper.SPAWN_CHANCE, map.getEntityCountOf(Sniper.NAME), Sniper.LIMIT)) {
+//            Sniper sniper = new Sniper();
+//            sniper.adaptToMap();
+//            sniper.spawn(Tile.SPACE);
+//            sniper.getMeleeWeapon().setDamageOutput(c.getLevel() * 2 + 1);
+//            sniper.setHealth(c.getLevel() * 2);
+//        }
     }
 
     /**
