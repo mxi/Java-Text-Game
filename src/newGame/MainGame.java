@@ -66,17 +66,17 @@ public class MainGame {
     		csi.cls();
     	}*/
 
-        Animation anim = new Animation();
-        anim.setMillisecondsPerTick(500);
-        anim.setDurationInMilliseconds(5000);
-        anim.start();
+//        Animation anim = new Animation();
+//        anim.setMillisecondsPerTick(500);
+//        anim.setDurationInMilliseconds(5000);
+//        anim.start();
 
-        //String user = System.getProperty("user.name");
-        //Logger.newLog("C:/Users/" + user + "/Desktop/Java-Text-Game Logs/", "jtg_");
-        //Logger.info("Initialized logger.");
-        //while(playing) {
-        //     new MainGame();
-        //}
+        String user = System.getProperty("user.name");
+        Logger.newLog("C:/Users/" + user + "/Desktop/Java-Text-Game Logs/", "jtg_");
+        Logger.info("Initialized logger.");
+        while(playing) {
+             new MainGame();
+        }
 
         //Logger.info("Application Terminated: 0");
         //System.exit(0);
@@ -299,8 +299,8 @@ public class MainGame {
         map.getMapBuffer().scatter(calcLSword, Tile.SPACE, 1, 1, 2);
 //        map.getMapBuffer().scatter(calcLBow, Tile.SPACE, 1, 1, 2);
         map.getMapBuffer().scatter(calcSBow, Tile.SPACE, 1, 1, 3);
-        map.getMapBuffer().scatter(new HealthOrb(characterLevel), Tile.SPACE, 1, 4, 2);
-        map.getMapBuffer().scatter(new ExpOrb(characterLevel), Tile.SPACE, 1, 6, 5);
+        map.getMapBuffer().scatter(new HealthOrb(10), Tile.SPACE, 1, 4, 2);
+        map.getMapBuffer().scatter(new ExpOrb(characterLevel * 50), Tile.SPACE, 1, 6, 5);
     }
 
     private void runAI(Character c) {
