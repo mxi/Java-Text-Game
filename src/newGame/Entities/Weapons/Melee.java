@@ -56,11 +56,10 @@ public abstract class Melee extends Item {
     }
 
     public void attack(Entity entity) {
-        entity.damage(getDamageOutput());
+        onAttack(entity);
         if(entity.isDead() && getOwner() != null && getOwner() instanceof Character) {
             ((Character)getOwner()).addExp(((Monster)entity).randExp());
         }
-        onAttack(entity);
     }
 
     public void attackClosest(List<Entity> entities) {

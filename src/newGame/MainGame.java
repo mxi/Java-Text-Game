@@ -2,7 +2,7 @@ package newGame;
 
 import java.util.Random;
 
-import newGame.Animations.Animation;
+import newGame.Animations.Animations;
 import newGame.Entities.Character;
 import newGame.Entities.CharacterType;
 import newGame.Entities.Shield;
@@ -54,6 +54,7 @@ public class MainGame {
     public static volatile ConsoleSystemInterface csi = new WSwingConsoleInterface(); // Window (console interface)
     public static volatile MapInterface map; // Map of the game.
     public static volatile Character character; // Character of the game.
+    public static final int MOVE_SLEEP_TIME = 50; // How many milliseconds to wait before the player can move again.
 
     public static void main(String[] args) {
         /*for(int i = 7;; i++)
@@ -66,6 +67,7 @@ public class MainGame {
     		csi.cls();
     	}*/
 
+<<<<<<< HEAD
 //        Animation anim = new Animation();
 //        anim.setMillisecondsPerTick(500);
 //        anim.setDurationInMilliseconds(5000);
@@ -74,6 +76,11 @@ public class MainGame {
         String user = System.getProperty("user.name");
         Logger.newLog("C:/Users/" + user + "/Desktop/Java-Text-Game Logs/", "jtg_");
         Logger.info("Initialized logger.");
+=======
+        //String user = System.getProperty("user.name");
+        //Logger.newLog("C:/Users/" + user + "/Desktop/Java-Text-Game Logs/", "jtg_");
+        //Logger.info("Initialized logger.");
+>>>>>>> 1f14ec04ef7363fa13ef19750e3b49377e28798e
         while(playing) {
              new MainGame();
         }
@@ -117,7 +124,7 @@ public class MainGame {
         character.spawn(Tile.SPACE);
 
         final String characterNameTextField = "cname";
-
+        /*
         Menu m = new Menu(40, 19, false);
         m.setTitle("Epic Window");
         m.setShown(true);
@@ -139,6 +146,7 @@ public class MainGame {
         confirmButton.setOnAction(m::close);
 
         m.addAllComponents(cNameLabel, cName, confirmButton);
+        */
     }
 
     private void start() {
@@ -223,10 +231,10 @@ public class MainGame {
                                 map = fetchMap(map.getFloor() + 1);
                             character.spawn(Tile.STAIR);
                         }
-                        // fully heals the player when the
-                        // player presses the enter on a heal tile character.
+                        // heals the player a certain amount
+                        // of health
                         if(map.getTile(character.getPosition()).equalsTo(Tile.HEALTILE)) {
-                            character.setHealth(character.getMaxHealth());
+                            character.heal(25);
                         }
                         break;
                     case 30: // Escape key
@@ -265,6 +273,13 @@ public class MainGame {
                 if(performAi) {
                     runAI(character);
                 }
+
+                try {
+                    Thread.sleep(MOVE_SLEEP_TIME);
+                }
+                catch(InterruptedException ignore) {
+
+                }
             }
 
             // Runs the game over screen:
@@ -277,7 +292,7 @@ public class MainGame {
 
     private MapInterface fetchMap(int floor) {
         final Map m = new Map(floor);
-        m.setRenderingLightSource(false);
+        m.setRenderingLightSource(true);
         m.setLightSourceRadius(5.8f);
         map = m;
         scatterMaterial(character == null ? 1 : character.getLevel());
@@ -299,8 +314,13 @@ public class MainGame {
         map.getMapBuffer().scatter(calcLSword, Tile.SPACE, 1, 1, 2);
 //        map.getMapBuffer().scatter(calcLBow, Tile.SPACE, 1, 1, 2);
         map.getMapBuffer().scatter(calcSBow, Tile.SPACE, 1, 1, 3);
+<<<<<<< HEAD
         map.getMapBuffer().scatter(new HealthOrb(10), Tile.SPACE, 1, 4, 2);
         map.getMapBuffer().scatter(new ExpOrb(characterLevel * 50), Tile.SPACE, 1, 6, 5);
+=======
+        map.getMapBuffer().scatter(new HealthOrb(characterLevel * 3 + random.nextInt(5)), Tile.SPACE, 1, 4, 2);
+        map.getMapBuffer().scatter(new ExpOrb(characterLevel * 3 + random.nextInt(5)), Tile.SPACE, 1, 6, 5);
+>>>>>>> 1f14ec04ef7363fa13ef19750e3b49377e28798e
     }
 
     private void runAI(Character c) {

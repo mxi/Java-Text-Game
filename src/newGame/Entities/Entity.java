@@ -1,11 +1,11 @@
 package newGame.Entities;
 
+import newGame.Animations.Animations;
 import newGame.IntPoint;
 import newGame.MainGame;
 import newGame.Mapping.Tile;
 import sz.csi.ConsoleSystemInterface;
 
-import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -158,8 +158,9 @@ public abstract class Entity extends Representable {
         final IntPoint rpos = MainGame.map.getMapBuffer().randomLoc(onWhatTile);
         setPosition(rpos.getX() + 1, rpos.getY() + 1);
 
-        if(!MainGame.map.getEntities().contains(this))
+        if(!MainGame.map.getEntities().contains(this)) {
             MainGame.map.getEntities().add(this);
+        }
     }
 
     public List<Entity> withinProxy(double range) {
@@ -329,23 +330,24 @@ public abstract class Entity extends Representable {
     }
 
     public void heal(int amount) {
+        amount = Math.abs(amount);
         this.health = amount + this.health > this.maxHealth ? this.maxHealth : this.health + amount;
+        Animations.entityHeal(getX(), getY());
     }
 
     public void damage(int amount) {
         this.health -= amount;
         if(isDead()) {
-            removeAndClean();
+            Animations.entityDeath(this, getX(), getY());
+            MainGame.map.getEntities().removeIf(entity -> entity.equals(this));
+        }
+        else {
+            Animations.entityDamage(this, getX(), getY());
         }
     }
 
     public boolean isDead() {
         return this.health <= 0;
-    }
-
-    public void removeAndClean() {
-        MainGame.map.getEntities().removeIf(entity -> entity.equals(this));
-        MainGame.map.setTile(Tile.SPACE, getX() - 1, getY() - 1);
     }
 
     /**

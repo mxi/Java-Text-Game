@@ -11,8 +11,8 @@ public abstract class Monster extends Entity {
 
     private Shield shield;
     private Melee meleeWeapon;
-    private float expRewardMax = 16;
-    private float expRewardMin = 4;
+    private int expRewardMax = 16;
+    private int expRewardMin = 4;
 
     private boolean isFriendlyToPlayer = false;
 
@@ -45,7 +45,7 @@ public abstract class Monster extends Entity {
         return expRewardMax;
     }
 
-    public void setExpRewardMax(float expRewardMax) {
+    public void setExpRewardMax(int expRewardMax) {
         this.expRewardMax = expRewardMax * 10;
     }
 
@@ -53,11 +53,11 @@ public abstract class Monster extends Entity {
         return expRewardMin;
     }
 
-    public void setExpRewardMin(float expRewardMin) {
+    public void setExpRewardMin(int expRewardMin) {
         this.expRewardMin = Math.max(expRewardMin, 4) ;
     }
 
-    public float randExp() {
+    public int randExp() {
         return MainGame.random.nextInt(10 * (int) Math.floor(expRewardMax - expRewardMin)) / 10 + expRewardMin;
     }
 
