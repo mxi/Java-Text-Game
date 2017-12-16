@@ -96,7 +96,44 @@ public class Animations {
      * @param y The Y value of the location of the owner.
      */
     public static void swordSwing(int direction, int x, int y) {
-
+        boolean leftToRight = MainGame.random.nextInt(2) == 0;
+        switch(direction) {
+            case 0:
+                swordSwingMech(new IntPoint(x - 1, y), new IntPoint(x - 1, y - 1), new IntPoint(x, y - 1),
+                        '-', '\\', '|', leftToRight);
+                break;
+            case 1:
+                swordSwingMech(new IntPoint(x - 1, y - 1), new IntPoint(x, y - 1), new IntPoint(x + 1, y - 1),
+                        '\\', '|', '/', leftToRight);
+                break;
+            case 2:
+                swordSwingMech(new IntPoint(x, y - 1), new IntPoint(x + 1, y - 1), new IntPoint(x + 1, y),
+                        '|', '/', '-', leftToRight);
+                break;
+            case 3:
+                swordSwingMech(new IntPoint(x - 1, y + 1), new IntPoint(x - 1, y), new IntPoint(x, y - 1),
+                        '/', '-', '\\', leftToRight);
+                break;
+            case 4:
+                swordSwingMech(new IntPoint(x + 1, y - 1), new IntPoint(x + 1, y), new IntPoint(x + 1, y + 1),
+                        '/', '-', '\\', leftToRight);
+                break;
+            case 5:
+                swordSwingMech(new IntPoint(x, y + 1), new IntPoint(x - 1, y + 1), new IntPoint(x - 1, y),
+                        '|', '/', '-', leftToRight);
+                break;
+            case 6:
+                swordSwingMech(new IntPoint(x + 1, y + 1), new IntPoint(x, y + 1), new IntPoint(x - 1, y + 1),
+                        '\\', '|', '/', leftToRight);
+                break;
+            case 7:
+                swordSwingMech(new IntPoint(x + 1, y), new IntPoint(x + 1, y + 1), new IntPoint(x, y + 1),
+                        '-', '\\', '|', leftToRight);
+                break;
+            default:
+                // Do nothing
+                break;
+        }
     }
 
     /**
@@ -105,19 +142,40 @@ public class Animations {
      */
     private static void swordSwingMech(IntPoint left, IntPoint mid, IntPoint right,
                    char leftRep, char midRep, char rightRep, boolean leftToRight) {
-        MainGame.csi.print(left.getX(), left.getY(), leftRep, SWORD_SWING_COLOR);
+        MainGame.map.render(MainGame.csi);
+        MainGame.character.displayInformation();
+        if(leftToRight)
+            MainGame.csi.print(left.getX(), left.getY(), leftRep, SWORD_SWING_COLOR);
+        else
+            MainGame.csi.print(right.getX(), right.getY(), rightRep, SWORD_SWING_COLOR);
+        MainGame.csi.refresh();
         try {
             Thread.sleep(SWORD_SWING_TIME);
         }
         catch(InterruptedException ignore) {
 
         }
-        MainGame.csi.refresh();
-        MainGame.character.displayInformation();
 
-        MainGame.csi.print(left.getX(), left.getY(), leftRep, SWORD_SWING_COLOR);
+        MainGame.map.render(MainGame.csi);
+        MainGame.character.displayInformation();
+        MainGame.csi.print(mid.getX(), mid.getY(), midRep, SWORD_SWING_COLOR);
+        MainGame.csi.refresh();
         try {
             Thread.sleep(SWORD_SWING_TIME);
+        }
+        catch(InterruptedException ignore) {
+
+        }
+
+        MainGame.map.render(MainGame.csi);
+        MainGame.character.displayInformation();
+        if(leftToRight)
+            MainGame.csi.print(right.getX(), right.getY(), rightRep, SWORD_SWING_COLOR);
+        else
+            MainGame.csi.print(left.getX(), left.getY(), leftRep, SWORD_SWING_COLOR);
+        MainGame.csi.refresh();
+        try {
+            Thread.sleep(SWORD_SWING_TIME * 5);
         }
         catch(InterruptedException ignore) {
 

@@ -292,7 +292,7 @@ public class MainGame {
 
     private MapInterface fetchMap(int floor) {
         final Map m = new Map(floor);
-        m.setRenderingLightSource(true);
+        m.setRenderingLightSource(false);
         m.setLightSourceRadius(5.8f);
         map = m;
         scatterMaterial(character == null ? 1 : character.getLevel());
