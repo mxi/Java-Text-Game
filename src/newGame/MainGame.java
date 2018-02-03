@@ -67,7 +67,6 @@ public class MainGame {
     		csi.cls();
     	}*/
 
-<<<<<<< HEAD
 //        Animation anim = new Animation();
 //        anim.setMillisecondsPerTick(500);
 //        anim.setDurationInMilliseconds(5000);
@@ -76,11 +75,6 @@ public class MainGame {
         String user = System.getProperty("user.name");
         Logger.newLog("C:/Users/" + user + "/Desktop/Java-Text-Game Logs/", "jtg_");
         Logger.info("Initialized logger.");
-=======
-        //String user = System.getProperty("user.name");
-        //Logger.newLog("C:/Users/" + user + "/Desktop/Java-Text-Game Logs/", "jtg_");
-        //Logger.info("Initialized logger.");
->>>>>>> 1f14ec04ef7363fa13ef19750e3b49377e28798e
         while(playing) {
              new MainGame();
         }
@@ -112,7 +106,7 @@ public class MainGame {
         map = fetchMap(1);
         map.getMapBuffer().scatter(new Knife(), Tile.SPACE, 1, 1, 4);
         map.getMapBuffer().scatter(new LongSword(), Tile.SPACE, 1, 1, 1);
-        map.getMapBuffer().scatter(new LongBow(), Tile.SPACE, 1, 1, 1);
+        map.getMapBuffer().scatter(new LongBow(), Tile.SPACE, 1, 1, 100);
         map.getMapBuffer().scatter(new ShortBow(), Tile.SPACE, 1, 1, 3);
 
         character = new Character("Player", CharacterType.Wizard);
@@ -226,7 +220,10 @@ public class MainGame {
                         if(map.getTile(character.getPosition()).equalsTo(Tile.STAIR)) {
                             csi.cls();
                             if(Map.maps.containsKey(map.getFloor() + 1))
+                            {
                                 map = Map.maps.get(map.getFloor() + 1);
+                                character.setHealUse(0);
+                            }
                             else
                                 map = fetchMap(map.getFloor() + 1);
                             character.spawn(Tile.STAIR);
@@ -234,7 +231,12 @@ public class MainGame {
                         // heals the player a certain amount
                         // of health
                         if(map.getTile(character.getPosition()).equalsTo(Tile.HEALTILE)) {
-                            character.heal(25);
+                        	if(!(15 + 10*character.getLevel() - 10*character.getHealUse() < 0))
+                        	{
+	                            character.heal(15 + 10*character.getLevel() - 10*character.getHealUse());
+	                            if(!(15 + 5*character.getLevel() - 10*character.getHealUse() <= 0))
+	                            	character.setHealUse(character.getHealUse() + 1);
+                        	}
                         }
                         break;
                     case 30: // Escape key
@@ -314,13 +316,8 @@ public class MainGame {
         map.getMapBuffer().scatter(calcLSword, Tile.SPACE, 1, 1, 2);
 //        map.getMapBuffer().scatter(calcLBow, Tile.SPACE, 1, 1, 2);
         map.getMapBuffer().scatter(calcSBow, Tile.SPACE, 1, 1, 3);
-<<<<<<< HEAD
         map.getMapBuffer().scatter(new HealthOrb(10), Tile.SPACE, 1, 4, 2);
         map.getMapBuffer().scatter(new ExpOrb(characterLevel * 50), Tile.SPACE, 1, 6, 5);
-=======
-        map.getMapBuffer().scatter(new HealthOrb(characterLevel * 3 + random.nextInt(5)), Tile.SPACE, 1, 4, 2);
-        map.getMapBuffer().scatter(new ExpOrb(characterLevel * 3 + random.nextInt(5)), Tile.SPACE, 1, 6, 5);
->>>>>>> 1f14ec04ef7363fa13ef19750e3b49377e28798e
     }
 
     private void runAI(Character c) {

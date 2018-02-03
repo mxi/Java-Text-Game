@@ -27,6 +27,7 @@ public class Character extends Entity {
     private InventoryStack<Item> inHand;
 
     private int level = 1;
+    private int HealUse = 0;
     private float expUntilLevelUp = defExpUntilLevelUp;
     private float exp = 0;
 
@@ -143,6 +144,14 @@ public class Character extends Entity {
 
     public void setType(CharacterType type) {
         this.type = type;
+    }
+    
+    public int getHealUse() {
+        return this.HealUse;
+    }
+
+    public void setHealUse(int HealUse) {
+        this.HealUse = HealUse;
     }
 
     public Shield getShield() {
