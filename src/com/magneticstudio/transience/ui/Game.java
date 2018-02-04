@@ -26,7 +26,7 @@ public class Game extends BasicGame {
     private boolean processKeyInput = true; // Whether to process input in the update() function.
 
     // --- GAME RELATED
-    private ArrayList2D<Tile> tiles = new ArrayList2D<>(); // The 2d resize-able list of tiles.
+    private TileSet tileSet = new TileSet(68, 19);
 
     /**
      * Creates a new Game object with the
@@ -72,7 +72,9 @@ public class Game extends BasicGame {
      */
     @Override
     public void init(GameContainer gc) throws SlickException {
-
+        tileSet.getTiles().fill(new Tile());
+        tileSet.setPixelsPerTile(32);
+        tileSet.setAlpha(.5f);
     }
 
     /**
@@ -108,6 +110,6 @@ public class Game extends BasicGame {
      */
     @Override
     public void render(GameContainer gc, Graphics graphics) throws SlickException {
-
+        tileSet.render(graphics, 0, 0, false);
     }
 }

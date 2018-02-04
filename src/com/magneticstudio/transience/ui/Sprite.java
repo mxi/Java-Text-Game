@@ -134,15 +134,29 @@ public class Sprite implements GraphicalElement {
     }
 
     /**
+     * Sets the opacity/alpha of each image
+     * in this sprite.
+     * @param alpha The alpha value for all images.
+     */
+    public void setAlpha(float alpha) {
+        for(Image image : images)
+            image.setAlpha(alpha);
+    }
+
+    /**
      * Draws this sprite at a specified location.
      * (The location is oriented around the
      * center of each frame).
      * @param x The X value of the position to render the sprite in.
      * @param y The Y value of the position to render the sprite in.
+     * @param centerSurround Whether or not the x and y are based around the center of the element.
      */
     @Override
-    public void render(Graphics graphics, float x, float y) {
-        graphics.drawImage(images[currentFrame], x - (width / 2), y - (width / 2));
+    public void render(Graphics graphics, float x, float y, boolean centerSurround) {
+        if(centerSurround)
+            graphics.drawImage(images[currentFrame], x - (width / 2), y - (height / 2));
+        else
+            graphics.drawImage(images[currentFrame], x , y);
         next();
     }
 
