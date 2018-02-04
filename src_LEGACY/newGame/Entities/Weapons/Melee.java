@@ -6,6 +6,8 @@ import newGame.Entities.Character;
 import newGame.Entities.Entity;
 import newGame.Entities.Item;
 import newGame.Entities.Monsters.Monster;
+import newGame.Mapping.MapBuffer;
+import newGame.Mapping.Tile;
 import newGame.IntPoint;
 import newGame.MainGame;
 import sz.csi.ConsoleSystemInterface;
@@ -20,6 +22,48 @@ public abstract class Melee extends Item {
     private float swingRange;
     private float range;
 
+
+	// Checks to see if any walls are in the way
+	public boolean checkWalls(int CurX, int CurY, int EndX, int EndY, MapBuffer buffer)
+	{
+		int increm;
+		for(;CurX != EndX || CurY != EndY;)
+		{
+			//only increment Y, because the x will always increase by one
+			if(!(buffer.getElement(CurX, CurY).equalsTo(Tile.WALL)))
+			{
+				if(CurX == EndX)
+				{
+					increm = (CurY - EndY) / Math.abs(CurY - EndY);
+					CurY += increm;
+				}else if(CurY == EndY)
+				{
+					if(CurX - EndX < 0)
+					{
+						CurX++;
+					}else {
+						CurX--;
+					}
+				}
+				else {
+					increm = (CurY - EndY) / (CurX - EndX);
+					if(CurX - EndX < 0)
+					{
+						CurX++;
+					}else {
+						CurX--;
+					}
+					CurY += increm;
+				}
+			}else {
+				System.out.println("FAIL");
+				return false;
+			}
+		}
+		System.out.println("SUCCESS");
+		return true;
+	}
+    
     public Melee() {
         setRepresentation('M');
         setColor(ConsoleSystemInterface.MAGENTA);
@@ -86,6 +130,29 @@ public abstract class Melee extends Item {
         if(!attacked)
             setTimesUsed(getTimesUsed() - 1);
     }
+    
+//    public void ShootClosest(List<Entity> entities) {
+//        boolean attacked = false;
+//        Entity closestEntity = null;
+//        for(Entity e : entities) {
+//            if(e.distance(getOwner()) <= getRange() && e.distance(getOwner()) > 0
+//            		&& checkWalls(MainGame.character.getX(), MainGame.character.getY(), e.getX(), e.getY(), MainGame.map.getMapBuffer())) {
+//            	if(closestEntity == null)
+//            	{
+//            		closestEntity = e;
+//            	}else if(closestEntity.distance(getOwner()) > e.distance(getOwner()))
+//            	{
+//            		closestEntity = e;
+//            	}
+//            }
+//        }
+//
+//        attack(closestEntity);
+//        attacked = true;
+//
+//        if(!attacked)
+//            setTimesUsed(getTimesUsed() - 1);
+//    }
 
     public void swing(List<Entity> entities) {
         if(!isSwingWeapon() || entities.size() == 0) {
