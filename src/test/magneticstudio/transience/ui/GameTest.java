@@ -2,7 +2,6 @@ package test.magneticstudio.transience.ui;
 
 import com.magneticstudio.transience.ui.Game;
 import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 /**
@@ -19,13 +18,13 @@ public final class GameTest {
      */
     public static void main(String[] args) throws SlickException {
         Game game = new Game("Test");
-        game.addKeyTracker(Input.KEY_SPACE, () -> System.out.println("Pressed space bar."));
 
         AppGameContainer container = new AppGameContainer(game, 1280, 720, false);
         container.setIcons(new String[] {
                 "resources/logos/magnetic-studio-temp-icon-16.png",
                 "resources/logos/magnetic-studio-temp-icon-32.png"
         });
+        container.setVerbose(false);
         container.setShowFPS(true);
         container.setVSync(true);
         container.start();

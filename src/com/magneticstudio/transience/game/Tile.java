@@ -1,7 +1,9 @@
-package com.magneticstudio.transience.ui;
+package com.magneticstudio.transience.game;
 
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
+import com.magneticstudio.transience.ui.Displayable;
+import com.magneticstudio.transience.ui.GraphicalElement;
+import com.magneticstudio.transience.ui.Sprite;
+import com.magneticstudio.transience.util.Cache;
 import org.newdawn.slick.SlickException;
 
 /**
@@ -10,36 +12,34 @@ import org.newdawn.slick.SlickException;
  *
  * @author Max
  */
-public class Tile implements GraphicalElement {
+public class Tile implements Displayable {
 
-    private Sprite representation; // The graphical representation of the tile.
+    private GraphicalElement representation; // The graphical representation of the tile.
 
     /**
      * Creates a new, default, tile
      * object.
      */
     public Tile() throws SlickException {
-        representation = new Sprite(new Image("resources/textures/tiles/def-tile-64.png"), 64, 64);
-        representation.setFrameRate(10);
+        representation = new Sprite(Cache.loadImage("resources/textures/tiles/def-tile-64.png"), 64, 64, 10);
     }
 
     /**
      * Gets the representation of this tile.
      * @return Representation of this tile.
      */
-    public Sprite getRepresentation() {
+    public GraphicalElement getRepresentation() {
         return representation;
     }
 
     /**
      * Renders this tile onto the screen.
-     * @param graphics The graphics object to use for rendering.
      * @param x The X value of the position that this object is supposed to be rendered at.
      * @param y The Y value of the position that this object is supposed to be rendered at.
      * @param centerSurround Whether or not the x and y are based around the center of the element.
      */
     @Override
-    public void render(Graphics graphics, float x, float y, boolean centerSurround) {
-        representation.render(graphics, x, y, centerSurround);
+    public void render(float x, float y, boolean centerSurround) {
+        representation.render(x, y, centerSurround);
     }
 }

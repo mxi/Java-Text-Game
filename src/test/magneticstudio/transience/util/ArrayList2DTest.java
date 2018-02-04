@@ -2,6 +2,9 @@ package test.magneticstudio.transience.util;
 
 import com.magneticstudio.transience.util.ArrayList2D;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This class is designed to test the class
  * "Game" in the source code package.

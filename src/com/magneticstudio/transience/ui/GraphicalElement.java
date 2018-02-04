@@ -1,23 +1,68 @@
 package com.magneticstudio.transience.ui;
 
-import org.newdawn.slick.Graphics;
+import com.magneticstudio.transience.util.IntDimension;
 
 /**
- * This interface simply specifies one
- * function that needs to implemented by
- * any class that wishes to be rendered
- * onto the screen.
+ * This interface extends the Displayable
+ * interface and specifies some new functions
+ * that much be implemented by graphical elements.
  *
  * @author Max
  */
-public interface GraphicalElement {
+public interface GraphicalElement extends Displayable {
 
     /**
-     * Renders this object onto the screen.
-     * @param graphics The graphics object to use for rendering.
-     * @param x The X value of the position that this object is supposed to be rendered at.
-     * @param y The Y value of the position that this object is supposed to be rendered at.
-     * @param centerSurround Whether or not the x and y are based around the center of the element.
+     * Gets the dimensions of this graphical element.
+     * @return Dimensions of this graphical element.
      */
-    void render(Graphics graphics, float x, float y, boolean centerSurround);
+    IntDimension getDimensions();
+
+    /**
+     * Sets the dimensions for this graphical element.
+     * @param dimensions Dimensions for this graphical element.
+     */
+    void setDimensions(IntDimension dimensions);
+
+    /**
+     * Sets the dimensions for this graphical element.
+     * @param width The new width of this graphical element.
+     * @param height The new height of this graphical element.
+     */
+    void setDimensions(int width, int height);
+
+    /**
+     * Gets the width of this graphical element.
+     * @return The width of this graphical object.
+     */
+    int getWidth();
+
+    /**
+     * Sets the width of this graphical element.
+     * @param width New width of this graphical element.
+     */
+    void setWidth(int width);
+
+    /**
+     * Gets the height of this graphical element.
+     * @return The height of this graphical element.
+     */
+    int getHeight();
+
+    /**
+     * Sets the height of this graphical element.
+     * @param height New height of this graphical element.
+     */
+    void setHeight(int height);
+
+    /**
+     * Gets the alpha of this graphical element.
+     * @return The alpha of this graphical element.
+     */
+    float getAlpha();
+
+    /**
+     * Sets the alpha of this graphical element.
+     * @param alpha New alpha of this graphical element.
+     */
+    void setAlpha(float alpha);
 }

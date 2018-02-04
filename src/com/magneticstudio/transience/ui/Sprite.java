@@ -1,7 +1,6 @@
 package com.magneticstudio.transience.ui;
 
 import com.magneticstudio.transience.util.IntDimension;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
@@ -26,11 +25,12 @@ public class Sprite implements GraphicalElement {
      * an existing sheet image.
      * @param sheet The sprite sheet containing the collection of images.
      */
-    public Sprite(Image sheet, int sheetWidth, int sheetHeight) {
+    public Sprite(Image sheet, int sheetWidth, int sheetHeight, int frameRate) {
         SpriteSheet spriteSheet = new SpriteSheet(sheet, sheetWidth, sheetHeight);
         images = new Image[spriteSheet.getVerticalCount() * spriteSheet.getHorizontalCount()];
         setWidth(sheetWidth);
         setHeight(sheetHeight);
+        setFrameRate(frameRate);
         int frameLocation = 0;
         for(int y = 0; y < spriteSheet.getVerticalCount(); y++) {
             for(int x = 0; x < spriteSheet.getHorizontalCount(); x++) {
@@ -43,6 +43,7 @@ public class Sprite implements GraphicalElement {
      * Gets the width and height as an IntDimensions object.
      * @return Width and height of each frame in the sprite object.
      */
+    @Override
     public IntDimension getDimensions() {
         return new IntDimension(width, height);
     }
@@ -52,6 +53,7 @@ public class Sprite implements GraphicalElement {
      * an IntDimension object.
      * @param newDimensions The new dimensions for the frames.
      */
+    @Override
     public void setDimensions(IntDimension newDimensions) {
         setDimensions(newDimensions.getWidth(), newDimensions.getHeight());
     }
@@ -62,6 +64,7 @@ public class Sprite implements GraphicalElement {
      * @param width The new width of each frame.
      * @param height The new height of each frame.
      */
+    @Override
     public void setDimensions(int width, int height) {
         setWidth(width);
         setHeight(height);
@@ -76,6 +79,7 @@ public class Sprite implements GraphicalElement {
      * Gets the width of each frame.
      * @return Width of each frame.
      */
+    @Override
     public int getWidth() {
         return width;
     }
@@ -84,7 +88,8 @@ public class Sprite implements GraphicalElement {
      * Sets the width of each frame.
      * @param width Width of each frame.
      */
-    private void setWidth(int width) {
+    @Override
+    public void setWidth(int width) {
         this.width = Math.max(Math.min(width, 512), 8);
     }
 
@@ -92,6 +97,7 @@ public class Sprite implements GraphicalElement {
      * Gets the height of each frame.
      * @return Height of each frame.
      */
+    @Override
     public int getHeight() {
         return height;
     }
@@ -100,7 +106,8 @@ public class Sprite implements GraphicalElement {
      * Sets the height of each frame.
      * @param height Height of each frame.
      */
-    private void setHeight(int height) {
+    @Override
+    public void setHeight(int height) {
         this.height = Math.max(Math.min(height, 512), 8);
     }
 
@@ -134,10 +141,20 @@ public class Sprite implements GraphicalElement {
     }
 
     /**
+     * Gets the alpha of each image in the image array.
+     * @return Alpha of each image in the image array.
+     */
+    @Override
+    public float getAlpha() {
+        return images[0].getAlpha();
+    }
+
+    /**
      * Sets the opacity/alpha of each image
      * in this sprite.
      * @param alpha The alpha value for all images.
      */
+    @Override
     public void setAlpha(float alpha) {
         for(Image image : images)
             image.setAlpha(alpha);
@@ -152,11 +169,11 @@ public class Sprite implements GraphicalElement {
      * @param centerSurround Whether or not the x and y are based around the center of the element.
      */
     @Override
-    public void render(Graphics graphics, float x, float y, boolean centerSurround) {
+    public void render(float x, float y, boolean centerSurround) {
         if(centerSurround)
-            graphics.drawImage(images[currentFrame], x - (width / 2), y - (height / 2));
+            images[currentFrame].draw(x - (width / 2), y - (height / 2));
         else
-            graphics.drawImage(images[currentFrame], x , y);
+            images[currentFrame].draw(x, y);
         next();
     }
 
