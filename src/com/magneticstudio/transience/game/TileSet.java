@@ -147,7 +147,6 @@ public class TileSet implements Displayable, LogicalElement {
      * square; location.
      */
     public void setPixelPerfect() {
-        System.out.println(Game.activeGame.getResolutionHeight() / 2/ pixelsPerTile);
         finePixelOffsetX = Game.activeGame.getResolutionWidth() % pixelsPerTile / 2 + 1;
         if(Game.activeGame.getResolutionWidth() / pixelsPerTile % 2 == 0)
             finePixelOffsetX -= (pixelsPerTile / 2);
