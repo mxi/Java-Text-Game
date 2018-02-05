@@ -5,7 +5,6 @@ import com.magneticstudio.transience.game.TileSet;
 import com.magneticstudio.transience.util.Cache;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.*;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import java.awt.Font;
@@ -37,8 +36,6 @@ public class Game extends BasicGame {
     private int resolutionHeight = 720; // The height of the window.
     private boolean graphicsSetup = false; // Checks whether the graphics have been set up.
 
-    private GraphicalElement element;
-
     /**
      * Creates a new Game object with the
      * specified title.
@@ -49,7 +46,7 @@ public class Game extends BasicGame {
         if(activeGame == null)
             activeGame = this;
 
-        tileSet = new TileSet(19, 19); // Must be in constructor because TileSet requires static Game instance.
+        tileSet = new TileSet(60, 60); // Must be in constructor because TileSet requires static Game instance.
     }
 
     /**
@@ -104,6 +101,8 @@ public class Game extends BasicGame {
      */
     @Override
     public void init(GameContainer gc) throws SlickException {
+        resolutionWidth = gc.getWidth();
+        resolutionHeight = gc.getHeight();
         registerKey(Input.KEY_A, new KeyAction() {
             @Override
             public void onPress() {
@@ -131,7 +130,7 @@ public class Game extends BasicGame {
         registerKey(Input.KEY_S, new KeyAction() {
             @Override
             public void onPress() {
-                tileSet.setVerticalTileOffset(tileSet.getVerticalTileOffset() - 1);
+                tileSet.setVerticalTileOffset(tileSet.getVerticalTileOffset() + 1);
             }
 
             @Override
@@ -143,7 +142,19 @@ public class Game extends BasicGame {
         registerKey(Input.KEY_W, new KeyAction() {
             @Override
             public void onPress() {
-                tileSet.setVerticalTileOffset(tileSet.getVerticalTileOffset() + 1);
+                tileSet.setVerticalTileOffset(tileSet.getVerticalTileOffset() - 1);
+            }
+
+            @Override
+            public void onRelease() {
+
+            }
+        });
+
+        registerKey(Input.KEY_E, new KeyAction() {
+            @Override
+            public void onPress() {
+                tileSet.centerOn(0, 0);
             }
 
             @Override
@@ -154,8 +165,9 @@ public class Game extends BasicGame {
 
         // Set up tile set
         tileSet.getTiles().fill(new Tile());
-        tileSet.setTileCountHorizontally(33);
+        tileSet.setTileCountHorizontally(39);
         tileSet.setAlpha(.5f);
+        tileSet.setPixelPerfect();
     }
 
     /**
@@ -166,9 +178,6 @@ public class Game extends BasicGame {
      */
     @Override
     public void update(GameContainer gc, int elapsed) throws SlickException {
-        resolutionWidth = gc.getWidth();
-        resolutionHeight = gc.getHeight();
-
         if(processingKeyInput) {
             for(Map.Entry<Integer, KeyAction> entry : registeredKeys.entrySet()) {
                 Integer key = entry.getKey(); // needs to be the wrapper or else the list doesn't know if object or index.
@@ -202,8 +211,10 @@ public class Game extends BasicGame {
             graphicsSetup = true;
         }
 
-        element.render(100, 100, true);
-        //tileSet.render(graphics, 0, 0, false);
+        tileSet.render(graphics, 0, 0, false);
+        graphics.setColor(Color.cyan);
+        graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
+        graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
     }
 
     /**
@@ -212,7 +223,6 @@ public class Game extends BasicGame {
      * and such.
      */
     private void setupGraphics() throws SlickException {
-        Cache.addFont("resources/fonts/Consolas.ttf", "Consolas", Font.PLAIN, 25);
-        element = new CharacterCell("Consolas", 'l');
+        Cache.addFont("resources/fonts/Consolas.ttf", "Map Font", Font.PLAIN, 30);
     }
 }

@@ -1,6 +1,7 @@
 package com.magneticstudio.transience.ui;
 
 import com.magneticstudio.transience.util.IntDimension;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
@@ -164,12 +165,13 @@ public class Sprite implements GraphicalElement {
      * Draws this sprite at a specified location.
      * (The location is oriented around the
      * center of each frame).
+     * @param graphics The graphics object used to render anything on the main screen.
      * @param x The X value of the position to render the sprite in.
      * @param y The Y value of the position to render the sprite in.
      * @param centerSurround Whether or not the x and y are based around the center of the element.
      */
     @Override
-    public void render(float x, float y, boolean centerSurround) {
+    public void render(Graphics graphics, float x, float y, boolean centerSurround) {
         if(centerSurround)
             images[currentFrame].draw(x - (width / 2), y - (height / 2));
         else

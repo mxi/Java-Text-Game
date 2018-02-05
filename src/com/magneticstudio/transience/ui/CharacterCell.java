@@ -3,6 +3,7 @@ package com.magneticstudio.transience.ui;
 import com.magneticstudio.transience.util.Cache;
 import com.magneticstudio.transience.util.IntDimension;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.TrueTypeFont;
 
 /**
@@ -159,20 +160,31 @@ public class CharacterCell implements GraphicalElement {
 
     /**
      * Renders the character onto the screen.
+     * @param graphics The graphics used to render anything onto the main screen.
      * @param x The X value of the position that this object is supposed to be rendered at.
      * @param y The Y value of the position that this object is supposed to be rendered at.
      * @param centerSurround Whether or not the x and y are based around the center of the element.
      */
     @Override
-    public void render(float x, float y, boolean centerSurround) {
+    public void render(Graphics graphics, float x, float y, boolean centerSurround) {
         if(font == null || Cache.getFont(font) == null)
             return;
 
+        TrueTypeFont ttf = Cache.getFont(font);
+        float rx = x + (width / 2) - (ttf.getWidth(character) / 2);
+        float ry = y + (height / 2) - (ttf.getHeight(character) / 2) + HEIGHT_ADJUSTMENT;
+        ttf.drawString(rx, ry, character, color);
+        /*
         if(centerSurround) {
-            TrueTypeFont ttf = Cache.getFont(font);
-            float rx = x + (width / 2) - (ttf.getWidth(character) / 2);
-            float ry = y + (height / 2) - (ttf.getHeight(character) / 2) + HEIGHT_ADJUSTMENT;
-            Cache.getFont(font).drawString(rx, ry, character, color);
+
         }
+        else {
+            ttf.drawString(x, y, character);
+            int width = ttf.getWidth(character);
+            int height = ttf.getHeight(character);
+            graphics.setColor(Color.red);
+            graphics.drawRect(x, y, width, height);
+        }
+        */
     }
 }

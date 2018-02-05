@@ -5,7 +5,6 @@ import com.magneticstudio.transience.ui.Game;
 import com.magneticstudio.transience.ui.LogicalElement;
 import com.magneticstudio.transience.util.ArrayList2D;
 import com.magneticstudio.transience.util.IntPoint;
-import org.newdawn.slick.Graphics;
 
 /**
  * This class manages a 2d array of tiles.
@@ -25,9 +24,6 @@ public class TileSet implements Displayable, LogicalElement {
 
     private float pixelOffsetX = 0; // The current pixel offset horizontally.
     private float pixelOffsetY = 0; // The current pixel offset vertically.
-
-    private float finePixelOffsetX = 0; // A fine adjustment of the horizontal alignment.
-    private float finePixelOffsetY = 0; // A fine adjustment of the vertical alignment.
 
     private float pixelMovementX = 0; // The amount to update pixelOffsetX by.
     private float pixelMovementY = 0; // The amount to update pixelOffsetY by.
@@ -108,9 +104,9 @@ public class TileSet implements Displayable, LogicalElement {
      * @param tileOffsetHorizontal New horizontal offset.
      */
     public void setHorizontalTileOffset(int tileOffsetHorizontal) {
-        pixelMovementX = -(tileOffsetHorizontal - tileOffsetX) * pixelsPerTile / (float) animationTimeMillis;
+        pixelMovementX = (tileOffsetHorizontal * pixelsPerTile - pixelOffsetX) / animationTimeMillis;
         tileOffsetX = tileOffsetHorizontal;
-        isHorizontalMovementLeft = pixelMovementX > 0;
+        isHorizontalMovementLeft = pixelMovementX < 0;
     }
 
     /**
@@ -126,9 +122,9 @@ public class TileSet implements Displayable, LogicalElement {
      * @param tileOffsetVertically New horizontal offset.
      */
     public void setVerticalTileOffset(int tileOffsetVertically) {
-        pixelMovementY = (tileOffsetVertically - tileOffsetY) * pixelsPerTile / (float) animationTimeMillis;
+        pixelMovementY = (tileOffsetVertically * pixelsPerTile - pixelOffsetY) / animationTimeMillis;
         tileOffsetY = tileOffsetVertically;
-        isVerticalMovementUp = pixelMovementY < 0;
+        isVerticalMovementUp = pixelMovementY > 0;
     }
 
     /**
@@ -138,22 +134,8 @@ public class TileSet implements Displayable, LogicalElement {
      */
     public void centerOn(int x, int y) {
         setHorizontalTileOffset( -Game.activeGame.getResolutionWidth() / pixelsPerTile / 2 + x );
-        setVerticalTileOffset( -Game.activeGame.getResolutionHeight() / pixelsPerTile / 2 + y );
-    }
-
-    /**
-     * Creates fine adjustments to perfectly
-     * center each tile with its designated
-     * square; location.
-     */
-    public void setPixelPerfect() {
-        System.out.println(Game.activeGame.getResolutionHeight() / 2/ pixelsPerTile);
-        finePixelOffsetX = Game.activeGame.getResolutionWidth() % pixelsPerTile / 2 + 1;
-        if(Game.activeGame.getResolutionWidth() / pixelsPerTile % 2 == 0)
-            finePixelOffsetX -= (pixelsPerTile / 2);
-
-        finePixelOffsetY = (Game.activeGame.getResolutionHeight() / 2) -
-                ((Game.activeGame.getResolutionHeight() / 2 / pixelsPerTile) + 1) * pixelsPerTile - (pixelsPerTile / 2) + pixelsPerTile;
+        setVerticalTileOffset( Game.activeGame.getResolutionHeight() / pixelsPerTile / 2 - y );
+        System.out.println("Focused: " + tileOffsetX + ", " + tileOffsetY);
     }
 
     /**
@@ -212,22 +194,20 @@ public class TileSet implements Displayable, LogicalElement {
 
     /**
      * Renders the tile set onto the screen.
-     * @param graphics The graphics object used to render anything on the main screen.
      * @param x The X value of the position that this object is supposed to be rendered at.
      * @param y The Y value of the position that this object is supposed to be rendered at.
      * @param centerSurround Whether or not the x and y are based around the center of the element.
-     *                       (doesn't apply to this object)
      */
     @Override
-    public void render(Graphics graphics, float x, float y, boolean centerSurround) {
+    public void render(float x, float y, boolean centerSurround) {
         for(int iy = 0; iy < tiles.getHeight(); iy++) {
             if(!willTileBeVisibleY(iy))
                 continue;
             for(int ix = 0; ix < tiles.getWidth(); ix++) {
                 if(!willTileBeVisibleX(ix))
                     continue;
-                tiles.getElement(ix, iy).render(graphics, x + (pixelsPerTile * ix) - pixelOffsetX + finePixelOffsetX,
-                        y + (pixelsPerTile * iy) - pixelOffsetY + finePixelOffsetY, false);
+                tiles.getElement(ix, iy).render(x + (pixelsPerTile * ix) - pixelOffsetX,
+                        y + (pixelsPerTile * iy) + pixelOffsetY, centerSurround);
             }
         }
     }
@@ -241,36 +221,41 @@ public class TileSet implements Displayable, LogicalElement {
     public void update(int milliseconds) {
         if( (pixelOffsetX > tileOffsetX * pixelsPerTile && isHorizontalMovementLeft)
                 || (pixelOffsetX < tileOffsetX * pixelsPerTile && !isHorizontalMovementLeft) )
-            pixelOffsetX -= pixelMovementX * milliseconds;
+            pixelOffsetX += pixelMovementX * milliseconds;
         else
             pixelOffsetX = tileOffsetX * pixelsPerTile;
 
-        if( (pixelOffsetY > tileOffsetY * pixelsPerTile && isVerticalMovementUp)
-                || (pixelOffsetY < tileOffsetY * pixelsPerTile && !isVerticalMovementUp) )
+        if( (pixelOffsetY < tileOffsetY * pixelsPerTile && isVerticalMovementUp)
+                || (pixelOffsetY > tileOffsetY * pixelsPerTile && !isVerticalMovementUp) )
             pixelOffsetY += pixelMovementY * milliseconds;
         else
             pixelOffsetY = tileOffsetY * pixelsPerTile;
     }
 
     /**
-     * Checks if the specified column would be visible on the screen;
-     * the tile itself isn't out of bounds of the rendering window.
-     * @param x The column number.
-     * @return Whether that column would be visible or not.
+     * Checks to see if the a rendered tile at that
+     * location would be visible, and if not, the
+     * render function won't bother to render that tile.
+     * @param x The x location of that tile.
+     * @param y The y location of that tile.
+     * @return Whether the tile will be visible.
      */
-    private boolean willTileBeVisibleX(int x) {
-        return (x - tileOffsetX) * pixelsPerTile + finePixelOffsetX >= -pixelsPerTile
-                && (x - tileOffsetX) * pixelsPerTile + finePixelOffsetX < Game.activeGame.getResolutionWidth();
+    private boolean willTileBeVisible(int x, int y) {
+        return y * pixelsPerTile + pixelOffsetY < Game.activeGame.getResolutionHeight()
+                && y * pixelsPerTile + pixelOffsetY >= -pixelsPerTile
+                && x * pixelsPerTile + pixelOffsetX < Game.activeGame.getResolutionWidth()
+                && x * pixelOffsetX + pixelOffsetX >= -pixelOffsetX;
     }
 
-    /**
-     * Checks if the specified row would be visible on the screen;
-     * the tile itself isn't out of bounds of the rendering window.
-     * @param y The row number.
-     * @return Whether that row would be visible or not.
-     */
+    private boolean willTileBeVisibleX(int x) {
+        System.out.println(tileOffsetX);
+        return x * pixelsPerTile - pixelOffsetX < Game.activeGame.getResolutionWidth()
+                && x * pixelsPerTile - pixelOffsetX >= -pixelOffsetX;
+    }
+
     private boolean willTileBeVisibleY(int y) {
-        return (y - tileOffsetY) * pixelsPerTile + finePixelOffsetY >= -pixelsPerTile
-                && (y - tileOffsetY) * pixelsPerTile + finePixelOffsetY < Game.activeGame.getResolutionHeight();
+        System.out.println(tileOffsetY);
+        return y * pixelsPerTile + pixelOffsetY < Game.activeGame.getResolutionHeight()
+                && y * pixelsPerTile + pixelOffsetY >= -pixelsPerTile;
     }
 }
