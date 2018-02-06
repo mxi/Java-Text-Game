@@ -12,11 +12,5 @@ public interface KeyAction {
      * Function that gets called when this
      * key is pressed.
      */
-    void onPress();
-
-    /**
-     * Function that gets called when this
-     * key is released.
-     */
-    void onRelease();
+    void onAction(KeyActionType type);
 }

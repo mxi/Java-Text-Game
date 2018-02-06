@@ -8,9 +8,7 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.Graphics;
 
 import java.awt.Font;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,8 +24,9 @@ public class Game extends BasicGame {
     public static Game activeGame = null; // The game currently being played.
 
     // --- CONTROLS
-    private List<Integer> pressedKeys = new ArrayList<>(); // List of pressed keys.
+    private Map<Integer, Long> pressedKeys = new HashMap<>(); // List of pressed keys and the time they're pressed.
     private Map<Integer, KeyAction> registeredKeys = new HashMap<>(); // Map of registered keys.
+    private int timeUntilKeyIsHeld = 750; // The amount of milliseconds before a key is "held"
     private boolean processingKeyInput = true; // Whether keyboard input is processed.
 
     // --- GAME ENVIRONMENT
@@ -63,6 +62,24 @@ public class Game extends BasicGame {
      */
     public int getResolutionHeight() {
         return resolutionHeight;
+    }
+
+    /**
+     * Gets the time in milliseconds before a key
+     * is considered to be held.
+     * @return The time in milliseconds until a key is considered held.
+     */
+    public int getTimeUntilKeyIsHeld() {
+        return timeUntilKeyIsHeld;
+    }
+
+    /**
+     * Sets the time in milliseconds it takes for a
+     * key to be considered held.
+     * @param newTime The new time in milliseconds.
+     */
+    public void setTimeUntilKeyIsHeld(int newTime) {
+        timeUntilKeyIsHeld = Math.max(Math.min(newTime, 1000), 100);
     }
 
     /**
@@ -106,7 +123,13 @@ public class Game extends BasicGame {
         registerKey(Input.KEY_A, new KeyAction() {
             @Override
             public void onPress() {
+                System.out.println("A pressed.");
                 tileSet.setHorizontalTileOffset(tileSet.getHorizontalTileOffset() - 1);
+            }
+
+            @Override
+            public void onHold() {
+                System.out.println("A held.");
             }
 
             @Override
@@ -122,6 +145,11 @@ public class Game extends BasicGame {
             }
 
             @Override
+            public void onHold() {
+
+            }
+
+            @Override
             public void onRelease() {
 
             }
@@ -131,6 +159,11 @@ public class Game extends BasicGame {
             @Override
             public void onPress() {
                 tileSet.setVerticalTileOffset(tileSet.getVerticalTileOffset() + 1);
+            }
+
+            @Override
+            public void onHold() {
+
             }
 
             @Override
@@ -146,6 +179,11 @@ public class Game extends BasicGame {
             }
 
             @Override
+            public void onHold() {
+
+            }
+
+            @Override
             public void onRelease() {
 
             }
@@ -155,6 +193,11 @@ public class Game extends BasicGame {
             @Override
             public void onPress() {
                 tileSet.centerOn(0, 0);
+            }
+
+            @Override
+            public void onHold() {
+
             }
 
             @Override
@@ -183,12 +226,17 @@ public class Game extends BasicGame {
                 Integer key = entry.getKey(); // needs to be the wrapper or else the list doesn't know if object or index.
                 boolean isDown = Keyboard.isKeyDown(key);
 
-                if(isDown && !pressedKeys.contains(key)) {
-                    entry.getValue().onPress();
-                    pressedKeys.add(key);
+
+                if(isDown && !pressedKeys.containsKey(key)) {
+                    entry.getValue().onAction(KeyActionType.PRESS);
+                    pressedKeys.put(key, System.currentTimeMillis());
                 }
-                else if(!isDown && pressedKeys.contains(key)) {
-                    entry.getValue().onRelease();
+                else if(isDown && pressedKeys.containsKey(key)
+                        && System.currentTimeMillis() - pressedKeys.get(key) > timeUntilKeyIsHeld) {
+                    entry.getValue().onAction(KeyActionType.HOLD);
+                }
+                else if(!isDown && pressedKeys.containsKey(key)) {
+                    entry.getValue().onAction(KeyActionType.RELEASE);
                     pressedKeys.remove(key);
                 }
             }
