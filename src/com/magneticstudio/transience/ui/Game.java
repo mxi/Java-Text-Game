@@ -8,9 +8,9 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.Graphics;
 
 import java.awt.Font;
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,8 +26,8 @@ public class Game extends BasicGame {
     public static Game activeGame = null; // The game currently being played.
 
     // --- CONTROLS
-    private List<Integer> pressedKeys = new ArrayList<>(); // List of pressed keys.
-    private Map<Integer, KeyAction> registeredKeys = new HashMap<>(); // Map of registered keys.
+    private Map<Integer, KeyTiming> pressedKeys = new HashMap<>(); // List of pressed keys and the time they're pressed.
+    private Map<KeyAction, Method> registeredKeys = new HashMap<>(); // Map of registered keys.
     private boolean processingKeyInput = true; // Whether keyboard input is processed.
 
     // --- GAME ENVIRONMENT
@@ -66,15 +66,6 @@ public class Game extends BasicGame {
     }
 
     /**
-     * Registers a key to process.
-     * @param id The id of the key (Input.<...>)
-     * @param action The interface that contains actions for key events.
-     */
-    public void registerKey(int id, KeyAction action) {
-        registeredKeys.putIfAbsent(id, action);
-    }
-
-    /**
      * Checks whether this Game object is processing
      * keyboard input.
      * @return Whether keyboard input is processed.
@@ -103,65 +94,17 @@ public class Game extends BasicGame {
     public void init(GameContainer gc) throws SlickException {
         resolutionWidth = gc.getWidth();
         resolutionHeight = gc.getHeight();
-        registerKey(Input.KEY_A, new KeyAction() {
-            @Override
-            public void onPress() {
-                tileSet.setHorizontalTileOffset(tileSet.getHorizontalTileOffset() - 1);
+
+        /*
+         * Registering the KeyActionFunctions
+         * to the registered keys for processing.
+         */
+        for(Method m : this.getClass().getMethods()) {
+            KeyAction function = m.getAnnotation(KeyAction.class);
+            if(function != null && !registeredKeys.containsKey(function)) {
+                registeredKeys.put(function, m);
             }
-
-            @Override
-            public void onRelease() {
-
-            }
-        });
-
-        registerKey(Input.KEY_D, new KeyAction() {
-            @Override
-            public void onPress() {
-                tileSet.setHorizontalTileOffset(tileSet.getHorizontalTileOffset() + 1);
-            }
-
-            @Override
-            public void onRelease() {
-
-            }
-        });
-
-        registerKey(Input.KEY_S, new KeyAction() {
-            @Override
-            public void onPress() {
-                tileSet.setVerticalTileOffset(tileSet.getVerticalTileOffset() + 1);
-            }
-
-            @Override
-            public void onRelease() {
-
-            }
-        });
-
-        registerKey(Input.KEY_W, new KeyAction() {
-            @Override
-            public void onPress() {
-                tileSet.setVerticalTileOffset(tileSet.getVerticalTileOffset() - 1);
-            }
-
-            @Override
-            public void onRelease() {
-
-            }
-        });
-
-        registerKey(Input.KEY_E, new KeyAction() {
-            @Override
-            public void onPress() {
-                tileSet.centerOn(0, 0);
-            }
-
-            @Override
-            public void onRelease() {
-
-            }
-        });
+        }
 
         // Set up tile set
         tileSet.getTiles().fill(new Tile());
@@ -179,17 +122,35 @@ public class Game extends BasicGame {
     @Override
     public void update(GameContainer gc, int elapsed) throws SlickException {
         if(processingKeyInput) {
-            for(Map.Entry<Integer, KeyAction> entry : registeredKeys.entrySet()) {
-                Integer key = entry.getKey(); // needs to be the wrapper or else the list doesn't know if object or index.
+            for(Map.Entry<KeyAction, Method> entry : registeredKeys.entrySet()) {
+                Integer key = entry.getKey().key(); // needs to be the wrapper or else the list doesn't know if object or index.
                 boolean isDown = Keyboard.isKeyDown(key);
 
-                if(isDown && !pressedKeys.contains(key)) {
-                    entry.getValue().onPress();
-                    pressedKeys.add(key);
+                try {
+                    // When the key is first pressed:
+                    if(isDown && !pressedKeys.containsKey(key)) {
+                        entry.getValue().invoke(this, KeyActionType.PRESS);
+                        pressedKeys.put(key, new KeyTiming());
+                    }
+                    // When the key is held down
+                    else if(isDown
+                            && pressedKeys.containsKey(key)
+                            && System.currentTimeMillis() - pressedKeys.get(key).pressTime > entry.getKey().untilHeld()
+                            && System.currentTimeMillis() - pressedKeys.get(key).lastHoldTime > entry.getKey().hold()) {
+                        entry.getValue().invoke(this, KeyActionType.HOLD);
+                        pressedKeys.get(key).lastHoldTime = System.currentTimeMillis();
+                    }
+                    // When the key is released.
+                    else if(!isDown && pressedKeys.containsKey(key)) {
+                        entry.getValue().invoke(this, KeyActionType.RELEASE);
+                        pressedKeys.remove(key);
+                    }
                 }
-                else if(!isDown && pressedKeys.contains(key)) {
-                    entry.getValue().onRelease();
-                    pressedKeys.remove(key);
+                catch(IllegalAccessException e) {
+                    System.out.println("Illegal access exception: " + e.getMessage());
+                }
+                catch(InvocationTargetException e) {
+                    System.out.println("Invocation target exception: " + e.getMessage());
                 }
             }
         }
@@ -212,9 +173,9 @@ public class Game extends BasicGame {
         }
 
         tileSet.render(graphics, 0, 0, false);
-        graphics.setColor(Color.cyan);
-        graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
-        graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
+        //graphics.setColor(Color.cyan);
+        //graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
+        //graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
     }
 
     /**
@@ -224,5 +185,57 @@ public class Game extends BasicGame {
      */
     private void setupGraphics() throws SlickException {
         Cache.addFont("resources/fonts/Consolas.ttf", "Map Font", Font.PLAIN, 30);
+    }
+
+    /**
+     * The function that processes the key
+     * action for the 'A' key.
+     */
+    @KeyAction(key = Input.KEY_A, hold = 250)
+    public void aKeyPress(KeyActionType type) {
+        if(type != KeyActionType.RELEASE)
+            tileSet.setHorizontalTileOffset(tileSet.getHorizontalTileOffset() - 1);
+    }
+
+    /**
+     * The function that processes the key
+     * action for the 'D' key.
+     */
+    @KeyAction(key = Input.KEY_D, hold = 250)
+    public void dKeyPress(KeyActionType type) {
+        if(type != KeyActionType.RELEASE)
+            tileSet.setHorizontalTileOffset(tileSet.getHorizontalTileOffset() + 1);
+    }
+
+    /**
+     * The function that processes the key
+     * action for the 'W' key.
+     */
+    @KeyAction(key = Input.KEY_W, hold = 250)
+    public void wKeyPress(KeyActionType type) {
+        if(type != KeyActionType.RELEASE)
+            tileSet.setVerticalTileOffset(tileSet.getVerticalTileOffset() - 1);
+    }
+
+    /**
+     * The function that processes the key
+     * action for the 'S' key.
+     */
+    @KeyAction(key = Input.KEY_S, hold = 250)
+    public void sKeyPress(KeyActionType type) {
+        if(type != KeyActionType.RELEASE)
+            tileSet.setVerticalTileOffset(tileSet.getVerticalTileOffset() + 1);
+    }
+
+    /**
+     * This class (struct) simply keeps track of when
+     * a key was pressed and when the last "hold"
+     * operation was performed.
+     */
+    private static final class KeyTiming {
+
+        private long pressTime = System.currentTimeMillis(); // The time at which the key was pressed.
+        private long lastHoldTime = System.currentTimeMillis(); // The last time in milliseconds when
+                                                                // the hold operation was performed.
     }
 }
