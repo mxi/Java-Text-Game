@@ -108,7 +108,7 @@ public class Game extends BasicGame {
 
         // Set up tile set
         tileSet.getTiles().fill(new Tile());
-        tileSet.setTileCountHorizontally(39);
+        tileSet.setPixelsPerTile(32);
         tileSet.setAlpha(.5f);
         tileSet.setPixelPerfect();
     }
@@ -194,7 +194,7 @@ public class Game extends BasicGame {
     @KeyAction(key = Input.KEY_A, hold = 250)
     public void aKeyPress(KeyActionType type) {
         if(type != KeyActionType.RELEASE)
-            tileSet.setHorizontalTileOffset(tileSet.getHorizontalTileOffset() - 1);
+            tileSet.getPosition().setTargetX(tileSet.getPosition().getTargetX() - 1);
     }
 
     /**
@@ -204,7 +204,7 @@ public class Game extends BasicGame {
     @KeyAction(key = Input.KEY_D, hold = 250)
     public void dKeyPress(KeyActionType type) {
         if(type != KeyActionType.RELEASE)
-            tileSet.setHorizontalTileOffset(tileSet.getHorizontalTileOffset() + 1);
+            tileSet.getPosition().setTargetX(tileSet.getPosition().getTargetX() + 1);
     }
 
     /**
@@ -214,7 +214,7 @@ public class Game extends BasicGame {
     @KeyAction(key = Input.KEY_W, hold = 250)
     public void wKeyPress(KeyActionType type) {
         if(type != KeyActionType.RELEASE)
-            tileSet.setVerticalTileOffset(tileSet.getVerticalTileOffset() - 1);
+            tileSet.getPosition().setTargetY(tileSet.getPosition().getTargetY() - 1);
     }
 
     /**
@@ -224,7 +224,8 @@ public class Game extends BasicGame {
     @KeyAction(key = Input.KEY_S, hold = 250)
     public void sKeyPress(KeyActionType type) {
         if(type != KeyActionType.RELEASE)
-            tileSet.setVerticalTileOffset(tileSet.getVerticalTileOffset() + 1);
+
+            tileSet.getPosition().setTargetY(tileSet.getPosition().getTargetY() + 1);
     }
 
     /**
