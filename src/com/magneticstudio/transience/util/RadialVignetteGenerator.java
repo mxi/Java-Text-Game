@@ -195,6 +195,23 @@ public class RadialVignetteGenerator implements ImageGenerator {
     }
 
     /**
+     * Gets the upscale value of this vignette
+     * generator.
+     * @return Upscale value.
+     */
+    public float getUpscale() {
+        return upscale;
+    }
+
+    /**
+     * Sets the upscale value of this vignette
+     * @param upscale The new upscale value.
+     */
+    public void setUpscale(float upscale) {
+        this.upscale = upscale;
+    }
+
+    /**
      * Renders a vignette onto an image object.
      * @return The image with an effect rendered onto it.
      */
@@ -220,6 +237,9 @@ public class RadialVignetteGenerator implements ImageGenerator {
                 graphics.drawRect(x, y, 1, 1);
             }
         }
-        return canvas.getScaledCopy(upscale);
+        if(upscale == 1)
+            return canvas;
+        else
+            return canvas.getScaledCopy(upscale);
     }
 }

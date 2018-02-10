@@ -3,6 +3,7 @@ package com.magneticstudio.transience.ui;
 import com.magneticstudio.transience.game.Tile;
 import com.magneticstudio.transience.game.TileSet;
 import com.magneticstudio.transience.util.Cache;
+import com.magneticstudio.transience.util.RadialVignetteGenerator;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Graphics;
@@ -32,6 +33,8 @@ public class Game extends BasicGame {
 
     // --- GAME ENVIRONMENT
     private TileSet tileSet; // The tile set for this game.
+    private RadialVignetteGenerator vignetteGen = new RadialVignetteGenerator();
+    private Image vignette;
     private int resolutionWidth = 1280; // The width of the window.
     private int resolutionHeight = 720; // The height of the window.
     private boolean graphicsSetup = false; // Checks whether the graphics have been set up.
@@ -94,6 +97,15 @@ public class Game extends BasicGame {
     public void init(GameContainer gc) throws SlickException {
         resolutionWidth = gc.getWidth();
         resolutionHeight = gc.getHeight();
+
+        vignetteGen.setColor(Color.black);
+        vignetteGen.setCenterX(1280 / 2);
+        vignetteGen.setCenterY(720 / 2);
+        vignetteGen.setRadius(720 / 2);
+        vignetteGen.setSoftness(.95f);
+        vignetteGen.setImageWidth(1280);
+        vignetteGen.setImageHeight(720);
+        vignette = vignetteGen.generate();
 
         /*
          * Registering the KeyActionFunctions
@@ -174,9 +186,10 @@ public class Game extends BasicGame {
         }
 
         tileSet.render(graphics, 0, 0, false);
-        graphics.setColor(Color.cyan);
-        graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
-        graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
+        vignette.draw(0, 0);
+        //graphics.setColor(Color.cyan);
+        //graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
+        //graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
     }
 
     /**

@@ -18,8 +18,8 @@ public class FlowPosition implements LogicalElement {
     private float nowX = 0; // The current X value of the intermediate motion.
     private float nowY = 0; // The current Y value of the intermediate motion.
 
-    private float modifyX; // The amount to modify X by each millisecond to reach the new position.
-    private float modifyY; // The amount to modify Y by each millisecond to reach the new position.
+    private float modifyX = 0; // The amount to modify X by each millisecond.
+    private float modifyY = 0; // The amount to modify Y by each millisecond.
 
     private float timeMillis = 500; // The time in milliseconds the old position has to transfer to the new position.
     private float timeElapsed = 0; // The time elapsed transitioning to the target position.
@@ -69,6 +69,7 @@ public class FlowPosition implements LogicalElement {
     public void setPosition(float x, float y) {
         setTargetX(x);
         setTargetY(y);
+        timeElapsed = 0;
     }
 
     /**
@@ -134,6 +135,34 @@ public class FlowPosition implements LogicalElement {
     }
 
     /**
+     * Sets the transition time of this object
+     * if it's not moving.
+     * @param newTime The new time in milliseconds for transitioning.
+     */
+    public void setTransitionTime(int newTime) {
+        if(towardsX == nowX && towardsY == nowY)
+            timeMillis = Math.max(newTime, 1);
+    }
+
+    /**
+     * Gets the elapsed time of this transition.
+     * @return ELapsed time of transition.
+     */
+    public float getElapsedTime() {
+        return timeElapsed;
+    }
+
+    /**
+     * Checks whether this position is
+     * being modified.
+     * @return Whether the position is being modified.
+     */
+    public boolean isMoving() {
+        return towardsX != nowX || towardsY != nowY;
+    }
+
+    /**
+     * Updates this FlowPosition object.
      * Sets the target amount of time to complete
      * the transition.
      * @param millis New amount of time in milliseconds.

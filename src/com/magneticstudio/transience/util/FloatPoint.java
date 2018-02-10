@@ -2,7 +2,7 @@ package com.magneticstudio.transience.util;
 
 /**
  * A class that represents a 2d point
- * in space using floats.
+ * in space using floating point numbers.
  *
  * @author Max
  */

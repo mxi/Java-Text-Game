@@ -26,7 +26,7 @@ public class TileSet implements Displayable, LogicalElement {
     // --- GAME-PLAY
 
 
-    /**
+     /**
      * Creates a new TileSet object with
      * the specified dimensions.
      * @param width The amount of tiles on the x axis.
@@ -37,11 +37,36 @@ public class TileSet implements Displayable, LogicalElement {
     }
 
     /**
-     * Gets the FlowPosition object of this TileSet.
-     * @return FlowPosition of this TileSet.
+     * Gets the FlowPosition object that controls the
+     * position of this TileSet on screen.
+     * @return The FlowPosition object controlling position/animation of this TileSet.
      */
     public FlowPosition getPosition() {
         return position;
+    }
+
+    /**
+     * Centers on the specified tile.
+     * @param x The X value of the location of the tile.
+     * @param y The Y value of the location of the tile.
+     */
+    public void centerOn(int x, int y) {
+        position.setTargetX( -Game.activeGame.getResolutionWidth() / pixelsPerTile / 2 + x );
+        position.setTargetY( -Game.activeGame.getResolutionHeight() / pixelsPerTile / 2 + y );
+    }
+
+    /**
+     * Creates fine adjustments to perfectly
+     * center each tile with its designated
+     * square; location.
+     */
+    public void setPixelPerfect() {
+        finePixelOffsetX = Game.activeGame.getResolutionWidth() % pixelsPerTile / 2 + 1;
+        if (Game.activeGame.getResolutionWidth() / pixelsPerTile % 2 == 0)
+            finePixelOffsetX -= (pixelsPerTile / 2);
+
+        finePixelOffsetY = (Game.activeGame.getResolutionHeight() / 2) -
+                ((Game.activeGame.getResolutionHeight() / 2 / pixelsPerTile) + 1) * pixelsPerTile - (pixelsPerTile / 2) + pixelsPerTile;
     }
 
     /**
@@ -61,20 +86,6 @@ public class TileSet implements Displayable, LogicalElement {
     public void setPixelsPerTile(int pixelsPerTile) {
         this.pixelsPerTile = Math.min(Math.max(pixelsPerTile, 8), 128);
         tiles.forEach(e -> e.getRepresentation().setDimensions(this.pixelsPerTile, this.pixelsPerTile));
-    }
-
-    /**
-     * Creates fine adjustments to perfectly
-     * center each tile with its designated
-     * square; location.
-     */
-    public void setPixelPerfect() {
-        finePixelOffsetX = Game.activeGame.getResolutionWidth() % pixelsPerTile / 2;
-        if(Game.activeGame.getResolutionWidth() / pixelsPerTile % 2 == 0)
-            finePixelOffsetX -= (pixelsPerTile / 2);
-
-        finePixelOffsetY = (Game.activeGame.getResolutionHeight() / 2) -
-                ((Game.activeGame.getResolutionHeight() / 2 / pixelsPerTile) + 1) * pixelsPerTile - (pixelsPerTile / 2) + pixelsPerTile;
     }
 
     /**
@@ -112,8 +123,8 @@ public class TileSet implements Displayable, LogicalElement {
                     continue;
                 tiles.getElement(ix, iy).render(
                         graphics,
-                        x + (pixelsPerTile * ix) - position.getIntermediateX() * pixelsPerTile + finePixelOffsetX,
-                        y + (pixelsPerTile * iy) - position.getIntermediateY() * pixelsPerTile + finePixelOffsetY,
+                        x + (pixelsPerTile * ix) - (position.getIntermediateX() * pixelsPerTile) + finePixelOffsetX,
+                        y + (pixelsPerTile * iy) - (position.getIntermediateY() * pixelsPerTile) + finePixelOffsetY,
                         false
                 );
             }

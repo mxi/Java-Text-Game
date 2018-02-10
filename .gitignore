@@ -11,4 +11,4 @@ src/libjcsi.jar
 .settings/*
 .idea/*
 Ideas.txt
-Transience.iml
+classes/
