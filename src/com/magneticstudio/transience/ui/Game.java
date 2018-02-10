@@ -108,7 +108,8 @@ public class Game extends BasicGame {
 
         // Set up tile set
         tileSet.getTiles().fill(new Tile());
-        tileSet.setPixelsPerTile(48);
+        tileSet.getPosition().setTargetTime(100);
+        tileSet.setPixelsPerTile(32);
         tileSet.setAlpha(.5f);
         tileSet.setPixelPerfect();
     }
@@ -173,9 +174,9 @@ public class Game extends BasicGame {
         }
 
         tileSet.render(graphics, 0, 0, false);
-        //graphics.setColor(Color.cyan);
-        //graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
-        //graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
+        graphics.setColor(Color.cyan);
+        graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
+        graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
     }
 
     /**
@@ -191,7 +192,7 @@ public class Game extends BasicGame {
      * The function that processes the key
      * action for the 'A' key.
      */
-    @KeyAction(key = Input.KEY_A, hold = 250)
+    @KeyAction(key = Input.KEY_A, hold = 100, untilHeld = 250)
     public void aKeyPress(KeyActionType type) {
         if(type != KeyActionType.RELEASE)
             tileSet.getPosition().setTargetX(tileSet.getPosition().getTargetX() - 1);
@@ -201,7 +202,7 @@ public class Game extends BasicGame {
      * The function that processes the key
      * action for the 'D' key.
      */
-    @KeyAction(key = Input.KEY_D, hold = 250)
+    @KeyAction(key = Input.KEY_D, hold = 100, untilHeld = 250)
     public void dKeyPress(KeyActionType type) {
         if(type != KeyActionType.RELEASE)
             tileSet.getPosition().setTargetX(tileSet.getPosition().getTargetX() + 1);
@@ -211,7 +212,7 @@ public class Game extends BasicGame {
      * The function that processes the key
      * action for the 'W' key.
      */
-    @KeyAction(key = Input.KEY_W, hold = 250)
+    @KeyAction(key = Input.KEY_W, hold = 100, untilHeld = 250)
     public void wKeyPress(KeyActionType type) {
         if(type != KeyActionType.RELEASE)
             tileSet.getPosition().setTargetY(tileSet.getPosition().getTargetY() - 1);
@@ -221,7 +222,7 @@ public class Game extends BasicGame {
      * The function that processes the key
      * action for the 'S' key.
      */
-    @KeyAction(key = Input.KEY_S, hold = 250)
+    @KeyAction(key = Input.KEY_S, hold = 100, untilHeld = 250)
     public void sKeyPress(KeyActionType type) {
         if(type != KeyActionType.RELEASE)
             tileSet.getPosition().setTargetY(tileSet.getPosition().getTargetY() + 1);
