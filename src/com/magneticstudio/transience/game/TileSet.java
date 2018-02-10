@@ -17,11 +17,11 @@ public class TileSet implements Displayable, LogicalElement {
     private ArrayList2D<Tile> tiles = new ArrayList2D<>(); // The 2d array of tiles.
 
     // --- GRAPHICS/DISPLAY VARIABLES:
-    private FlowPosition position = new FlowPosition();
-    private int pixelsPerTile = 32;
+    private FlowPosition position = new FlowPosition(); // The position of this tile set.
+    private int pixelsPerTile = 32; // Amount of pixels (width and height) a tile takes up.
 
-    private float finePixelOffsetX = 0; // The fine pixel adjustment horizontally.
-    private float finePixelOffsetY = 0; // The fine pixel adjustment vertically.
+    private float finePixelOffsetX = 0; // The fine pixel offset horizontally.
+    private float finePixelOffsetY = 0; // The fine pixel offset vertically.
 
     // --- GAME-PLAY
 
@@ -37,6 +37,7 @@ public class TileSet implements Displayable, LogicalElement {
     }
 
     /**
+<<<<<<< HEAD
      * Gets the FlowPosition object that controls the
      * position of this TileSet on screen.
      * @return The FlowPosition object controlling position/animation of this TileSet.

@@ -59,7 +59,6 @@ public class FlowPosition implements LogicalElement {
      */
     public void setPosition(FloatPoint dest) {
         setPosition(dest.getX(), dest.getY());
-        timeElapsed = 0;
     }
 
     /**
