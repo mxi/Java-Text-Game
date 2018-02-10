@@ -5,7 +5,6 @@ import com.magneticstudio.transience.ui.Game;
 import com.magneticstudio.transience.ui.LogicalElement;
 import com.magneticstudio.transience.util.ArrayList2D;
 import com.magneticstudio.transience.util.FlowPosition;
-import com.magneticstudio.transience.util.IntPoint;
 import org.newdawn.slick.Graphics;
 
 /**
@@ -27,7 +26,7 @@ public class TileSet implements Displayable, LogicalElement {
     // --- GAME-PLAY
 
 
-    /**
+     /**
      * Creates a new TileSet object with
      * the specified dimensions.
      * @param width The amount of tiles on the x axis.
@@ -63,7 +62,7 @@ public class TileSet implements Displayable, LogicalElement {
      */
     public void setPixelPerfect() {
         finePixelOffsetX = Game.activeGame.getResolutionWidth() % pixelsPerTile / 2 + 1;
-        if(Game.activeGame.getResolutionWidth() / pixelsPerTile % 2 == 0)
+        if (Game.activeGame.getResolutionWidth() / pixelsPerTile % 2 == 0)
             finePixelOffsetX -= (pixelsPerTile / 2);
 
         finePixelOffsetY = (Game.activeGame.getResolutionHeight() / 2) -
@@ -122,7 +121,6 @@ public class TileSet implements Displayable, LogicalElement {
             for(int ix = 0; ix < tiles.getWidth(); ix++) {
                 if(!willTileBeVisibleX(ix))
                     continue;
-                //System.out.println(position);
                 tiles.getElement(ix, iy).render(
                         graphics,
                         x + (pixelsPerTile * ix) - (position.getIntermediateX() * pixelsPerTile) + finePixelOffsetX,
@@ -150,8 +148,8 @@ public class TileSet implements Displayable, LogicalElement {
      * @return Whether that column would be visible or not.
      */
     private boolean willTileBeVisibleX(int x) {
-        return (x - position.getTargetX()) * pixelsPerTile + finePixelOffsetX >= -pixelsPerTile
-                && (x - position.getTargetX()) * pixelsPerTile + finePixelOffsetX < Game.activeGame.getResolutionWidth();
+        return (x - position.getIntermediateX()) * pixelsPerTile + finePixelOffsetX >= -pixelsPerTile
+                && (x - position.getIntermediateX()) * pixelsPerTile + finePixelOffsetX < Game.activeGame.getResolutionWidth();
     }
 
     /**
@@ -161,7 +159,7 @@ public class TileSet implements Displayable, LogicalElement {
      * @return Whether that row would be visible or not.
      */
     private boolean willTileBeVisibleY(int y) {
-        return (y - position.getTargetY()) * pixelsPerTile + finePixelOffsetY >= -pixelsPerTile
-                && (y - position.getTargetY()) * pixelsPerTile + finePixelOffsetY < Game.activeGame.getResolutionHeight();
+        return (y - position.getIntermediateY()) * pixelsPerTile + finePixelOffsetY >= -pixelsPerTile
+                && (y - position.getIntermediateY()) * pixelsPerTile + finePixelOffsetY < Game.activeGame.getResolutionHeight();
     }
 }

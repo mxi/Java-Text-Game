@@ -21,8 +21,8 @@ public class FlowPosition implements LogicalElement {
     private float modifyX = 0; // The amount to modify X by each millisecond.
     private float modifyY = 0; // The amount to modify Y by each millisecond.
 
-    private int timeMillis = 500; // The time in milliseconds the old position has to transfer to the new position.
-    private int timeElapsed = 0; // The elapsed time.
+    private float timeMillis = 500; // The time in milliseconds the old position has to transfer to the new position.
+    private float timeElapsed = 0; // The time elapsed transitioning to the target position.
 
     /**
      * Creates a new flow position object
@@ -126,12 +126,12 @@ public class FlowPosition implements LogicalElement {
     }
 
     /**
-     * Gets the time in milliseconds this
-     * position has to transfer to the target
+     * Gets the target time in milliseconds of
+     * the transition from old position to new
      * position.
-     * @return The time in milliseconds this object has to transition.
+     * @return The target transition time in milliseconds.
      */
-    public int getTransitionTime() {
+    public float getTargetTime() {
         return timeMillis;
     }
 
@@ -149,7 +149,7 @@ public class FlowPosition implements LogicalElement {
      * Gets the elapsed time of this transition.
      * @return ELapsed time of transition.
      */
-    public int getElapsedTime() {
+    public float getElapsedTime() {
         return timeElapsed;
     }
 
@@ -164,6 +164,16 @@ public class FlowPosition implements LogicalElement {
 
     /**
      * Updates this FlowPosition object.
+     * Sets the target amount of time to complete
+     * the transition.
+     * @param millis New amount of time in milliseconds.
+     */
+    public void setTargetTime(float millis) {
+        timeMillis = Math.max(millis, 1);
+    }
+
+    /**
+     * Updates this flow position object.
      * @param milliseconds The elapsed time since last update.
      */
     @Override
@@ -187,6 +197,6 @@ public class FlowPosition implements LogicalElement {
 
     @Override
     public String toString() {
-        return "(" + nowX + ", " + nowY + " >> " + towardsX + ", " + towardsY + ")";
+        return "(" + nowX + ", " + nowY + " go to " + towardsX + ", " + towardsY + ")";
     }
 }
