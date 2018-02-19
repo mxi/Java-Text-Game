@@ -3,7 +3,6 @@ package com.magneticstudio.transience.game;
 import com.magneticstudio.transience.ui.CharacterCell;
 import com.magneticstudio.transience.ui.Displayable;
 import com.magneticstudio.transience.ui.GraphicalElement;
-import com.magneticstudio.transience.ui.Sprite;
 import com.magneticstudio.transience.util.Cache;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -17,33 +16,16 @@ import org.newdawn.slick.SlickException;
 public class Tile implements Displayable {
 
     private GraphicalElement representation; // The graphical representation of the tile.
-    private Entity entity; // The entity on this tile.
 
-    private boolean traversable; // Whether an entity can be located on this tile from movement.
+    private boolean visible = true; // Whether this tile is visible (will be rendered).
+    private boolean traversable = true; // Whether an entity can be located on this tile from movement.
 
     /**
      * Creates a new, default, tile
      * object.
      */
-    public Tile() throws SlickException {
-        //representation = new Sprite(Cache.loadImage("resources/textures/tiles/def-tile-64.png"), 64, 64, 10);
-        representation = new CharacterCell("Map Font", 'T');
-    }
-
-    /**
-     * Gets the entity on this tile.
-     * @return The entity on this tile.
-     */
-    public Entity getEntity() {
-        return entity;
-    }
-
-    /**
-     * Sets the entity on this tile.
-     * @param entity The entity to be positioned on this tile.
-     */
-    public void setEntity(Entity entity) {
-        this.entity = entity;
+    public Tile() {
+        representation = new CharacterCell(Cache.GENERAL_FONT, 'T');
     }
 
     /**
@@ -64,6 +46,24 @@ public class Tile implements Displayable {
     }
 
     /**
+     * Checks whether this tile is being rendered onto
+     * the screen.
+     * @return Whether this tile is rendered onto the screen.
+     */
+    public boolean isVisible() {
+        return visible;
+    }
+
+    /**
+     * Sets whether this tile will be rendered
+     * onto the screen.
+     * @param visible Whether this tile will be rendered onto the screen.
+     */
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    /**
      * Gets the representation of this tile.
      * @return Representation of this tile.
      */
@@ -80,6 +80,8 @@ public class Tile implements Displayable {
      */
     @Override
     public void render(Graphics graphics, float x, float y, boolean centerSurround) {
+        if(!visible)
+            return;
         representation.render(graphics, x, y, centerSurround);
     }
 }

@@ -21,6 +21,7 @@ public class RadialVignetteGenerator implements ImageGenerator {
     private float radius = 128; // Radius of the vignette.
     private float softness = .5f; // The hardness of the vignette.
     private float upscale = 1.0f; // The amount to scale the image after generating the vignette.
+    private boolean inverted = false; // Whether this vignette is inverted.
 
     private Color color = Color.white; // The color of the vignette.
 
@@ -212,6 +213,23 @@ public class RadialVignetteGenerator implements ImageGenerator {
     }
 
     /**
+     * Checks whether the vignette generated will
+     * be inverted.
+     * @return Whether the generated vignette will be inverted.
+     */
+    public boolean isInverted() {
+        return inverted;
+    }
+
+    /**
+     * Sets whether the generated vignette will be inverted.
+     * @param val Whether the generated vignette will be inverted.
+     */
+    public void setInverted(boolean val) {
+        inverted = val;
+    }
+
+    /**
      * Renders a vignette onto an image object.
      * @return The image with an effect rendered onto it.
      */
@@ -219,6 +237,7 @@ public class RadialVignetteGenerator implements ImageGenerator {
     public Image generate() throws SlickException {
         Image canvas = new Image(imageWidth, imageHeight);
         Graphics graphics = canvas.getGraphics();
+        graphics.setAntiAlias(false);
 
         double lowestRadius = radius - (radius * softness);
         double softnessRadRange = radius - lowestRadius;
@@ -232,13 +251,14 @@ public class RadialVignetteGenerator implements ImageGenerator {
                 else if(curRadius < lowestRadius)
                     alpha = 0f;
 
-                Color adjusted = new Color(color.r, color.g, color.b, alpha);
+                Color adjusted = new Color(color.r, color.g, color.b, inverted ? 1.0f - alpha : alpha);
                 graphics.setColor(adjusted);
                 graphics.drawRect(x, y, 1, 1);
             }
         }
-        if(upscale == 1)
-            return canvas;
+        if(upscale == 1) {
+            return canvas.copy();
+        }
         else
             return canvas.getScaledCopy(upscale);
     }

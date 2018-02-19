@@ -1,30 +1,27 @@
 package com.magneticstudio.transience.game;
 
-import com.magneticstudio.transience.ui.Displayable;
 import com.magneticstudio.transience.ui.Game;
 import com.magneticstudio.transience.ui.LogicalElement;
 import com.magneticstudio.transience.util.ArrayList2D;
 import com.magneticstudio.transience.util.FlowPosition;
+import com.magneticstudio.transience.util.IntPoint;
 import org.newdawn.slick.Graphics;
+
+import java.util.List;
 
 /**
  * This class manages a 2d array of tiles.
  *
  * @author Max
  */
-public class TileSet implements Displayable, LogicalElement {
+public class TileSet implements LogicalElement {
 
     private ArrayList2D<Tile> tiles = new ArrayList2D<>(); // The 2d array of tiles.
-
-    // --- GRAPHICS/DISPLAY VARIABLES:
     private FlowPosition position = new FlowPosition(); // The position of this tile set.
-    private int pixelsPerTile = 32; // Amount of pixels (width and height) a tile takes up.
 
+    private int pixelsPerTile = 32; // Amount of pixels (width and height) a tile takes up.
     private float finePixelOffsetX = 0; // The fine pixel offset horizontally.
     private float finePixelOffsetY = 0; // The fine pixel offset vertically.
-
-    // --- GAME-PLAY
-
 
      /**
      * Creates a new TileSet object with
@@ -34,6 +31,44 @@ public class TileSet implements Displayable, LogicalElement {
      */
     public TileSet(int width, int height) {
         tiles.setDimensions(width, height);
+    }
+
+    /**
+     * Hides the tile at the specified location.
+     * @param x The X value of the tile's position.
+     * @param y The Y value of the tile's position.
+     */
+    public void hideTile(int x, int y) {
+        if(tiles.getElement(x, y) != null)
+            tiles.getElement(x, y).setVisible(false);
+    }
+
+    /**
+     * Hides the tile at the specified location.
+     * @param loc Location of the tile to hide.
+     */
+    public void hideTile(IntPoint loc) {
+        if(tiles.getElement(loc.getX(), loc.getY()) != null)
+            tiles.getElement(loc.getX(), loc.getY()).setVisible(false);
+    }
+
+    /**
+     * Sets the specified tile to be shown.
+     * @param x The X value of the tile's position.
+     * @param y The Y value of the tile's position.
+     */
+    public void showTile(int x, int y) {
+        if(tiles.getElement(x, y) != null)
+            tiles.getElement(x, y).setVisible(true);
+    }
+
+    /**
+     * Sets the specified tile to be shown.
+     * @param loc Location of the tile to show.
+     */
+    public void showTile(IntPoint loc) {
+        if(tiles.getElement(loc.getX(), loc.getY()) != null)
+            tiles.getElement(loc.getX(), loc.getY()).setVisible(true);
     }
 
     /**
@@ -61,7 +96,7 @@ public class TileSet implements Displayable, LogicalElement {
      * square; location.
      */
     public void setPixelPerfect() {
-        finePixelOffsetX = Game.activeGame.getResolutionWidth() % pixelsPerTile / 2 + 1;
+        finePixelOffsetX = Game.activeGame.getResolutionWidth() % pixelsPerTile / 2;
         if (Game.activeGame.getResolutionWidth() / pixelsPerTile % 2 == 0)
             finePixelOffsetX -= (pixelsPerTile / 2);
 
@@ -107,25 +142,38 @@ public class TileSet implements Displayable, LogicalElement {
 
     /**
      * Renders the tile set onto the screen.
+     * @param entities The entities to render onto the tileset.
      * @param graphics The graphics object used to render anything on the main screen.
-     * @param x The X value of the position that this object is supposed to be rendered at.
-     * @param y The Y value of the position that this object is supposed to be rendered at.
-     * @param centerSurround Whether or not the x and y are based around the center of the element.
-     *                       (doesn't apply to this object)
      */
-    @Override
-    public void render(Graphics graphics, float x, float y, boolean centerSurround) {
+    public void render(List<Entity> entities, Graphics graphics) {
         for(int iy = 0; iy < tiles.getHeight(); iy++) {
             if(!willTileBeVisibleY(iy))
                 continue;
+            XLoop:
             for(int ix = 0; ix < tiles.getWidth(); ix++) {
                 if(!willTileBeVisibleX(ix))
                     continue;
+
+                float renderX = (pixelsPerTile * ix) - (position.getIntermediateX() * pixelsPerTile) + finePixelOffsetX;
+                float renderY = (pixelsPerTile * iy) - (position.getIntermediateY() * pixelsPerTile) + finePixelOffsetY;
+
+                for(Entity e : entities) {
+                    if(e.getPosition().isEquivalentTo(ix, iy)) {
+                        e.render(
+                            graphics,
+                            renderX,
+                            renderY,
+                            true
+                        );
+                        continue XLoop;
+                    }
+                }
+
                 tiles.getElement(ix, iy).render(
-                        graphics,
-                        x + (pixelsPerTile * ix) - (position.getIntermediateX() * pixelsPerTile) + finePixelOffsetX,
-                        y + (pixelsPerTile * iy) - (position.getIntermediateY() * pixelsPerTile) + finePixelOffsetY,
-                        false
+                    graphics,
+                    renderX,
+                    renderY,
+                    false
                 );
             }
         }

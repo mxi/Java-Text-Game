@@ -42,6 +42,17 @@ public class FloatPoint {
     }
 
     /**
+     * Checks whether another point
+     * is equivalent to this one.
+     * @param tx The X value of the other point.
+     * @param ty The Y value of the other point.
+     * @return True if they have the same values of x and y.
+     */
+    public boolean isEquivalentTo(float tx, float ty) {
+        return x == tx && y == ty;
+    }
+
+    /**
      * Gets the X value of this position.
      * @return X value of this position.
      */

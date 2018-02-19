@@ -1,6 +1,7 @@
 package com.magneticstudio.transience.ui;
 
 import com.magneticstudio.transience.util.IntDimension;
+import org.newdawn.slick.Color;
 
 /**
  * This interface extends the Displayable
@@ -65,4 +66,16 @@ public interface GraphicalElement extends Displayable {
      * @param alpha New alpha of this graphical element.
      */
     void setAlpha(float alpha);
+
+    /**
+     * Gets the color of this graphical element.
+     * @return Color of this element.
+     */
+    Color getColor();
+
+    /**
+     * Sets the color of this graphical element.
+     * @param newColor New color of this graphical element.
+     */
+    void setColor(Color newColor);
 }

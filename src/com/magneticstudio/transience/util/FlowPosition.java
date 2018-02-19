@@ -12,8 +12,8 @@ import com.magneticstudio.transience.ui.LogicalElement;
  */
 public class FlowPosition implements LogicalElement {
 
-    private float towardsX = 0; // The value of X that this motion tends towards.
-    private float towardsY = 0; // The value of Y that this motion tends towards.
+    private int towardsX = 0; // The value of X that this motion tends towards.
+    private int towardsY = 0; // The value of Y that this motion tends towards.
 
     private float nowX = 0; // The current X value of the intermediate motion.
     private float nowY = 0; // The current Y value of the intermediate motion.
@@ -23,6 +23,7 @@ public class FlowPosition implements LogicalElement {
 
     private float timeMillis = 500; // The time in milliseconds the old position has to transfer to the new position.
     private float timeElapsed = 0; // The time elapsed transitioning to the target position.
+    private long lastMovementTime = 0; // The last time stamp of a modifying position event.
 
     /**
      * Creates a new flow position object
@@ -46,19 +47,54 @@ public class FlowPosition implements LogicalElement {
     }
 
     /**
+     * Gets the last time this object moved.
+     * @return Last time this object moved.
+     */
+    public long getLastMovementTime() {
+        return lastMovementTime;
+    }
+
+    /**
+     * Checks whether the target position of this
+     * FlowPosition is equal to the specified values.
+     * @param x The X value.
+     * @param y The Y value.
+     * @return Whether the positions are equal.
+     */
+    public boolean equalsTo(float x, float y) {
+        return towardsX == x && towardsY == y;
+    }
+
+    /**
      * Gets the position that this motion tends towards.
      * @return The position that the motion tends towards.
      */
-    public FloatPoint getPosition() {
+    public FloatPoint getFloatPoint() {
         return new FloatPoint(towardsX, towardsY);
+    }
+
+    /**
+     * Gets the position that this motion tends towards.
+     * @return The position that this motion tends towards.
+     */
+    public IntPoint getIntPoint() {
+        return new IntPoint(towardsX, towardsY);
     }
 
     /**
      * Sets the position that this motion tends towards.
      * @param dest The destination of this motion.
      */
-    public void setPosition(FloatPoint dest) {
-        setPosition(dest.getX(), dest.getY());
+    public void setTargetPosition(FloatPoint dest) {
+        setTargetPosition((int) dest.getX(), (int) dest.getY());
+    }
+
+    /**
+     * Sets the position that this motion tends towards.
+     * @param dest The destination of this motion.
+     */
+    public void setTargetPosition(IntPoint dest) {
+        setTargetPosition(dest.getX(), dest.getY());
     }
 
     /**
@@ -66,17 +102,43 @@ public class FlowPosition implements LogicalElement {
      * @param x The X value the position tends towards.
      * @param y The Y value the position tends towards.
      */
-    public void setPosition(float x, float y) {
+    public void setTargetPosition(int x, int y) {
         setTargetX(x);
         setTargetY(y);
         timeElapsed = 0;
     }
 
     /**
+     * Moves this object the specified x and y amounts.
+     * @param x The X offset.
+     * @param y The Y offset.
+     */
+    public void move(int x, int y) {
+        towardsX += x;
+        towardsY += y;
+    }
+
+    /**
+     * Moves this object the specified x amount.
+     * @param x The X offset.
+     */
+    public void moveX(int x) {
+        setTargetX(towardsX + x);
+    }
+
+    /**
+     * Moves this object the specified y amount.
+     * @param y The Y offset.
+     */
+    public void moveY(int y) {
+        setTargetY(towardsY + y);
+    }
+
+    /**
      * Gets the target X value.
      * @return Target X value.
      */
-    public float getTargetX() {
+    public int getTargetX() {
         return towardsX;
     }
 
@@ -84,7 +146,7 @@ public class FlowPosition implements LogicalElement {
      * Sets the target X value.
      * @param x Target X value.
      */
-    public void setTargetX(float x) {
+    public void setTargetX(int x) {
         modifyX = (x - nowX) / timeMillis;
         towardsX = x;
         timeElapsed = 0;
@@ -94,7 +156,7 @@ public class FlowPosition implements LogicalElement {
      * Gets the target Y value.
      * @return Target Y value.
      */
-    public float getTargetY() {
+    public int getTargetY() {
         return towardsY;
     }
 
@@ -102,7 +164,7 @@ public class FlowPosition implements LogicalElement {
      * Sets the target Y value.
      * @param y Target Y value.
      */
-    public void setTargetY(float y) {
+    public void setTargetY(int y) {
         modifyY = (y - nowY) / timeMillis;
         towardsY = y;
         timeElapsed = 0;
@@ -162,16 +224,6 @@ public class FlowPosition implements LogicalElement {
     }
 
     /**
-     * Updates this FlowPosition object.
-     * Sets the target amount of time to complete
-     * the transition.
-     * @param millis New amount of time in milliseconds.
-     */
-    public void setTargetTime(float millis) {
-        timeMillis = Math.max(millis, 1);
-    }
-
-    /**
      * Updates this flow position object.
      * @param milliseconds The elapsed time since last update.
      */
@@ -192,6 +244,8 @@ public class FlowPosition implements LogicalElement {
             nowX += modifyX * milliseconds;
             nowY += modifyY * milliseconds;
         }
+
+        lastMovementTime = System.currentTimeMillis();
     }
 
     @Override

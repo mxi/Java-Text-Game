@@ -23,6 +23,8 @@ import java.util.Map;
  */
 public class Cache {
 
+    public static final String GENERAL_FONT = "General Font"; // String to identify the general font for this game.
+
     private static Map<String, Image> imageCache = new HashMap<>(); // Cache for images.
     private static Map<String, TrueTypeFont> fontCache = new HashMap<>(); // Cache for fonts.
 

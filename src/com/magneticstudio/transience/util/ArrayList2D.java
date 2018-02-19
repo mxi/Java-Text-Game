@@ -66,6 +66,18 @@ public class ArrayList2D<T> {
     }
 
     /**
+     * Checks whether the specified coordinates
+     * are within bounds of an element in the
+     * 2d array.
+     * @param x The X part of the coordinate.
+     * @param y The Y part of the coordinate.
+     * @return Whether it is within bounds of this container's size.
+     */
+    public boolean isInBounds(int x, int y) {
+        return x >= 0 && y >= 0 && x <= dimensions.getWidth() && y <= dimensions.getHeight();
+    }
+
+    /**
      * Determines if this 2d array is filled (meaning there are no
      * null values).
      * @return True if the 2d array is full.

@@ -12,13 +12,13 @@ import org.newdawn.slick.TrueTypeFont;
  *
  * @author Max
  */
-public class CharacterCell implements GraphicalElement {
+public final class CharacterCell implements GraphicalElement {
 
     private static final int HEIGHT_ADJUSTMENT = 5; // The adjustment for the y value when rendering.
 
     private String font; // The font name used to render the character
     private String character = "O"; // The character in the character cell.
-    private Color color = Color.white; // The color to render the character as.
+    private Color color = new Color(255, 255, 255, 255); // The color to render the character as.
 
     private int width = 64; // The width of the area of where the character is rendered.
     private int height = 64; // The height of the area of where the character is rendered.
@@ -144,6 +144,7 @@ public class CharacterCell implements GraphicalElement {
      * Gets the color of this character cell object.
      * @return Color of this character cell object.
      */
+    @Override
     public Color getColor() {
         return color;
     }
@@ -152,6 +153,7 @@ public class CharacterCell implements GraphicalElement {
      * Sets a new color for this character cell object.
      * @param newColor A new color for this character cell object.
      */
+    @Override
     public void setColor(Color newColor) {
         color.r = newColor.r;
         color.g = newColor.g;
@@ -173,18 +175,8 @@ public class CharacterCell implements GraphicalElement {
         TrueTypeFont ttf = Cache.getFont(font);
         float rx = x + (width / 2) - (ttf.getWidth(character) / 2);
         float ry = y + (height / 2) - (ttf.getHeight(character) / 2) + HEIGHT_ADJUSTMENT;
-        ttf.drawString(rx, ry, character, color);
-        /*
-        if(centerSurround) {
-
-        }
-        else {
-            ttf.drawString(x, y, character);
-            int width = ttf.getWidth(character);
-            int height = ttf.getHeight(character);
-            graphics.setColor(Color.red);
-            graphics.drawRect(x, y, width, height);
-        }
-        */
+        graphics.setFont(ttf);
+        graphics.setColor(color);
+        graphics.drawString(character, rx, ry);
     }
 }

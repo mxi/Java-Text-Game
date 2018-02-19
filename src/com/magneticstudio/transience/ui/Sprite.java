@@ -1,6 +1,7 @@
 package com.magneticstudio.transience.ui;
 
 import com.magneticstudio.transience.util.IntDimension;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
@@ -162,6 +163,23 @@ public class Sprite implements GraphicalElement {
     }
 
     /**
+     * Gets the color of this graphical element.
+     * @return Color of this element.
+     */
+    @Override
+    public Color getColor() {
+        return null;
+    }
+
+    /**
+     * Sets the color of this graphical element.
+     * @param newColor New color of this graphical element.
+     */
+    public void setColor(Color newColor) {
+        // Do nothing...
+    }
+
+    /**
      * Draws this sprite at a specified location.
      * (The location is oriented around the
      * center of each frame).
@@ -173,9 +191,9 @@ public class Sprite implements GraphicalElement {
     @Override
     public void render(Graphics graphics, float x, float y, boolean centerSurround) {
         if(centerSurround)
-            images[currentFrame].draw(x - (width / 2), y - (height / 2));
+            graphics.drawImage(images[currentFrame], x - (width / 2), y - (height / 2));
         else
-            images[currentFrame].draw(x, y);
+            graphics.drawImage(images[currentFrame], x, y);
         next();
     }
 

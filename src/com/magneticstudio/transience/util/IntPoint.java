@@ -42,6 +42,17 @@ public class IntPoint {
     }
 
     /**
+     * Checks whether another point is
+     * equivalent to this one.
+     * @param tx The X value of the point.
+     * @param ty The Y value of the point.
+     * @return Whether this point and the passed point are congruent.
+     */
+    public boolean isEquivalentTo(int tx, int ty) {
+        return x == tx && y == ty;
+    }
+
+    /**
      * Gets the X value of this position.
      * @return X value of this position.
      */
