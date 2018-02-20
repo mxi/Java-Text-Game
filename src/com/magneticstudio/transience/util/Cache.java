@@ -23,10 +23,11 @@ import java.util.Map;
  */
 public class Cache {
 
-    public static final String GENERAL_FONT = "General Font"; // String to identify the general font for this game.
+    public static final String FONT_RESOURCE_FOLDER = "resources/fonts/";
+    public static final String DEFAULT_FONT = "Default";
 
     private static Map<String, Image> imageCache = new HashMap<>(); // Cache for images.
-    private static Map<String, TrueTypeFont> fontCache = new HashMap<>(); // Cache for fonts.
+    private static Map<String, FontStruct> fontCache = new HashMap<>(); // Cache for fonts.
 
     /**
      * Creates a new image object that loads an
@@ -94,14 +95,14 @@ public class Cache {
      */
     public static TrueTypeFont loadFont(String source, String name, int style, float size) throws SlickException {
         if(fontCache.containsKey(name)) {
-            return fontCache.get(name);
+            return fontCache.get(name).ttf;
         }
         else {
             try {
-                TrueTypeFont newFont = new TrueTypeFont(
-                        Font.createFont(Font.TRUETYPE_FONT, new File(source)).deriveFont(style, size), true);
-                fontCache.put(name, newFont);
-                return newFont;
+                FontStruct struct = new FontStruct(
+                        Font.createFont(Font.TRUETYPE_FONT, new File(source)).deriveFont(style, size));
+                fontCache.put(name, struct);
+                return struct.ttf;
             }
             catch(IOException | FontFormatException e) {
                 throw new SlickException(e.getMessage());
@@ -118,12 +119,26 @@ public class Cache {
     public static void addFont(String source, String name, int style, float size) throws SlickException {
         if(!fontCache.containsKey(name)) {
             try {
-                fontCache.put(name, new TrueTypeFont(
-                        Font.createFont(Font.TRUETYPE_FONT, new File(source)).deriveFont(style, size), true));
+                fontCache.put(name, new FontStruct(
+                        Font.createFont(Font.TRUETYPE_FONT, new File(source)).deriveFont(style, size) ));
             }
             catch(IOException | FontFormatException e) {
                 throw new SlickException(e.getMessage());
             }
+        }
+    }
+
+    /**
+     * Modifies the specified font if it's available.
+     * @param name The name of the font to modify.
+     * @param style The new style of the font.
+     * @param size The new size of the font.
+     */
+    public static void modifyFont(String name, int style, float size) {
+        if(fontCache.containsKey(name)) {
+            FontStruct struct = fontCache.get(name);
+            struct.jf = struct.jf.deriveFont(style, size);
+            struct.ttf = new TrueTypeFont(struct.jf, true);
         }
     }
 
@@ -144,7 +159,7 @@ public class Cache {
      * @return The registered font.
      */
     public static TrueTypeFont getFont(String name) {
-        return fontCache.get(name);
+        return fontCache.get(name).ttf;
     }
 
     /**
@@ -152,5 +167,20 @@ public class Cache {
      */
     public static void clearFontCache() {
         fontCache.clear();
+    }
+
+    /**
+     * This class simply contains the true type font
+     * and the actual java font object for fonts.
+     */
+    private static final class FontStruct {
+
+        private TrueTypeFont ttf;
+        private Font jf;
+
+        public FontStruct(Font font) {
+            ttf = new TrueTypeFont(font, true);
+            jf = font;
+        }
     }
 }

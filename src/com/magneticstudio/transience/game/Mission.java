@@ -1,6 +1,5 @@
 package com.magneticstudio.transience.game;
 
-import com.magneticstudio.transience.ui.Displayable;
 import com.magneticstudio.transience.ui.LogicalElement;
 import org.newdawn.slick.Graphics;
 
@@ -25,7 +24,7 @@ public class Mission implements LogicalElement {
     public Mission() {
         entities = new ArrayList<>();
         tileSet = new TileSet(40, 40);
-        tileSet.getTiles().fill(new Tile());
+        tileSet.setPixelsPerTile(32);
         tileSet.getPosition().setTransitionTime(85);
     }
 

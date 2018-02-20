@@ -5,7 +5,6 @@ import com.magneticstudio.transience.ui.Displayable;
 import com.magneticstudio.transience.ui.GraphicalElement;
 import com.magneticstudio.transience.util.Cache;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
 
 /**
  * This class represents all of the individual tiles
@@ -25,7 +24,15 @@ public class Tile implements Displayable {
      * object.
      */
     public Tile() {
-        representation = new CharacterCell(Cache.GENERAL_FONT, 'T');
+        representation = new CharacterCell(Cache.DEFAULT_FONT, 'T');
+    }
+
+    /**
+     * Creates a new tile object.
+     * @param font The name of the font to use for this tile.
+     */
+    public Tile(String font) {
+        representation = new CharacterCell(font, 'T');
     }
 
     /**

@@ -1,8 +1,7 @@
 package com.magneticstudio.transience.ui;
 
-import com.magneticstudio.transience.game.Mission;
 import com.magneticstudio.transience.util.Cache;
-import org.lwjgl.input.Keyboard;
+import com.magneticstudio.transience.util.RadialVignetteGenerator;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Graphics;
 
@@ -25,7 +24,8 @@ public class Game extends BasicGame {
     private int resolutionHeight = 720; // The height of the window.
     private boolean graphicsSetup = false; // Checks whether the graphics have been set up.
 
-    private Mission mission;
+    private Background background;
+    private UIWelcomeMenu welcome;
 
     /**
      * Creates a new Game object with the
@@ -61,16 +61,15 @@ public class Game extends BasicGame {
      */
     @Override
     public void init(GameContainer gc) throws SlickException {
-        Cache.addFont("resources/fonts/Consolas.ttf", Cache.GENERAL_FONT, Font.PLAIN, 30);
+        Cache.addFont(Cache.FONT_RESOURCE_FOLDER + "Consolas.ttf", Cache.DEFAULT_FONT, Font.PLAIN, 16);
 
         resolutionWidth = gc.getWidth();
         resolutionHeight = gc.getHeight();
 
-        mission = new Mission();
-
-        GameKeyboard.KEY_COOLDOWN_TIME = 90;
         MenuKeyboard.HOLD_TIME = 500;
         MenuKeyboard.CONSECUTIVE_HOLD_PRESS = 75;
+
+        gc.setShowFPS(false);
     }
 
     /**
@@ -81,23 +80,11 @@ public class Game extends BasicGame {
      */
     @Override
     public void update(GameContainer gc, int elapsed) throws SlickException {
-        GameKeyboard.poll();
-        //MenuKeyboard.poll();
+        MenuKeyboard.poll();
+        MenuMouse.poll();
 
-        if(GameKeyboard.isTapped(Keyboard.KEY_A)) {
-            mission.getTileSet().getPosition().moveX(-1);
-        }
-        else if(GameKeyboard.isTapped(Keyboard.KEY_D)) {
-            mission.getTileSet().getPosition().moveX(1);
-        }
-        else if(GameKeyboard.isTapped(Keyboard.KEY_W)) {
-            mission.getTileSet().getPosition().moveY(-1);
-        }
-        else if(GameKeyboard.isTapped(Keyboard.KEY_S)) {
-            mission.getTileSet().getPosition().moveY(1);
-        }
-
-        mission.update(elapsed);
+        background.update();
+        welcome.update();
     }
 
     /**
@@ -114,7 +101,8 @@ public class Game extends BasicGame {
             graphicsSetup = true;
         }
 
-        mission.render(graphics);
+        background.render(graphics);
+        welcome.render(graphics);
     }
 
     /**
@@ -123,6 +111,26 @@ public class Game extends BasicGame {
      * and such.
      */
     private void setupGraphics() throws SlickException {
+        Image image = new Image(1280, 720);
+        Graphics g = image.getGraphics();
 
+        RadialVignetteGenerator generator = new RadialVignetteGenerator();
+        generator.setCenterX(1280 / 2);
+        generator.setCenterY(720 / 2);
+        generator.setImageWidth(1280);
+        generator.setImageHeight(720);
+        generator.setRadius(1280 * 2);
+        generator.setSoftness(1f);
+        generator.setInverted(true);
+        generator.setColor(new Color(79, 120, 140, 255));
+
+        Image vignette = generator.generate();
+
+        g.setColor(new Color(50, 50, 50));
+        g.drawRect(0, 0, 1280, 720);
+        g.drawImage(vignette, 0, 0);
+
+        background = new Background(image);
+        welcome = new UIWelcomeMenu();
     }
 }
