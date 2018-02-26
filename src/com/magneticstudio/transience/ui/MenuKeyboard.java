@@ -15,7 +15,7 @@ import java.util.List;
 public class MenuKeyboard {
 
     public static int HOLD_TIME = 500; // Time in milliseconds until a key is considered held.
-    public static int CONSECUTIVE_HOLD_PRESS = 50; // Time in milliseconds until a hold event is dispatched.
+    public static int CONSECUTIVE_HOLD_PRESS = 35; // Time in milliseconds until a hold event is dispatched.
     public static boolean DISCARD_FUNCTION_KEYS = true; // Ignores function keys such as shift, ctrl, and alt.
 
     private static final List<MenuKeyboardInterceptor> interceptors = new ArrayList<>(); // List of interceptors

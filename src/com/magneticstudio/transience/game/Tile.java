@@ -3,8 +3,9 @@ package com.magneticstudio.transience.game;
 import com.magneticstudio.transience.ui.CharacterCell;
 import com.magneticstudio.transience.ui.Displayable;
 import com.magneticstudio.transience.ui.GraphicalElement;
-import com.magneticstudio.transience.util.Cache;
+import com.magneticstudio.transience.ui.Sprite;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.UnicodeFont;
 
 /**
  * This class represents all of the individual tiles
@@ -20,18 +21,19 @@ public class Tile implements Displayable {
     private boolean traversable = true; // Whether an entity can be located on this tile from movement.
 
     /**
-     * Creates a new, default, tile
-     * object.
+     * Creates a new Tile object with
+     * a sprite for the representation.
+     * @param sprite The sprite to represent this tile.
      */
-    public Tile() {
-        representation = new CharacterCell(Cache.DEFAULT_FONT, 'T');
+    public Tile(Sprite sprite) {
+        representation = sprite;
     }
 
     /**
      * Creates a new tile object.
      * @param font The name of the font to use for this tile.
      */
-    public Tile(String font) {
+    public Tile(UnicodeFont font) {
         representation = new CharacterCell(font, 'T');
     }
 
@@ -59,6 +61,27 @@ public class Tile implements Displayable {
      */
     public boolean isVisible() {
         return visible;
+    }
+
+    /**
+     * Gets the font of this tile if the representation
+     * is a character cell.
+     * @return The font used for the character cell representation.
+     */
+    public UnicodeFont getFont() {
+        if(representation instanceof CharacterCell)
+            return ((CharacterCell) representation).getFont();
+        return null;
+    }
+
+    /**
+     * Sets the font of the representation if it's
+     * a character cell.
+     * @param font The new font.
+     */
+    public void setFont(UnicodeFont font) {
+        if(representation instanceof CharacterCell)
+            ((CharacterCell) representation).setFont(font);
     }
 
     /**

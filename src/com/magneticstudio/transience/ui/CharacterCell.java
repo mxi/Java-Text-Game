@@ -1,10 +1,10 @@
 package com.magneticstudio.transience.ui;
 
-import com.magneticstudio.transience.util.Cache;
 import com.magneticstudio.transience.util.IntDimension;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.UnicodeFont;
 
 /**
  * This class simply display a character instead of an
@@ -16,7 +16,7 @@ public final class CharacterCell implements GraphicalElement {
 
     private static final int HEIGHT_ADJUSTMENT = 5; // The adjustment for the y value when rendering.
 
-    private String font; // The font name used to render the character
+    private UnicodeFont font; // The font name used to render the character
     private String character = "O"; // The character in the character cell.
     private Color color = new Color(255, 255, 255, 255); // The color to render the character as.
 
@@ -38,9 +38,25 @@ public final class CharacterCell implements GraphicalElement {
      * @param font The font name to use for displaying the character.
      * @param character The character to display.
      */
-    public CharacterCell(String font, char character) {
+    public CharacterCell(UnicodeFont font, char character) {
         this.font = font;
         this.character = Character.toString(character);
+    }
+
+    /**
+     * Gets the font of this CharacterCell.
+     * @return The font of this character cell.
+     */
+    public UnicodeFont getFont() {
+        return font;
+    }
+
+    /**
+     * Sets the font of this CharacterCell.
+     * @param newFont The new font for this character cell.
+     */
+    public void setFont(UnicodeFont newFont) {
+        font = newFont;
     }
 
     /**
@@ -169,14 +185,9 @@ public final class CharacterCell implements GraphicalElement {
      */
     @Override
     public void render(Graphics graphics, float x, float y, boolean centerSurround) {
-        if(font == null || Cache.getFont(font) == null)
-            return;
+        float rx = x + (width / 2) - (font.getWidth(character) / 2);
+        float ry = y + (height / 2) - (font.getHeight(character) / 2) + HEIGHT_ADJUSTMENT;
 
-        TrueTypeFont ttf = Cache.getFont(font);
-        float rx = x + (width / 2) - (ttf.getWidth(character) / 2);
-        float ry = y + (height / 2) - (ttf.getHeight(character) / 2) + HEIGHT_ADJUSTMENT;
-        graphics.setFont(ttf);
-        graphics.setColor(color);
-        graphics.drawString(character, rx, ry);
+        font.drawString(rx, ry, character);
     }
 }

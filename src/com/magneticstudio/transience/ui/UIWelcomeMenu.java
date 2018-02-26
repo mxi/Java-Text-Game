@@ -27,8 +27,9 @@ public class UIWelcomeMenu extends UIMenu {
      */
     @Override
     public void onKeyEvent(KeyboardEventType type, Character eventCharacter) {
-        if(type == KeyboardEventType.KEY_PRESS)
-            System.out.println(eventCharacter);
+        if(hasFocusedComponent() && (type == KeyboardEventType.KEY_PRESS || type == KeyboardEventType.KEY_HOLD) ) {
+            getFocusedComponent().interpretKey(eventCharacter);
+        }
     }
 
     /**
@@ -39,8 +40,18 @@ public class UIWelcomeMenu extends UIMenu {
      */
     @Override
     public void onMouseEvent(MouseEventType type, Integer eventButton) {
-        if(type == MouseEventType.BUTTON_PRESS)
-            setFocusedComponentOn(Mouse.getX(), Mouse.getY());
+        int mx = Mouse.getX() + getX();
+        int my = (Game.activeGame.getResolutionHeight() - Mouse.getY()) + getX();
+
+        if(!hasFocusedComponent() || focusedComponent != getComponentOn(mx, my)) {
+            setFocusedComponentOn(mx, my);
+        }
+        else if(focusedComponent == getComponentOn(mx, my)) {
+            getFocusedComponent().interpretMouse(eventButton);
+        }
+        else {
+            focusedComponent = -1;
+        }
     }
 
     /**
@@ -49,7 +60,7 @@ public class UIWelcomeMenu extends UIMenu {
     @Override
     public void update() {
         for(UIComponent c : componentList)
-            c.update();
+            c.update(this);
     }
 
     /**

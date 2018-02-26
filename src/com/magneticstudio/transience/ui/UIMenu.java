@@ -1,5 +1,6 @@
 package com.magneticstudio.transience.ui;
 
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
@@ -65,12 +66,37 @@ public abstract class UIMenu implements MenuKeyboardInterceptor, MenuMouseInterc
     }
 
     /**
+     * Tells whether there is a focused component.
+     * @return Whether there is a focused component.
+     */
+    public boolean hasFocusedComponent() {
+        return focusedComponent >= 0 && focusedComponent < componentList.size();
+    }
+
+    /**
      * Gets the focused component of this menu.
      * @return The focused component of this menu.
      */
     public UIComponent getFocusedComponent() {
         return focusedComponent < 0 || focusedComponent >= componentList.size()
                 ? null : componentList.get(focusedComponent);
+    }
+
+    /**
+     * Gets the UIComponent within the specified
+     * location.
+     * @param x The X value of the location of a component.
+     * @param y The Y value of the location of a component.
+     * @return A UIComponent at that location (null if none)
+     */
+    public int getComponentOn(int x, int y) {
+        for(int i = 0; i < componentList.size(); i++) {
+            UIComponent c = componentList.get(i);
+            if(x >= c.getX() && x <= c.getX() + c.getWidth()
+                    && y >= c.getY() && y <= c.getY() + c.getHeight())
+                return i;
+        }
+        return -1;
     }
 
     /**

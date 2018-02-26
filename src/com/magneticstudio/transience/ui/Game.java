@@ -1,11 +1,15 @@
 package com.magneticstudio.transience.ui;
 
-import com.magneticstudio.transience.util.Cache;
+import com.magneticstudio.transience.game.TileSet;
 import com.magneticstudio.transience.util.RadialVignetteGenerator;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.*;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.state.GameState;
 
-import java.awt.Font;
+import java.util.ArrayList;
 
 /**
  * This class simply extends the BasicGame class
@@ -61,15 +65,13 @@ public class Game extends BasicGame {
      */
     @Override
     public void init(GameContainer gc) throws SlickException {
-        Cache.addFont(Cache.FONT_RESOURCE_FOLDER + "Consolas.ttf", Cache.DEFAULT_FONT, Font.PLAIN, 16);
-
         resolutionWidth = gc.getWidth();
         resolutionHeight = gc.getHeight();
 
         MenuKeyboard.HOLD_TIME = 500;
-        MenuKeyboard.CONSECUTIVE_HOLD_PRESS = 75;
+        MenuKeyboard.CONSECUTIVE_HOLD_PRESS = 25;
 
-        gc.setShowFPS(false);
+        GameKeyboard.KEY_COOLDOWN_TIME = 105;
     }
 
     /**
@@ -82,6 +84,22 @@ public class Game extends BasicGame {
     public void update(GameContainer gc, int elapsed) throws SlickException {
         MenuKeyboard.poll();
         MenuMouse.poll();
+        //GameKeyboard.poll();
+
+        /*
+        if(GameKeyboard.isTapped(Keyboard.KEY_A)) {
+            tileSet.getPosition().moveX(-1);
+        }
+        else if(GameKeyboard.isTapped(Keyboard.KEY_D)) {
+            tileSet.getPosition().moveX(1);
+        }
+        else if(GameKeyboard.isTapped(Keyboard.KEY_W)) {
+            tileSet.getPosition().moveY(-1);
+        }
+        else if(GameKeyboard.isTapped(Keyboard.KEY_S)) {
+            tileSet.getPosition().moveY(1);
+        }
+        */
 
         background.update();
         welcome.update();
@@ -111,26 +129,32 @@ public class Game extends BasicGame {
      * and such.
      */
     private void setupGraphics() throws SlickException {
-        Image image = new Image(1280, 720);
-        Graphics g = image.getGraphics();
+        GL11.glMatrixMode(GL11.GL_PROJECTION_MATRIX);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0, resolutionWidth, resolutionHeight, 0, -1, 1);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
         RadialVignetteGenerator generator = new RadialVignetteGenerator();
         generator.setCenterX(1280 / 2);
         generator.setCenterY(720 / 2);
         generator.setImageWidth(1280);
         generator.setImageHeight(720);
-        generator.setRadius(1280 * 2);
+        generator.setRadius(1280);
         generator.setSoftness(1f);
         generator.setInverted(true);
-        generator.setColor(new Color(79, 120, 140, 255));
+        generator.setColor(new Color(120, 160, 180, 255));
 
-        Image vignette = generator.generate();
-
-        g.setColor(new Color(50, 50, 50));
-        g.drawRect(0, 0, 1280, 720);
-        g.drawImage(vignette, 0, 0);
-
-        background = new Background(image);
+        background = new Background(generator.generate());
         welcome = new UIWelcomeMenu();
+
+        UITextField textField = new UITextField();
+        textField.setPosition(50, 50);
+        textField.setDimensions(460, 32);
+        textField.setCaretWidth(4);
+        textField.setPrompt("This is a prompt.");
+
+        textField.setFont(GameResources.modifyFont(textField.getFont(), new Color(60, 100, 120), 24, false, false));
+
+        welcome.addComponent(textField);
     }
 }

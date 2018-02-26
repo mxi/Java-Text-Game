@@ -60,4 +60,20 @@ public class MenuMouse {
             isRightMouseDown = false;
         }
     }
+
+    /**
+     * Gets the X value of the mouse's position.
+     * @return The X value of the position of the mouse.
+     */
+    public static int getX() {
+        return Mouse.getX();
+    }
+
+    /**
+     * Gets the Y value of the mouse's position.
+     * @return The Y value of the position of the mouse.
+     */
+    public static int getY() {
+        return (Game.activeGame.getResolutionHeight() - Mouse.getY());
+    }
 }

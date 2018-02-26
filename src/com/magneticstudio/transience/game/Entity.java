@@ -3,7 +3,6 @@ package com.magneticstudio.transience.game;
 import com.magneticstudio.transience.ui.CharacterCell;
 import com.magneticstudio.transience.ui.Displayable;
 import com.magneticstudio.transience.ui.GraphicalElement;
-import com.magneticstudio.transience.util.Cache;
 import com.magneticstudio.transience.util.FlowPosition;
 import com.magneticstudio.transience.util.IntPoint;
 import org.newdawn.slick.Graphics;
@@ -16,7 +15,8 @@ import org.newdawn.slick.Graphics;
  */
 public abstract class Entity implements Displayable {
 
-    private GraphicalElement representation = new CharacterCell(Cache.DEFAULT_FONT, '&'); // The representation of this entity.
+    // TODO: ADD FONT
+    private GraphicalElement representation = new CharacterCell(null, '&'); // The representation of this entity.
     private FlowPosition position = new FlowPosition(0, 0); // The position of this entity.
     private IntPoint previousPosition = position.getIntPoint(); // The previous location of this entity.
 

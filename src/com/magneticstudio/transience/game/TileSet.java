@@ -1,16 +1,16 @@
 package com.magneticstudio.transience.game;
 
 import com.magneticstudio.transience.ui.Game;
+import com.magneticstudio.transience.ui.GameResources;
 import com.magneticstudio.transience.ui.LogicalElement;
 import com.magneticstudio.transience.util.ArrayList2D;
-import com.magneticstudio.transience.util.Cache;
 import com.magneticstudio.transience.util.FlowPosition;
 import com.magneticstudio.transience.util.IntPoint;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.state.GameState;
 
-import java.awt.*;
 import java.util.List;
 
 /**
@@ -20,47 +20,9 @@ import java.util.List;
  */
 public class TileSet implements LogicalElement {
 
-    /**
-     * Loads/adds a new font to be used by a specific
-     * tile-set object.
-     * @param id The hashCode of the TileSet object.
-     * @param ppt Pixels per tile.
-     */
-    private static void loadTileSetFont(int id, int ppt) throws SlickException {
-        Cache.addFont(Cache.FONT_RESOURCE_FOLDER + "Consolas.ttf", Integer.toString(id), Font.PLAIN, ppt * 7 / 8);
-    }
-
-    /**
-     * Gets the font for the specified tile-set hash.
-     * @param id The hashCode of a tile set object.
-     * @return The true type font used to render that particular tile set.
-     */
-    private static TrueTypeFont getTileSetFont(int id) {
-        return Cache.getFont(Integer.toString(id));
-    }
-
-    /**
-     * Gets the name of the font used by the tile set
-     * with the specified id.
-     * @param id The id of the tile set.
-     * @return The name of the font used by the tile set.
-     */
-    private static String getTileSetFontName(int id) {
-        return Integer.toString(id);
-    }
-
-    /**
-     * Modifies the font size to adjust to the pixels per
-     * tile of the tile set.
-     * @param id The id of the tile set.
-     * @param ppt The pixels per tile required by the tile set.
-     */
-    private static void modifyTileSetFont(int id, int ppt) {
-        Cache.modifyFont(Integer.toString(id), Font.PLAIN, ppt * 7 / 8);
-    }
-
     private ArrayList2D<Tile> tiles = new ArrayList2D<>(); // The 2d array of tiles.
     private FlowPosition position = new FlowPosition(); // The position of this tile set.
+    private UnicodeFont font; // The font used to render the individual tiles.
 
     private int pixelsPerTile = 32; // Amount of pixels (width and height) a tile takes up.
     private float finePixelOffsetX = 0; // The fine pixel offset horizontally.
@@ -74,14 +36,8 @@ public class TileSet implements LogicalElement {
      */
     public TileSet(int width, int height) {
         tiles.setDimensions(width, height);
-        try {
-            loadTileSetFont(hashCode(), pixelsPerTile);
-        }
-        catch(SlickException ignore) {
-            System.out.println("No Bueno");
-            // Won't render the tile.
-        }
-        tiles.fill(new Tile(getTileSetFontName(hashCode())));
+        font = GameResources.loadFont("Consolas.ttf", Color.white, pixelsPerTile * 10 / 11, false, false);
+        tiles.fill(new Tile(font));
     }
 
     /**
@@ -173,7 +129,8 @@ public class TileSet implements LogicalElement {
         this.pixelsPerTile = Math.min(Math.max(pixelsPerTile, 8), 128);
         tiles.forEach(e -> e.getRepresentation().setDimensions(this.pixelsPerTile, this.pixelsPerTile));
 
-        modifyTileSetFont(hashCode(), this.pixelsPerTile);
+        font = GameResources.modifyFont(font, null, this.pixelsPerTile * 10 / 11, false, false);
+        tiles.forEach(e -> e.setFont(font));
     }
 
     /**
@@ -199,12 +156,6 @@ public class TileSet implements LogicalElement {
      * @param graphics The graphics object used to render anything on the main screen.
      */
     public void render(List<Entity> entities, Graphics graphics) {
-        TrueTypeFont font = getTileSetFont(hashCode());
-        if(font == null)
-            return;
-
-        graphics.setFont(font);
-
         for(int iy = 0; iy < tiles.getHeight(); iy++) {
             if(!willTileBeVisibleY(iy))
                 continue;
@@ -232,7 +183,7 @@ public class TileSet implements LogicalElement {
                     graphics,
                     renderX,
                     renderY,
-                    false
+                    true
                 );
             }
         }

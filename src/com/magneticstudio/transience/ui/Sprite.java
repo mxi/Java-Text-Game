@@ -26,12 +26,15 @@ public class Sprite implements GraphicalElement {
      * Creates a new sprite object from
      * an existing sheet image.
      * @param sheet The sprite sheet containing the collection of images.
+     * @param frameWidth The width of each frame.
+     * @param frameHeight The height of each frame.
+     * @param frameRate The frame rate for this sprite.
      */
-    public Sprite(Image sheet, int sheetWidth, int sheetHeight, int frameRate) {
-        SpriteSheet spriteSheet = new SpriteSheet(sheet, sheetWidth, sheetHeight);
+    public Sprite(Image sheet, int frameWidth, int frameHeight, int frameRate) {
+        SpriteSheet spriteSheet = new SpriteSheet(sheet, frameWidth, frameHeight);
         images = new Image[spriteSheet.getVerticalCount() * spriteSheet.getHorizontalCount()];
-        setWidth(sheetWidth);
-        setHeight(sheetHeight);
+        setWidth(frameWidth);
+        setHeight(frameHeight);
         setFrameRate(frameRate);
         int frameLocation = 0;
         for(int y = 0; y < spriteSheet.getVerticalCount(); y++) {

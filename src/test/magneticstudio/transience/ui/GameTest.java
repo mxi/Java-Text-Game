@@ -25,7 +25,7 @@ public final class GameTest {
                 "resources/logos/magnetic-studio-temp-icon-32.png"
         });
         container.setVerbose(false);
-        container.setShowFPS(true);
+        container.setShowFPS(false);
         container.setVSync(true);
         container.start();
     }

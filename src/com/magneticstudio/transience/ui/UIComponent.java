@@ -133,25 +133,28 @@ public abstract class UIComponent {
     }
 
     /**
-     * Updates this component.
+     * Sends a key from a key event to this component.
+     * @param key The key pressed.
      */
-    public abstract void update();
+    public abstract void interpretKey(Character key);
+
+    /**
+     * Sends a mouse button from a mouse event to this component.
+     * @param button The button pressed.
+     */
+    public abstract void interpretMouse(Integer button);
+
+    /**
+     * Updates this component.
+     * @param parent The parent UIMenu object.
+     */
+    public abstract void update(UIMenu parent);
 
     /**
      * Renders this UIComponent object
      * onto the menu screen.
+     * @param parent The parent UIMenu object.
+     * @param graphics The graphics object used to render the component.
      */
     public abstract void render(UIMenu parent, Graphics graphics);
-
-    /**
-     * Executes when a mouse hovers over this component
-     * in a menu screen.
-     */
-    public abstract void onMouseEnter();
-
-    /**
-     * Executes when a mouse leaves this component
-     * in a menu window.
-     */
-    public abstract void onMouseExit();
 }
