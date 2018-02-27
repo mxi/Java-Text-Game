@@ -134,15 +134,17 @@ public abstract class UIComponent {
 
     /**
      * Sends a key from a key event to this component.
+     * @param type The type of keyboard event this was.
      * @param key The key pressed.
      */
-    public abstract void interpretKey(Character key);
+    public abstract void interpretKey(KeyboardEventType type, Character key);
 
     /**
      * Sends a mouse button from a mouse event to this component.
+     * @param type The type of mouse event this was.
      * @param button The button pressed.
      */
-    public abstract void interpretMouse(Integer button);
+    public abstract void interpretMouse(MouseEventType type, Integer button);
 
     /**
      * Updates this component.

@@ -2,9 +2,11 @@ package com.magneticstudio.transience.game;
 
 import com.magneticstudio.transience.ui.CharacterCell;
 import com.magneticstudio.transience.ui.Displayable;
+import com.magneticstudio.transience.ui.GameResources;
 import com.magneticstudio.transience.ui.GraphicalElement;
 import com.magneticstudio.transience.util.FlowPosition;
 import com.magneticstudio.transience.util.IntPoint;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 /**
@@ -15,16 +17,14 @@ import org.newdawn.slick.Graphics;
  */
 public abstract class Entity implements Displayable {
 
-    // TODO: ADD FONT
-    private GraphicalElement representation = new CharacterCell(null, '&'); // The representation of this entity.
+    private GraphicalElement representation; // The representation of this entity.
     private FlowPosition position = new FlowPosition(0, 0); // The position of this entity.
-    private IntPoint previousPosition = position.getIntPoint(); // The previous location of this entity.
 
     /**
      * Creates a new Entity object.
      */
     public Entity() {
-
+        representation = new CharacterCell(GameResources.loadFont("Consolas.ttf", Color.white, 16, false, false), '@');
     }
 
     /**
@@ -48,7 +48,6 @@ public abstract class Entity implements Displayable {
      * @param x X value of the position.
      */
     public void setX(int x) {
-        previousPosition.setX(position.getTargetX());
         position.setTargetX(x);
     }
 
@@ -65,7 +64,6 @@ public abstract class Entity implements Displayable {
      * @param y Y value of the position.
      */
     public void setY(int y) {
-        previousPosition.setY(position.getTargetY());
         position.setTargetY(y);
     }
 
@@ -75,8 +73,6 @@ public abstract class Entity implements Displayable {
      * @param y Y value of the position.
      */
     public void setPosition(int x, int y) {
-        previousPosition.setX(position.getTargetX());
-        previousPosition.setY(position.getTargetY());
         position.setTargetPosition(x, y);
     }
 
@@ -121,14 +117,6 @@ public abstract class Entity implements Displayable {
      */
     public IntPoint getPosition() {
         return position.getIntPoint();
-    }
-
-    /**
-     * Gets the previous position of this entity.
-     * @return Previous position of this entity.
-     */
-    public IntPoint getPreviousPosition() {
-        return previousPosition;
     }
 
     /**

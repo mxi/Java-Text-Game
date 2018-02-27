@@ -28,8 +28,8 @@ public class Game extends BasicGame {
     private int resolutionHeight = 720; // The height of the window.
     private boolean graphicsSetup = false; // Checks whether the graphics have been set up.
 
+    private TileSet tileSet;
     private Background background;
-    private UIWelcomeMenu welcome;
 
     /**
      * Creates a new Game object with the
@@ -82,11 +82,8 @@ public class Game extends BasicGame {
      */
     @Override
     public void update(GameContainer gc, int elapsed) throws SlickException {
-        MenuKeyboard.poll();
-        MenuMouse.poll();
-        //GameKeyboard.poll();
+        GameKeyboard.poll();
 
-        /*
         if(GameKeyboard.isTapped(Keyboard.KEY_A)) {
             tileSet.getPosition().moveX(-1);
         }
@@ -99,10 +96,9 @@ public class Game extends BasicGame {
         else if(GameKeyboard.isTapped(Keyboard.KEY_S)) {
             tileSet.getPosition().moveY(1);
         }
-        */
 
         background.update();
-        welcome.update();
+        tileSet.update(elapsed);
     }
 
     /**
@@ -120,7 +116,7 @@ public class Game extends BasicGame {
         }
 
         background.render(graphics);
-        welcome.render(graphics);
+        tileSet.render(new ArrayList<>(), graphics);
     }
 
     /**
@@ -129,11 +125,6 @@ public class Game extends BasicGame {
      * and such.
      */
     private void setupGraphics() throws SlickException {
-        GL11.glMatrixMode(GL11.GL_PROJECTION_MATRIX);
-        GL11.glLoadIdentity();
-        GL11.glOrtho(0, resolutionWidth, resolutionHeight, 0, -1, 1);
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
         RadialVignetteGenerator generator = new RadialVignetteGenerator();
         generator.setCenterX(1280 / 2);
         generator.setCenterY(720 / 2);
@@ -142,19 +133,10 @@ public class Game extends BasicGame {
         generator.setRadius(1280);
         generator.setSoftness(1f);
         generator.setInverted(true);
-        generator.setColor(new Color(120, 160, 180, 255));
+        generator.setColor(new Color(120, 120, 120, 255));
 
         background = new Background(generator.generate());
-        welcome = new UIWelcomeMenu();
-
-        UITextField textField = new UITextField();
-        textField.setPosition(50, 50);
-        textField.setDimensions(460, 32);
-        textField.setCaretWidth(4);
-        textField.setPrompt("This is a prompt.");
-
-        textField.setFont(GameResources.modifyFont(textField.getFont(), new Color(60, 100, 120), 24, false, false));
-
-        welcome.addComponent(textField);
+        tileSet = new TileSet(30, 30);
+        tileSet.getPosition().setTransitionTime(100);
     }
 }

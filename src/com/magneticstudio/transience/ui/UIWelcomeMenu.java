@@ -3,6 +3,8 @@ package com.magneticstudio.transience.ui;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 
+import java.awt.event.MouseEvent;
+
 /**
  * This menu is the first menu encountered by the
  * user whenever they open the game.
@@ -27,8 +29,13 @@ public class UIWelcomeMenu extends UIMenu {
      */
     @Override
     public void onKeyEvent(KeyboardEventType type, Character eventCharacter) {
+        if(type == KeyboardEventType.KEY_PRESS && eventCharacter == 9) { // Toggle to next component.
+            setFocusedComponentNext();
+            return;
+        }
+
         if(hasFocusedComponent() && (type == KeyboardEventType.KEY_PRESS || type == KeyboardEventType.KEY_HOLD) ) {
-            getFocusedComponent().interpretKey(eventCharacter);
+            getFocusedComponent().interpretKey(type, eventCharacter);
         }
     }
 
@@ -40,14 +47,16 @@ public class UIWelcomeMenu extends UIMenu {
      */
     @Override
     public void onMouseEvent(MouseEventType type, Integer eventButton) {
-        int mx = Mouse.getX() + getX();
-        int my = (Game.activeGame.getResolutionHeight() - Mouse.getY()) + getX();
+        int mx = MenuMouse.getX() + getX();
+        int my = MenuMouse.getY() + getY();
 
         if(!hasFocusedComponent() || focusedComponent != getComponentOn(mx, my)) {
             setFocusedComponentOn(mx, my);
+            if(hasFocusedComponent())
+                getFocusedComponent().interpretMouse(type, eventButton);
         }
         else if(focusedComponent == getComponentOn(mx, my)) {
-            getFocusedComponent().interpretMouse(eventButton);
+            getFocusedComponent().interpretMouse(type, eventButton);
         }
         else {
             focusedComponent = -1;

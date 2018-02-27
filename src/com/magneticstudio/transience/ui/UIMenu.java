@@ -149,6 +149,15 @@ public abstract class UIMenu implements MenuKeyboardInterceptor, MenuMouseInterc
     }
 
     /**
+     * Goes to the next focused component.
+     */
+    public void setFocusedComponentNext() {
+        focusedComponent++;
+        if(focusedComponent == componentList.size())
+            focusedComponent = 0;
+    }
+
+    /**
      * Gets the X value of the location of this menu.
      * @return The X value of the location of this menu.
      */

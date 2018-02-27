@@ -1,9 +1,7 @@
 package com.magneticstudio.transience.game;
 
-import com.magneticstudio.transience.ui.CharacterCell;
-import com.magneticstudio.transience.ui.Displayable;
-import com.magneticstudio.transience.ui.GraphicalElement;
-import com.magneticstudio.transience.ui.Sprite;
+import com.magneticstudio.transience.ui.*;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.UnicodeFont;
 
@@ -15,8 +13,15 @@ import org.newdawn.slick.UnicodeFont;
  */
 public class Tile implements Displayable {
 
-    private GraphicalElement representation; // The graphical representation of the tile.
+    /**
+     * Creates a new air tile.
+     * @return A new air tile.
+     */
+    public static Tile createAirTile(TileSet parent) {
+        return new Tile(new CharacterCell(parent.getFont(), '.'));
+    }
 
+    private GraphicalElement representation; // The graphical representation of the tile.
     private boolean visible = true; // Whether this tile is visible (will be rendered).
     private boolean traversable = true; // Whether an entity can be located on this tile from movement.
 
@@ -31,10 +36,10 @@ public class Tile implements Displayable {
 
     /**
      * Creates a new tile object.
-     * @param font The name of the font to use for this tile.
+     * @param charCell The character cell that represents this tile.
      */
-    public Tile(UnicodeFont font) {
-        representation = new CharacterCell(font, 'T');
+    public Tile(CharacterCell charCell) {
+        representation = charCell;
     }
 
     /**

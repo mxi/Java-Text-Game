@@ -3,7 +3,6 @@ package com.magneticstudio.transience.ui;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.font.effects.ColorEffect;
 
 /**
  * This class handles input from the user via
@@ -20,7 +19,9 @@ public class UITextField extends UIComponent {
     private StringBuilder input; // The buffer of text input from the user.
     private Color caretColor; // The color of the caret.
 
+    private int maximumLength = 32; // The maximum amount of characters in this text field.
     private long lastUpdate = -1; // The last time this component has been updated.
+    private float borderSize = 2f / 3f; // The size of the text field border.
     private float caretWidth = 2.0f; // The width of the caret.
     private float caretOpacity = 1.0f; // The opacity of the caret.
     private float caretBlinkSpeed = 1.0f / 500.0f; // The caretBlindSpeed.
@@ -42,24 +43,71 @@ public class UITextField extends UIComponent {
 
     /**
      * Sends a key from a key event to this component.
+     * @param type The type of keyboard event this was.
      * @param key The key pressed.
      */
-    public void interpretKey(Character key) {
+    @Override
+    public void interpretKey(KeyboardEventType type, Character key) {
         if(key == 8 && input.length() > 0)
             input.delete(input.length() - 1, input.length());
         else if(('a' <= key && key <= 'z')
                 || ('A' <= key && key <= 'Z')
                 || ('0' <= key && key <= '9')
-                || (key == '.') || (key == ' '))
-            input.append(key);
+                || (key == '.') || (key == ' ')) {
+            if(maximumLength > 0 && input.length() < maximumLength) {
+                input.append(key);
+            }
+            else if(maximumLength < 0
+                    && mainFont.getWidth(input.toString() + Character.toString(key)) < getWidth() - borderSize * 16) {
+                input.append(key);
+            }
+        }
     }
 
     /**
      * Sends a mouse button from a mouse event to this component.
+     * @param type The type of mouse event this was.
      * @param button The button pressed.
      */
-    public void interpretMouse(Integer button) {
+    @Override
+    public void interpretMouse(MouseEventType type, Integer button) {
         // Do nothing...
+    }
+
+    /**
+     * Gets the maximum amount of characters to
+     * be input into the text field.
+     * @return The maximum characters in this text field.
+     */
+    public int getMaximumCharacters() {
+        return maximumLength;
+    }
+
+    /**
+     * Sets the maximum amount of characters to
+     * be input into the text field. (anything
+     * less than 0 will fit the input text onto
+     * the text field ui bounds).
+     * @param nLength The new maximum characters in this text field.
+     */
+    public void setMaximumLength(int nLength) {
+        maximumLength = nLength;
+    }
+
+    /**
+     * Gets the border size.
+     * @return Border size.
+     */
+    public float getBorderSize() {
+        return borderSize;
+    }
+
+    /**
+     * Sets the size of the border.
+     * @param f The new size of the border.
+     */
+    public void setBorderSize(float f) {
+        borderSize = f;
     }
 
     /**
@@ -133,7 +181,7 @@ public class UITextField extends UIComponent {
         promptFont = GameResources.modifyFont(
             mainFont,
             new Color(120, 120, 120, 255),
-            mainFont.getFont().getSize(),
+            0,
             false,
             false
         );
@@ -168,22 +216,31 @@ public class UITextField extends UIComponent {
         int ry = parent.getY() + getY();
         boolean focused = parent.getFocusedComponent() == this;
 
-        final Color base = new Color(255, 255, 255, 100);
-        final Color outline = focused ? new Color(60, 100, 120, 125) : new Color(120, 120, 120, 125);
+        final Color base = new Color(255, 255, 255, 75);
+        final Color outline = focused ? new Color(60, 100, 120, 100) : new Color(120, 120, 120, 100);
 
         graphics.setColor(outline);
         graphics.fillRect(rx, ry, getWidth(), getHeight());
 
         graphics.setColor(base);
         graphics.fillRect(
-            rx + (CARET_X_OFFSET * 2 / 3),
-            ry + (CARET_Y_OFFSET * 2 / 3),
-            getWidth() - (CARET_X_OFFSET * 4 / 3),
-            getHeight() - (CARET_Y_OFFSET * 4 / 3)
+            rx + (CARET_X_OFFSET * borderSize),
+            ry + (CARET_Y_OFFSET * borderSize),
+            getWidth() - (CARET_X_OFFSET * borderSize * 2),
+            getHeight() - (CARET_Y_OFFSET * borderSize * 2)
         );
 
+        String displayString = input.toString();
+        if(mainFont.getWidth(displayString) > getWidth() - borderSize * 8) {
+            for(int i = 0; i < input.length(); i++) {
+                displayString = "..." + input.substring(i, input.length());
+                if(mainFont.getWidth(displayString) <= getWidth() - borderSize * 8)
+                    break;
+            }
+        }
+
         if(focused) {
-            int caretX = mainFont.getWidth(input.toString());
+            int caretX = mainFont.getWidth(displayString);
 
             graphics.setColor(new Color(caretColor.r, caretColor.g, caretColor.b, caretOpacity));
             graphics.fillRect(
@@ -192,13 +249,13 @@ public class UITextField extends UIComponent {
                 caretWidth,
                 getHeight() - (CARET_Y_OFFSET * 2)
             );
-            mainFont.drawString(rx + CARET_X_OFFSET, ry + (CARET_Y_OFFSET >> 1), input.toString());
+            mainFont.drawString(rx + CARET_X_OFFSET, ry + (CARET_Y_OFFSET >> 1), displayString);
         }
         else if(input.length() == 0) {
             promptFont.drawString(rx + CARET_X_OFFSET, ry + (CARET_Y_OFFSET >> 1), prompt);
         }
         else {
-            promptFont.drawString(rx + CARET_X_OFFSET, ry + (CARET_Y_OFFSET >> 1), input.toString());
+            promptFont.drawString(rx + CARET_X_OFFSET, ry + (CARET_Y_OFFSET >> 1), displayString);
         }
     }
 }

@@ -28,6 +28,10 @@ public class Mission implements LogicalElement {
         tileSet.getPosition().setTransitionTime(85);
     }
 
+    /**
+     * Gets the tile set of this mission.
+     * @return The tile set of this mission.
+     */
     public TileSet getTileSet() {
         return tileSet;
     }

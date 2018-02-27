@@ -9,7 +9,6 @@ import com.magneticstudio.transience.util.IntPoint;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.state.GameState;
 
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class TileSet implements LogicalElement {
     public TileSet(int width, int height) {
         tiles.setDimensions(width, height);
         font = GameResources.loadFont("Consolas.ttf", Color.white, pixelsPerTile * 10 / 11, false, false);
-        tiles.fill(new Tile(font));
+        tiles.fill(Tile.createAirTile(this));
     }
 
     /**
@@ -131,6 +130,24 @@ public class TileSet implements LogicalElement {
 
         font = GameResources.modifyFont(font, null, this.pixelsPerTile * 10 / 11, false, false);
         tiles.forEach(e -> e.setFont(font));
+    }
+
+    /**
+     * Gets the font used by all tiles in
+     * this tile set.
+     * @return Font used by all tiles in the tile set.
+     */
+    public UnicodeFont getFont() {
+        return font;
+    }
+
+    /**
+     * Gets the font size for the current
+     * dimensions of each tile of the tile set.
+     * @return The font size for each tile.
+     */
+    public int getFontSize() {
+        return pixelsPerTile * 10 / 11;
     }
 
     /**
