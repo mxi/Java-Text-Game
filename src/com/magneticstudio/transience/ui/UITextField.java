@@ -37,8 +37,8 @@ public class UITextField extends UIComponent {
         prompt = "";
         caretColor = new Color(60, 100, 120);
         input = new StringBuilder();
-        mainFont = GameResources.loadFont("Ui.ttf", Color.white, (getHeight() / 2) + 5, false, false);
-        promptFont = GameResources.modifyFont(mainFont, Color.gray, (getHeight() / 2) + 5, false, false);
+        mainFont = Res.loadFont("Ui.ttf", Color.white, (getHeight() / 2) + 5, Res.FALSE, Res.FALSE);
+        promptFont = Res.modifyFont(mainFont, Color.gray, (getHeight() / 2) + 5, Res.FALSE, Res.FALSE);
     }
 
     /**
@@ -178,13 +178,7 @@ public class UITextField extends UIComponent {
         if(font == null)
             return;
         mainFont = font;
-        promptFont = GameResources.modifyFont(
-            mainFont,
-            new Color(120, 120, 120, 255),
-            0,
-            false,
-            false
-        );
+        promptFont = Res.modifyFont(mainFont,  new Color(120, 120, 120, 255), Res.USE_DEFAULT, Res.USE_DEFAULT, Res.USE_DEFAULT);
     }
 
     /**

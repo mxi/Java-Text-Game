@@ -1,15 +1,15 @@
 package com.magneticstudio.transience.ui;
 
 import com.magneticstudio.transience.game.TileSet;
+import com.magneticstudio.transience.game.TileSetGenerator;
 import com.magneticstudio.transience.util.RadialVignetteGenerator;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.state.GameState;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * This class simply extends the BasicGame class
@@ -21,9 +21,12 @@ import java.util.ArrayList;
 public class Game extends BasicGame {
 
     // --- STATIC MEMBERS
+    public static Random rng = new Random();
     public static Game activeGame = null; // The game currently being played.
 
     // --- WINDOW/GRAPHICS INFORMATION
+    private UnicodeFont fpsNotification;
+    private boolean showFps = true; // Whether to show the fps count to the user.
     private int resolutionWidth = 1280; // The width of the window.
     private int resolutionHeight = 720; // The height of the window.
     private boolean graphicsSetup = false; // Checks whether the graphics have been set up.
@@ -82,24 +85,18 @@ public class Game extends BasicGame {
      */
     @Override
     public void update(GameContainer gc, int elapsed) throws SlickException {
+        if(!graphicsSetup) // Don't update anything until the graphics are setup.
+            return;
+
         GameKeyboard.poll();
 
-        if(GameKeyboard.isTapped(Keyboard.KEY_A)) {
-            tileSet.getPosition().moveX(-1);
-        }
-        else if(GameKeyboard.isTapped(Keyboard.KEY_D)) {
-            tileSet.getPosition().moveX(1);
-        }
-        else if(GameKeyboard.isTapped(Keyboard.KEY_W)) {
-            tileSet.getPosition().moveY(-1);
-        }
-        else if(GameKeyboard.isTapped(Keyboard.KEY_S)) {
-            tileSet.getPosition().moveY(1);
-        }
 
         background.update();
         tileSet.update(elapsed);
     }
+
+    private static final int FPS_SHOW_X = 5; // The X location of the fps counter.
+    private static final int FPS_SHOW_Y = 5; // The Y location of the fps counter.
 
     /**
      * Function gets called as many times as possible (without VSync)
@@ -116,7 +113,11 @@ public class Game extends BasicGame {
         }
 
         background.render(graphics);
-        tileSet.render(new ArrayList<>(), graphics);
+        tileSet.render(graphics);
+
+        if(showFps) {
+            fpsNotification.drawString(FPS_SHOW_X, FPS_SHOW_Y, Integer.toString(gc.getFPS()));
+        }
     }
 
     /**
@@ -125,18 +126,17 @@ public class Game extends BasicGame {
      * and such.
      */
     private void setupGraphics() throws SlickException {
-        RadialVignetteGenerator generator = new RadialVignetteGenerator();
-        generator.setCenterX(1280 / 2);
-        generator.setCenterY(720 / 2);
-        generator.setImageWidth(1280);
-        generator.setImageHeight(720);
-        generator.setRadius(1280);
-        generator.setSoftness(1f);
-        generator.setInverted(true);
-        generator.setColor(new Color(120, 120, 120, 255));
+        fpsNotification = Res.loadFont("Consolas.ttf", new Color(255, 100, 100, 175), 16, Res.USE_DEFAULT, Res.USE_DEFAULT);
 
-        background = new Background(generator.generate());
-        tileSet = new TileSet(30, 30);
-        tileSet.getPosition().setTransitionTime(100);
+        background = new Background(RadialVignetteGenerator.createBackgroundForGame(new Color(60, 125, 60, 150), true));
+        background.setRoamSpace(500);
+
+        TileSetGenerator tsGenerator = new TileSetGenerator();
+        tsGenerator.setRoomMinWidth(6);
+        tsGenerator.setRoomMinHeight(6);
+        tsGenerator.setRoomMaxWidth(12);
+        tsGenerator.setRoomMaxHeight(12);
+        tsGenerator.setRoomClusterSize(TileSetGenerator.ROOM_CLUSTER_SIMPLE);
+        tileSet = tsGenerator.generate(30, 30);
     }
 }

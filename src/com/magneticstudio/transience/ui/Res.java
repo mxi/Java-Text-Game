@@ -16,8 +16,15 @@ import org.newdawn.slick.font.effects.ColorEffect;
  *
  * @author Max.
  */
-public class GameResources {
+public class Res {
 
+    public static final byte USE_DEFAULT = -1; // Value for using a default setting.
+    public static final byte TRUE = 1; // Value for a true flag.
+    public static final byte FALSE = 0; // Value for a false flag.
+
+    private static final byte DEFAULT_FONT_SIZE = 16; // Default font size.
+    private static final boolean DEFAULT_BOLD = false; // Default bold setting.
+    private static final boolean DEFAULT_ITAL = false; // Default italicize setting.
     private static final String FONT_DIRECTORY = "resources/fonts/"; // The directory to the font file collection.
 
     /**
@@ -30,10 +37,18 @@ public class GameResources {
      * @param italicized Whether the font should be italicised.
      * @return A new UnicodeFont object with the specified settings.
      */
-    public static UnicodeFont loadFont(String fileName, Color color, int size, boolean bold, boolean italicized) {
+    public static UnicodeFont loadFont(String fileName, Color color, int size, byte bold, byte italicized) {
         try {
-            UnicodeFont font = new UnicodeFont(FONT_DIRECTORY + fileName, size, bold, italicized);
-            font.getEffects().add(new ColorEffect(new java.awt.Color(color.r, color.g, color.b, color.a)));
+            UnicodeFont font = new UnicodeFont(
+                    FONT_DIRECTORY + fileName,
+                    size <= USE_DEFAULT ? DEFAULT_FONT_SIZE : size,
+                    bold <= USE_DEFAULT ? DEFAULT_BOLD : (bold == TRUE),
+                    bold <= USE_DEFAULT ? DEFAULT_ITAL : (italicized == TRUE)
+            );
+            if(color == null)
+                font.getEffects().add(new ColorEffect(new java.awt.Color(255, 255, 255)));
+            else
+                font.getEffects().add(new ColorEffect(new java.awt.Color(color.r, color.g, color.b, color.a)));
             font.addAsciiGlyphs();
             font.loadGlyphs();
             return font;
@@ -53,13 +68,13 @@ public class GameResources {
      * @param italicized Whether the new font should be italicised.
      * @return A new modified version of a UnicodeFont.
      */
-    public static UnicodeFont modifyFont(UnicodeFont toMod, Color color, int size, boolean bold, boolean italicized) {
+    public static UnicodeFont modifyFont(UnicodeFont toMod, Color color, int size, byte bold, byte italicized) {
         try {
             UnicodeFont font = new UnicodeFont(
                 toMod.getFont(),
-                size <= 0 ? toMod.getFont().getSize() : size,
-                bold,
-                italicized
+                size <= USE_DEFAULT ? toMod.getFont().getSize() : size,
+                bold <= USE_DEFAULT ? toMod.getFont().isBold() : (bold == TRUE),
+                bold <= USE_DEFAULT ? toMod.getFont().isItalic() : (italicized == TRUE)
             );
             if(color == null)
                 font.getEffects().addAll(toMod.getEffects());

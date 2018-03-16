@@ -1,16 +1,12 @@
 package com.magneticstudio.transience.game;
 
 import com.magneticstudio.transience.ui.Game;
-import com.magneticstudio.transience.ui.GameResources;
+import com.magneticstudio.transience.ui.Res;
 import com.magneticstudio.transience.ui.LogicalElement;
 import com.magneticstudio.transience.util.ArrayList2D;
 import com.magneticstudio.transience.util.FlowPosition;
 import com.magneticstudio.transience.util.IntPoint;
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.UnicodeFont;
-
-import java.util.List;
+import org.newdawn.slick.*;
 
 /**
  * This class manages a 2d array of tiles.
@@ -19,24 +15,53 @@ import java.util.List;
  */
 public class TileSet implements LogicalElement {
 
+    private static final float FONT_PIXEL_RATIO = 12.5f / 11f;
+
+    public static final int SMALL = 8; // The size of a small tile set (pixels per tile).
+    public static final int MEDIUM = 24; // The size of medium tile set (pixels per tile).
+    public static final int LARGE = 64; // The size of a large tile set (pixels per tile).
+
     private ArrayList2D<Tile> tiles = new ArrayList2D<>(); // The 2d array of tiles.
+    private EntityCollection entities = new EntityCollection(); // The collection of entities.
     private FlowPosition position = new FlowPosition(); // The position of this tile set.
     private UnicodeFont font; // The font used to render the individual tiles.
+    private TileSetGenerator generator; // The generator used to create this tile set.
 
     private int pixelsPerTile = 32; // Amount of pixels (width and height) a tile takes up.
     private float finePixelOffsetX = 0; // The fine pixel offset horizontally.
     private float finePixelOffsetY = 0; // The fine pixel offset vertically.
 
      /**
-     * Creates a new TileSet object with
-     * the specified dimensions.
-     * @param width The amount of tiles on the x axis.
-     * @param height The amount of tiles on the y axis.
-     */
-    public TileSet(int width, int height) {
+      * Creates a new TileSet object with
+      * the specified dimensions.
+      * @param ppt Specifies the pixels per tile.
+      * @param width The amount of tiles on the x axis.
+      * @param height The amount of tiles on the y axis.
+      */
+    public TileSet(int ppt, int width, int height) {
+        pixelsPerTile = ppt < 8 ? 8 : ppt > 128 ? 128 : ppt;
+        font = Res.loadFont("Consolas.ttf", Color.white, (int) (pixelsPerTile * FONT_PIXEL_RATIO), Res.USE_DEFAULT, Res.USE_DEFAULT);
         tiles.setDimensions(width, height);
-        font = GameResources.loadFont("Consolas.ttf", Color.white, pixelsPerTile * 10 / 11, false, false);
-        tiles.fill(Tile.createAirTile(this));
+        tiles.fill(Tile.createVoidTile(this));
+        tiles.setLocked(true);
+        entities.createPlayer(this);
+        generator = null;
+    }
+
+    /**
+     * Gets the generator that created this tile set.
+     * @return The tile set generator.
+     */
+    public TileSetGenerator getGenerator() {
+        return generator;
+    }
+
+    /**
+     * Gets the collection of entities on this tile set.
+     * @return The entity collection of this tile set.
+     */
+    public EntityCollection getEntities() {
+        return entities;
     }
 
     /**
@@ -126,10 +151,12 @@ public class TileSet implements LogicalElement {
      */
     public void setPixelsPerTile(int pixelsPerTile) {
         this.pixelsPerTile = Math.min(Math.max(pixelsPerTile, 8), 128);
-        tiles.forEach(e -> e.getRepresentation().setDimensions(this.pixelsPerTile, this.pixelsPerTile));
-
-        font = GameResources.modifyFont(font, null, this.pixelsPerTile * 10 / 11, false, false);
-        tiles.forEach(e -> e.setFont(font));
+        font = Res.modifyFont(font, null, (int) (this.pixelsPerTile * FONT_PIXEL_RATIO), Res.USE_DEFAULT, Res.USE_DEFAULT);
+        tiles.forEach(t -> {
+            t.getRepresentation().setDimensions(this.pixelsPerTile, this.pixelsPerTile);
+            t.setFont(font);
+        });
+        entities.forEach((f, e) -> e.getRepresentation().setDimensions(this.pixelsPerTile, this.pixelsPerTile));
     }
 
     /**
@@ -168,42 +195,71 @@ public class TileSet implements LogicalElement {
     }
 
     /**
+     * Gets the X value of the position of
+     * the tile set to be rendered on.
+     * @param baseX The base X of a tile (location in the tiles array list)
+     * @return The render X value.
+     */
+    private float getRenderX(float baseX) {
+        return (pixelsPerTile * baseX) - (position.getIntermediateX() * pixelsPerTile) + finePixelOffsetX;
+    }
+
+    /**
+     * Gets the Y value of the position of
+     * the tile set to be rendered on.
+     * @param baseY The base Y of a tile (location in the tiles array list)
+     * @return The render Y value.
+     */
+    private float getRenderY(float baseY) {
+        return (pixelsPerTile * baseY) - (position.getIntermediateY() * pixelsPerTile) + finePixelOffsetY;
+    }
+
+    private Image canvas; // The image object used to render tile set on.
+    private Graphics canvasGraphics; // The graphics object doing to the rendering.
+
+    /**
      * Renders the tile set onto the screen.
-     * @param entities The entities to render onto the tileset.
      * @param graphics The graphics object used to render anything on the main screen.
      */
-    public void render(List<Entity> entities, Graphics graphics) {
+    public void render(Graphics graphics) throws SlickException {
+        if(canvas == null) {
+            canvas = new Image(Game.activeGame.getResolutionWidth(), Game.activeGame.getResolutionHeight());
+            canvasGraphics = canvas.getGraphics();
+        }
+
+        canvasGraphics.clear();
+
         for(int iy = 0; iy < tiles.getHeight(); iy++) {
             if(!willTileBeVisibleY(iy))
                 continue;
-            XLoop:
+
+            float renderY = getRenderY(iy);
             for(int ix = 0; ix < tiles.getWidth(); ix++) {
                 if(!willTileBeVisibleX(ix))
                     continue;
 
-                float renderX = (pixelsPerTile * ix) - (position.getIntermediateX() * pixelsPerTile) + finePixelOffsetX;
-                float renderY = (pixelsPerTile * iy) - (position.getIntermediateY() * pixelsPerTile) + finePixelOffsetY;
-
-                for(Entity e : entities) {
-                    if(e.getPosition().isEquivalentTo(ix, iy)) {
-                        e.render(
-                            graphics,
-                            renderX,
-                            renderY,
-                            false
-                        );
-                        continue XLoop;
-                    }
-                }
-
+                float renderX = getRenderX(ix);
                 tiles.getElement(ix, iy).render(
-                    graphics,
-                    renderX,
-                    renderY,
-                    true
+                        canvasGraphics,
+                        renderX,
+                        renderY,
+                        false
                 );
             }
         }
+
+        entities.forEach((f, e) -> {
+            FlowPosition entPos = e.getPosition();
+            float x = getRenderX(entPos.getIntermediateX());
+            float y = getRenderY(entPos.getIntermediateY());
+            canvasGraphics.setDrawMode(Graphics.MODE_COLOR_MULTIPLY);
+            canvasGraphics.setColor(new Color(0f, 0f, 0f, 0f));
+            canvasGraphics.fillRect(x, y, pixelsPerTile, pixelsPerTile);
+            canvasGraphics.setDrawMode(Graphics.MODE_ADD);
+            e.render(canvasGraphics, x, y, false);
+        });
+
+        graphics.drawImage(canvas, 0, 0);
     }
 
     /**
@@ -213,6 +269,12 @@ public class TileSet implements LogicalElement {
      */
     @Override
     public void update(int milliseconds) {
+        entities.forEach((f, e) -> {
+            e.entityUpdate(this, milliseconds);
+            e.updatePosition(milliseconds);
+        });
+        FlowPosition playerPosition = entities.getPlayer().getPosition();
+        centerOn(playerPosition.getTargetX(), playerPosition.getTargetY());
         position.update(milliseconds);
     }
 

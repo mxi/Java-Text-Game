@@ -192,7 +192,7 @@ public class FlowPosition implements LogicalElement {
      * position.
      * @return The target transition time in milliseconds.
      */
-    public float getTargetTime() {
+    public float getTransitionTime() {
         return timeMillis;
     }
 
@@ -201,7 +201,7 @@ public class FlowPosition implements LogicalElement {
      * if it's not moving.
      * @param newTime The new time in milliseconds for transitioning.
      */
-    public void setTransitionTime(int newTime) {
+    public void setTransitionTime(float newTime) {
         if(towardsX == nowX && towardsY == nowY)
             timeMillis = Math.max(newTime, 1);
     }

@@ -2,7 +2,7 @@ package com.magneticstudio.transience.game;
 
 import com.magneticstudio.transience.ui.CharacterCell;
 import com.magneticstudio.transience.ui.Displayable;
-import com.magneticstudio.transience.ui.GameResources;
+import com.magneticstudio.transience.ui.Res;
 import com.magneticstudio.transience.ui.GraphicalElement;
 import com.magneticstudio.transience.util.FlowPosition;
 import com.magneticstudio.transience.util.IntPoint;
@@ -22,9 +22,18 @@ public abstract class Entity implements Displayable {
 
     /**
      * Creates a new Entity object.
+     * @param onTileSet The tile set the entity will be on.
      */
-    public Entity() {
-        representation = new CharacterCell(GameResources.loadFont("Consolas.ttf", Color.white, 16, false, false), '@');
+    public Entity(TileSet onTileSet) {
+        representation = new CharacterCell(
+            Res.modifyFont(
+                    onTileSet.getFont(),
+                Color.red,
+                Res.USE_DEFAULT,
+                Res.USE_DEFAULT,
+                Res.USE_DEFAULT
+            ), 'O'
+        );
     }
 
     /**
@@ -115,15 +124,24 @@ public abstract class Entity implements Displayable {
      * Gets the position of this entity.
      * @return Position of this entity.
      */
-    public IntPoint getPosition() {
-        return position.getIntPoint();
+    public FlowPosition getPosition() {
+        return position;
+    }
+
+    /**
+     * Updates this entity's position.
+     * @param milliseconds The elapsed time in milliseconds.
+     */
+    public void updatePosition(int milliseconds) {
+        position.update(milliseconds);
     }
 
     /**
      * Updates the entity object.
+     * @param tsLocated The tile set this entity is located on.
      * @param milliseconds The time in milliseconds since the last update.
      */
-    public abstract void entityUpdate(int milliseconds);
+    public abstract void entityUpdate(TileSet tsLocated, int milliseconds);
 
     /**
      * Renders this entity onto the screen.

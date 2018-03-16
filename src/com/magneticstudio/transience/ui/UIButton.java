@@ -25,8 +25,8 @@ public class UIButton extends UIComponent {
      */
     public UIButton() {
         title = "Button";
-        mainFont = GameResources.loadFont("Ui.ttf", Color.white, 16, false, false);
-        idleFont = GameResources.modifyFont(mainFont, new Color(120, 120, 120, 100), 16, false, false);
+        mainFont = Res.loadFont("Ui.ttf", Color.white, 16, Res.FALSE, Res.FALSE);
+        idleFont = Res.modifyFont(mainFont, new Color(120, 120, 120, 100), Res.USE_DEFAULT, Res.USE_DEFAULT, Res.USE_DEFAULT);
     }
 
     /**
@@ -45,7 +45,7 @@ public class UIButton extends UIComponent {
         if(mainFont == null)
             return;
         this.mainFont = mainFont;
-        this.idleFont = GameResources.modifyFont(this.mainFont, new Color(120, 120, 120, 255), 0, false, false);
+        this.idleFont = Res.modifyFont(this.mainFont, new Color(120, 120, 120, 255), 0, Res.FALSE, Res.FALSE);
     }
 
     /**

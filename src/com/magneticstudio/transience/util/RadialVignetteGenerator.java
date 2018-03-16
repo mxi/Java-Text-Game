@@ -1,5 +1,6 @@
 package com.magneticstudio.transience.util;
 
+import com.magneticstudio.transience.ui.Game;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -13,6 +14,26 @@ import org.newdawn.slick.SlickException;
  * @author Max
  */
 public class RadialVignetteGenerator implements ImageGenerator {
+
+    /**
+     * Automatically sets all of the settings to be
+     * ones for a correct background for the game.
+     * @param bgColor The color of the background.
+     * @return An image created for the background.
+     */
+    public static Image createBackgroundForGame(Color bgColor, boolean inverted)
+        throws SlickException {
+        RadialVignetteGenerator generator = new RadialVignetteGenerator();
+        generator.setImageWidth(Game.activeGame.getResolutionWidth());
+        generator.setImageHeight(Game.activeGame.getResolutionHeight());
+        generator.setCenterX(generator.getImageWidth() / 2);
+        generator.setCenterY(generator.getImageHeight() / 2);
+        generator.setRadius(generator.getImageHeight());
+        generator.setSoftness(1.0f);
+        generator.setColor(bgColor);
+        generator.setInverted(inverted);
+        return generator.generate();
+    }
 
     private int imageWidth = 560; // Width of the image to generate the effect on.
     private int imageHeight = 560; // Height of the image to generate the effect on.
@@ -241,6 +262,7 @@ public class RadialVignetteGenerator implements ImageGenerator {
 
         double lowestRadius = radius - (radius * softness);
         double softnessRadRange = radius - lowestRadius;
+        float alphaScale = color.a / 1f;
 
         for(int y = 0; y < imageHeight; y++) {
             for(int x = 0; x < imageWidth; x++) {
@@ -251,14 +273,13 @@ public class RadialVignetteGenerator implements ImageGenerator {
                 else if(curRadius < lowestRadius)
                     alpha = 0f;
 
-                Color adjusted = new Color(color.r, color.g, color.b, inverted ? 1.0f - alpha : alpha);
+                Color adjusted = new Color(color.r, color.g, color.b, alphaScale * (inverted ? 1.0f - alpha : alpha));
                 graphics.setColor(adjusted);
                 graphics.drawRect(x, y, 1, 1);
             }
         }
-        if(upscale == 1) {
+        if(upscale == 1)
             return canvas.copy();
-        }
         else
             return canvas.getScaledCopy(upscale);
     }

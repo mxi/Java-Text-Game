@@ -21,6 +21,15 @@ import java.util.List;
  */
 public class ArrayList2D<T> {
 
+    /**
+     * Creates a new null predicate.
+     * @param <E> The type of object contained in an array list.
+     * @return The null predicate.
+     */
+    public static <E> If<E>  nullPredicate() {
+        return t -> t == null;
+    }
+
     private boolean locked = false; // Determines if the 2d array can be resized.
     private List<List<T>> list2d = new ArrayList<>(); // 2d list.
     private IntDimension dimensions; // Dimensions of the 2d array.
@@ -355,6 +364,37 @@ public class ArrayList2D<T> {
             return true;
         }
         else if(!locked) {
+            if(x < 0 || y < 0) {
+                return false;
+            }
+            if(x >= dimensions.getWidth()) {
+                setWidth(x);
+            }
+            if(y >= dimensions.getHeight()) {
+                setHeight(y);
+            }
+            list2d.get(y).set(x, elem);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Places an element in the specified coordinates if a certain
+     * condition is met.
+     * @param elem The element to place in the specified location.
+     * @param pred The predicate to determine the condition.
+     * @param x The X value of the location to set the element in.
+     * @param y The Y value of the location to set the element in.
+     * @return Whether the element was successfully place in the specified location.
+     */
+    public boolean setElementIf(T elem, If<T> pred, int x, int y) {
+        boolean predEval = pred.test(getElement(x, y));
+        if(locked && inBounds(x, y) && predEval) {
+            list2d.get(y).set(x, elem);
+            return true;
+        }
+        else if(!locked && predEval) {
             if(x < 0 || y < 0) {
                 return false;
             }

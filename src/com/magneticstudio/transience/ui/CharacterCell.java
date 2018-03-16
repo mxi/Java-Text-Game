@@ -41,6 +41,8 @@ public final class CharacterCell implements GraphicalElement {
     public CharacterCell(UnicodeFont font, char character) {
         this.font = font;
         this.character = Character.toString(character);
+        this.width = font.getWidth(this.character);
+        this.height = font.getHeight(this.character);
     }
 
     /**
@@ -185,8 +187,8 @@ public final class CharacterCell implements GraphicalElement {
      */
     @Override
     public void render(Graphics graphics, float x, float y, boolean centerSurround) {
-        float rx = x + (width / 2) - (font.getWidth(character) / 2);
-        float ry = y + (height / 2) - (font.getHeight(character) / 2) + HEIGHT_ADJUSTMENT;
+        float rx = centerSurround ? x + (width / 2) - (font.getWidth(character) / 2) : x;
+        float ry = centerSurround ? y + (height / 2) - (font.getHeight(character) / 2) + HEIGHT_ADJUSTMENT : y;
 
         font.drawString(rx, ry, character);
     }

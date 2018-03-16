@@ -2,6 +2,7 @@ package com.magneticstudio.transience.game;
 
 import com.magneticstudio.transience.ui.LogicalElement;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class Mission implements LogicalElement {
      */
     public Mission() {
         entities = new ArrayList<>();
-        tileSet = new TileSet(40, 40);
+        tileSet = new TileSet(TileSet.MEDIUM, 40, 40);
         tileSet.setPixelsPerTile(32);
         tileSet.getPosition().setTransitionTime(85);
     }
@@ -44,7 +45,7 @@ public class Mission implements LogicalElement {
     @Override
     public void update(int milliseconds) {
         for(Entity e : entities) {
-            e.entityUpdate(milliseconds);
+            e.entityUpdate(tileSet, milliseconds);
         }
         tileSet.update(milliseconds);
     }
@@ -54,7 +55,7 @@ public class Mission implements LogicalElement {
      * in this mission.
      * @param graphics The graphics used for drawing on main screen.
      */
-    public void render(Graphics graphics) {
-        tileSet.render(entities, graphics);
+    public void render(Graphics graphics) throws SlickException {
+        tileSet.render(graphics);
     }
 }
