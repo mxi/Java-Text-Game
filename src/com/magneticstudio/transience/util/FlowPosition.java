@@ -2,6 +2,9 @@ package com.magneticstudio.transience.util;
 
 import com.magneticstudio.transience.ui.LogicalElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This class provides very a convenient
  * way to create smooth motion when moving
@@ -25,6 +28,8 @@ public class FlowPosition implements LogicalElement {
     private float timeElapsed = 0; // The time elapsed transitioning to the target position.
     private long lastMovementTime = 0; // The last time stamp of a modifying position event.
 
+    private List<Listener> listeners = new ArrayList<>(); // Listeners tracking this FlowPosition.
+
     /**
      * Creates a new flow position object
      * with default values set.
@@ -44,6 +49,19 @@ public class FlowPosition implements LogicalElement {
 
         nowX = x;
         nowY = y;
+    }
+
+    /**
+     * Adds a new listener to this FlowPosition.
+     * @param listener The listener that receives events as position changes.
+     */
+    public void addListener(Listener listener) {
+        if(listener == null)
+            return;
+
+        listeners.add(listener);
+        listener.horizontalChange(nowX);
+        listener.verticalChange(nowY);
     }
 
     /**
@@ -94,7 +112,7 @@ public class FlowPosition implements LogicalElement {
      * @param dest The destination of this motion.
      */
     public void setTargetPosition(IntPoint dest) {
-        setTargetPosition(dest.getX(), dest.getY());
+        setTargetPosition(dest.x, dest.y);
     }
 
     /**
@@ -245,11 +263,41 @@ public class FlowPosition implements LogicalElement {
             nowY += modifyY * milliseconds;
         }
 
+        listeners.forEach(l -> {
+            l.horizontalChange(nowX);
+            l.verticalChange(nowY);
+        });
+
         lastMovementTime = System.currentTimeMillis();
     }
 
+    /**
+     * Gets a string representation of this object.
+     * @return String representation of this object.
+     */
     @Override
     public String toString() {
         return "(" + nowX + ", " + nowY + " go to " + towardsX + ", " + towardsY + ")";
+    }
+
+    /**
+     * This interface defines events that are dispatched
+     * whenever a FlowPosition object's position changes.
+     */
+    public interface Listener {
+
+        /**
+         * Dispatches an event notifying that the intermediate
+         * X value of a FlowPosition object has changed.
+         * @param now The new intermediate X value.
+         */
+        void horizontalChange(float now);
+
+        /**
+         * Dispatches an event notifying that the intermediate
+         * Y value of a FlowPosition object has changed.
+         * @param now The new intermediate Y value.
+         */
+        void verticalChange(float now);
     }
 }

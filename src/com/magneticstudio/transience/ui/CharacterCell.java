@@ -14,7 +14,7 @@ import org.newdawn.slick.UnicodeFont;
  */
 public final class CharacterCell implements GraphicalElement {
 
-    private static final int HEIGHT_ADJUSTMENT = 5; // The adjustment for the y value when rendering.
+    private static final int VERTICAL_ADJUST = -3; // The vertical adjustment when rendering.
 
     private UnicodeFont font; // The font name used to render the character
     private String character = "O"; // The character in the character cell.
@@ -110,7 +110,7 @@ public final class CharacterCell implements GraphicalElement {
      */
     @Override
     public int getWidth() {
-        return 0;
+        return width;
     }
 
     /**
@@ -128,7 +128,7 @@ public final class CharacterCell implements GraphicalElement {
      */
     @Override
     public int getHeight() {
-        return 0;
+        return height;
     }
 
     /**
@@ -176,6 +176,13 @@ public final class CharacterCell implements GraphicalElement {
         color.r = newColor.r;
         color.g = newColor.g;
         color.b = newColor.b;
+        font = Res.modifyFont(
+            font,
+            newColor,
+            Res.USE_DEFAULT,
+            Res.USE_DEFAULT,
+            Res.USE_DEFAULT
+        );
     }
 
     /**
@@ -188,7 +195,7 @@ public final class CharacterCell implements GraphicalElement {
     @Override
     public void render(Graphics graphics, float x, float y, boolean centerSurround) {
         float rx = centerSurround ? x + (width / 2) - (font.getWidth(character) / 2) : x;
-        float ry = centerSurround ? y + (height / 2) - (font.getHeight(character) / 2) + HEIGHT_ADJUSTMENT : y;
+        float ry = centerSurround ? y + (height / 2) - (font.getHeight(character) / 2) + VERTICAL_ADJUST : y;
 
         font.drawString(rx, ry, character);
     }

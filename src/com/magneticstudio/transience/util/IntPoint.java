@@ -38,7 +38,7 @@ public class IntPoint {
      * @return True if they have the same values of x and y.
      */
     public boolean isEquivalentTo(IntPoint p) {
-        return p.getX() == x && p.getY() == y;
+        return p.x == x && p.y == y;
     }
 
     /**
@@ -50,38 +50,6 @@ public class IntPoint {
      */
     public boolean isEquivalentTo(int tx, int ty) {
         return x == tx && y == ty;
-    }
-
-    /**
-     * Gets the X value of this position.
-     * @return X value of this position.
-     */
-    public int getX() {
-        return x;
-    }
-
-    /**
-     * Sets the X value of this position.
-     * @param x New X value of this position.
-     */
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    /**
-     * Gets the Y value of this position.
-     * @return Y value of this position.
-     */
-    public int getY() {
-        return y;
-    }
-
-    /**
-     * Sets the Y value of this position.
-     * @param y New Y value of this position.
-     */
-    public void setY(int y) {
-        this.y = y;
     }
 
     /**

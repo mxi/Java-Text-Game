@@ -1,5 +1,6 @@
 package com.magneticstudio.transience.game;
 
+import com.magneticstudio.transience.ui.CharacterCell;
 import com.magneticstudio.transience.ui.GameKeyboard;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
@@ -23,8 +24,10 @@ public class Player extends Entity {
      */
     public Player(TileSet onTileSet) {
         super(onTileSet);
-        getRepresentation().setColor(new Color(120, 160, 50, 255));
-        getPosition().setTransitionTime(GameKeyboard.KEY_COOLDOWN_TIME - 5);
+        CharacterCell representation = (CharacterCell) getRepresentation();
+        representation.setColor(new Color(0, 160, 50, 255));
+        representation.setCharacter('@');
+        getPosition().setTransitionTime(GameKeyboard.KEY_COOLDOWN_TIME);
     }
 
     /**

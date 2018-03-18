@@ -22,7 +22,7 @@ public class TileSet implements LogicalElement {
     public static final int LARGE = 64; // The size of a large tile set (pixels per tile).
 
     private ArrayList2D<Tile> tiles = new ArrayList2D<>(); // The 2d array of tiles.
-    private EntityCollection entities = new EntityCollection(); // The collection of entities.
+    private EntityCollection entities = new EntityCollection(this); // The collection of entities.
     private FlowPosition position = new FlowPosition(); // The position of this tile set.
     private UnicodeFont font; // The font used to render the individual tiles.
     private TileSetGenerator generator; // The generator used to create this tile set.
@@ -40,12 +40,37 @@ public class TileSet implements LogicalElement {
       */
     public TileSet(int ppt, int width, int height) {
         pixelsPerTile = ppt < 8 ? 8 : ppt > 128 ? 128 : ppt;
-        font = Res.loadFont("Consolas.ttf", Color.white, (int) (pixelsPerTile * FONT_PIXEL_RATIO), Res.USE_DEFAULT, Res.USE_DEFAULT);
+        font = Res.loadFont(
+                "Consolas.ttf",
+                Color.white,
+                (int) (pixelsPerTile * FONT_PIXEL_RATIO),
+                Res.USE_DEFAULT,
+                Res.USE_DEFAULT
+        );
         tiles.setDimensions(width, height);
         tiles.fill(Tile.createVoidTile(this));
         tiles.setLocked(true);
-        entities.createPlayer(this);
         generator = null;
+    }
+
+    // The limit on iterations for searching for a specific tile.
+    private static final int RANDOM_POSITION_SEARCH_LIMIT = 250_000;
+
+    /**
+     * Gets a random position that is over a specific
+     * tile type.
+     * @param on The tile to get the random position on.
+     * @return The location of the randomly selected tile.
+     */
+    public IntPoint randomPositionOn(Tile.Type on) {
+        for(int i = 0; i < RANDOM_POSITION_SEARCH_LIMIT; i++) {
+            int x = Game.rng.nextInt(tiles.getWidth());
+            int y = Game.rng.nextInt(tiles.getHeight());
+            Tile t = tiles.getElement(x, y);
+            if(t != null && t.getTileType() == on)
+                return new IntPoint(x, y);
+        }
+        return new IntPoint(0, 0);
     }
 
     /**
@@ -79,8 +104,8 @@ public class TileSet implements LogicalElement {
      * @param loc Location of the tile to hide.
      */
     public void hideTile(IntPoint loc) {
-        if(tiles.getElement(loc.getX(), loc.getY()) != null)
-            tiles.getElement(loc.getX(), loc.getY()).setVisible(false);
+        if(tiles.getElement(loc.x, loc.y) != null)
+            tiles.getElement(loc.x, loc.y).setVisible(false);
     }
 
     /**
@@ -98,8 +123,8 @@ public class TileSet implements LogicalElement {
      * @param loc Location of the tile to show.
      */
     public void showTile(IntPoint loc) {
-        if(tiles.getElement(loc.getX(), loc.getY()) != null)
-            tiles.getElement(loc.getX(), loc.getY()).setVisible(true);
+        if(tiles.getElement(loc.x, loc.y) != null)
+            tiles.getElement(loc.x, loc.y).setVisible(true);
     }
 
     /**
@@ -127,12 +152,12 @@ public class TileSet implements LogicalElement {
      * square; location.
      */
     public void setPixelPerfect() {
-        finePixelOffsetX = Game.activeGame.getResolutionWidth() % pixelsPerTile / 2;
-        if (Game.activeGame.getResolutionWidth() / pixelsPerTile % 2 == 0)
-            finePixelOffsetX -= (pixelsPerTile / 2);
-
-        finePixelOffsetY = (Game.activeGame.getResolutionHeight() / 2) -
-                ((Game.activeGame.getResolutionHeight() / 2 / pixelsPerTile) + 1) * pixelsPerTile - (pixelsPerTile / 2) + pixelsPerTile;
+        float w = Game.activeGame.getResolutionWidth();
+        float h = Game.activeGame.getResolutionHeight();
+        float p = pixelsPerTile;
+        float n = (float) Math.floor(h / 2 / p);
+        finePixelOffsetY = (-2f * p * n - p + h) * .5f;
+        finePixelOffsetX = (w % pixelsPerTile) / 2;
     }
 
     /**
@@ -151,6 +176,15 @@ public class TileSet implements LogicalElement {
      */
     public void setPixelsPerTile(int pixelsPerTile) {
         this.pixelsPerTile = Math.min(Math.max(pixelsPerTile, 8), 128);
+        adjustGraphicalElements();
+    }
+
+    /**
+     * Goes through all of the tiles and entities and modifies
+     * each graphical element to have fixed dimensions equal to that
+     * of the pixels per tile of this tile set.
+     */
+    public void adjustGraphicalElements() {
         font = Res.modifyFont(font, null, (int) (this.pixelsPerTile * FONT_PIXEL_RATIO), Res.USE_DEFAULT, Res.USE_DEFAULT);
         tiles.forEach(t -> {
             t.getRepresentation().setDimensions(this.pixelsPerTile, this.pixelsPerTile);
@@ -243,8 +277,12 @@ public class TileSet implements LogicalElement {
                         canvasGraphics,
                         renderX,
                         renderY,
-                        false
+                        true
                 );
+
+                //For debug:
+                //canvasGraphics.setColor(Color.red);
+                //canvasGraphics.drawRect(renderX, renderY, pixelsPerTile, pixelsPerTile);
             }
         }
 
@@ -254,9 +292,9 @@ public class TileSet implements LogicalElement {
             float y = getRenderY(entPos.getIntermediateY());
             canvasGraphics.setDrawMode(Graphics.MODE_COLOR_MULTIPLY);
             canvasGraphics.setColor(new Color(0f, 0f, 0f, 0f));
-            canvasGraphics.fillRect(x, y, pixelsPerTile, pixelsPerTile);
+            canvasGraphics.fillRect(x + 1, y + 1, pixelsPerTile - 2, pixelsPerTile - 2);
             canvasGraphics.setDrawMode(Graphics.MODE_ADD);
-            e.render(canvasGraphics, x, y, false);
+            e.render(canvasGraphics, x, y, true);
         });
 
         graphics.drawImage(canvas, 0, 0);
@@ -273,8 +311,10 @@ public class TileSet implements LogicalElement {
             e.entityUpdate(this, milliseconds);
             e.updatePosition(milliseconds);
         });
-        FlowPosition playerPosition = entities.getPlayer().getPosition();
-        centerOn(playerPosition.getTargetX(), playerPosition.getTargetY());
+        if(entities.getPlayer() != null) {
+            FlowPosition playerPosition = entities.getPlayer().getPosition();
+            centerOn(playerPosition.getTargetX(), playerPosition.getTargetY());
+        }
         position.update(milliseconds);
     }
 

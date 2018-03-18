@@ -1,5 +1,6 @@
 package com.magneticstudio.transience.ui;
 
+import com.magneticstudio.transience.util.FlowPosition;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -11,12 +12,27 @@ import org.newdawn.slick.Image;
  *
  * @author Max
  */
-public class Background {
+public class Background implements FlowPosition.Listener {
 
+    /**
+     * Enumeration for the specific mode (movement)
+     * of this background on the display.
+     */
+    public enum Mode {
+        MOUSE_TRACK, // Tracks the mouse.
+        FLOW_POSITION_TRACK // Bound to a flow position object and uses it's position.
+    }
+
+    private Mode bgMode = Mode.MOUSE_TRACK; // The behaviour of this background.
     private Image background; // The image to display in the background.
+    private float horizontalRange = 30; // The horizontal range of movement of this background.
+    private float verticalRange = 30; // The vertical range of movement of this background.
+    private float horizontalAnchor = 0; // The horizontal anchor of this background.
+    private float verticalAnchor = 0; // The vertical anchor of this background.
     private float x; // The x disposition of this background.
     private float y; // The y disposition of this background.
     private int roamSpace; // The amount of space this background has to roam.
+    private boolean inversed = false; // Whether the movement of the background is opposite of anchors.
 
     /**
      * Creates a new background object with the default
@@ -52,12 +68,45 @@ public class Background {
     }
 
     /**
+     * Sets the movement range of this background object.
+     * @param horizontal The horizontal movement range.
+     * @param vertical The vertical movement range.
+     */
+    public void setRange(float horizontal, float vertical) {
+        horizontalRange = Math.max(horizontal, 1);
+        verticalRange = Math.max(vertical, 1);
+    }
+
+    /**
+     * Sets the behaviour of this background object.
+     * @param mode The mode (movement behaviour) of this background.
+     */
+    public void setMode(Mode mode) {
+        bgMode = mode;
+    }
+
+    /**
+     * Sets whether the background will move in the
+     * opposite direction, and away from the anchor
+     * (aka. Mouse cursor or entity position).
+     * @param v Whether the background is inversed.
+     */
+    public void setInversed(boolean v) {
+        inversed = v;
+    }
+
+    /**
      * Updates the disposition of this background
      * relative to the mouse position in the scene.
      */
     public void update() {
-        x = ((float) Mouse.getX() / (float) Game.activeGame.getResolutionWidth()) * (float) roamSpace;
-        y = ((float) Mouse.getY() / (float) Game.activeGame.getResolutionHeight()) * (float) roamSpace;
+        float w = bgMode == Mode.MOUSE_TRACK ? Game.activeGame.getResolutionWidth() : horizontalRange;
+        float h = bgMode == Mode.MOUSE_TRACK ? Game.activeGame.getResolutionHeight() : verticalRange;
+        float x = bgMode == Mode.MOUSE_TRACK ? MenuMouse.getX() : horizontalAnchor;
+        float y = bgMode == Mode.MOUSE_TRACK ? MenuMouse.getY() : verticalAnchor;
+
+        this.x = inversed ? (w - x) / w * roamSpace : x / w * roamSpace;
+        this.y = inversed ? y / h * roamSpace : (h - y) / h * roamSpace;
     }
 
     /**
@@ -66,5 +115,25 @@ public class Background {
      */
     public void render(Graphics graphics) {
         graphics.drawImage(background, x - roamSpace, -y);
+    }
+
+    /**
+     * Event captured from a FlowPosition object that
+     * has dispatched a change in the X value.
+     * @param now The new intermediate X value.
+     */
+    @Override
+    public void horizontalChange(float now) {
+        horizontalAnchor = now;
+    }
+
+    /**
+     * Event captured from a FlowPosition object that
+     * has dispatched a change in the Y value.
+     * @param now The new intermediate Y value.
+     */
+    @Override
+    public void verticalChange(float now) {
+        verticalAnchor = now;
     }
 }

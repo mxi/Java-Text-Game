@@ -1,5 +1,7 @@
 package com.magneticstudio.transience.game;
 
+import com.magneticstudio.transience.util.IntPoint;
+
 import java.util.*;
 
 /**
@@ -11,6 +13,7 @@ import java.util.*;
  */
 public class EntityCollection {
 
+    private TileSet containingTileSet; // The containing tile set of this entity collection.
     private Map<Faction, List<Entity>> coreCollection = new HashMap<>(); // The underlying structure of the collection of entities.
     private Faction playerFaction; // The faction the player is a part of.
     private Player player; // The actual player of this entity collection.
@@ -19,20 +22,22 @@ public class EntityCollection {
      * Creates a new entity collection object
      * and sets everything to default.
      */
-    public EntityCollection() {
+    public EntityCollection(TileSet container) {
         for(Faction f : Faction.values()) {
-            coreCollection.put(f, new ArrayList<>());
+            this.coreCollection.put(f, new ArrayList<>());
         }
-        playerFaction = Faction.NONE;
+        this.containingTileSet = container;
+        this.playerFaction = Faction.NONE;
     }
 
     /**
      * Creates the player object.
-     * @param on The tile set to create the player on.
      */
-    public void createPlayer(TileSet on) {
+    public void spawnPlayer() {
         if(player == null)
-            player = new Player(on);
+            player = new Player(containingTileSet);
+        IntPoint air = containingTileSet.randomPositionOn(Tile.Type.AIR);
+        player.setPosition(air.x, air.y);
     }
 
     /**
@@ -74,7 +79,8 @@ public class EntityCollection {
             for(Entity ind : entry.getValue())
                 e.onEntity(faction, ind);
         }
-        e.onEntity(playerFaction, player);
+        if(player != null)
+            e.onEntity(playerFaction, player);
     }
 
     /**

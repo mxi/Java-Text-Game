@@ -31,6 +31,8 @@ public class TileSetGenerator {
     private int roomMinHeight = 4; // The minimum height of a room.
     private int roomMaxHeight = 12; // The maximum height of a room.
 
+    private boolean autoPlayerSpawn = true; // Automatically spawn the player.
+
     /**
      * Creates a new instance of the TileSetGenerator
      * class.
@@ -98,6 +100,14 @@ public class TileSetGenerator {
     }
 
     /**
+     * Sets whether the player should be automatically spawned on the tile set.
+     * @param v True to spawn the player automatically; False to not.
+     */
+    public void setAutoPlayerSpawn(boolean v) {
+        autoPlayerSpawn = v;
+    }
+
+    /**
      * Generates a new tile set.
      * @param width The width of the tile set.
      * @param height The height of the tile set.
@@ -112,7 +122,7 @@ public class TileSetGenerator {
 
         TileSet tileSet = new TileSet(tsSize, width, height);
         tileSet.getPosition().setTransitionTime(tsTransitionTime);
-        //tileSet.setPixelPerfect();
+        tileSet.setPixelPerfect();
 
         final int generationAttempts = 250_000; // Number of attempts to create non-overlapping rooms.
         for(int i = 0; i < generationAttempts; i++) {
@@ -128,6 +138,11 @@ public class TileSetGenerator {
                 }
             }
         }
+
+        if(autoPlayerSpawn)
+            tileSet.getEntities().spawnPlayer();
+
+        tileSet.adjustGraphicalElements();
 
         return tileSet;
     }
@@ -183,24 +198,24 @@ public class TileSetGenerator {
     private void linkRooms(TileSet onWhat, Room first, Room second) {
         IntPoint start = first.selectRandomLocationInside();
         IntPoint end = second.selectRandomLocationInside();
-        final byte changeX = (byte) (start.getX() < end.getX() ? 1 : -1);
-        final byte changeY = (byte) (start.getY() < end.getY() ? 1 : -1);
+        final byte changeX = (byte) (start.x < end.x ? 1 : -1);
+        final byte changeY = (byte) (start.y < end.y ? 1 : -1);
         ArrayList2D<Tile> tiles = onWhat.getTiles();
-        for(int i = start.getX() + changeX; i != end.getX() + changeX; i += changeX) {
-            tiles.setElement(Tile.createAirTile(onWhat), i, start.getY());
-            tiles.setElementIf(Tile.createWallTile(onWhat), wallPlacePredicate, i, start.getY() - 1);
-            tiles.setElementIf(Tile.createWallTile(onWhat), wallPlacePredicate, i, start.getY() + 1);
+        for(int i = start.x + changeX; i != end.x + changeX; i += changeX) {
+            tiles.setElement(Tile.createAirTile(onWhat), i, start.y);
+            tiles.setElementIf(Tile.createWallTile(onWhat), wallPlacePredicate, i, start.y - 1);
+            tiles.setElementIf(Tile.createWallTile(onWhat), wallPlacePredicate, i, start.y + 1);
         }
-        for(int i = start.getY() + changeY; i != end.getY() + changeY; i += changeY) {
-            tiles.setElement(Tile.createAirTile(onWhat), end.getX(), i);
-            tiles.setElementIf(Tile.createWallTile(onWhat), wallPlacePredicate, end.getX() - 1, i);
-            tiles.setElementIf(Tile.createWallTile(onWhat), wallPlacePredicate, end.getX() + 1, i);
+        for(int i = start.y + changeY; i != end.y + changeY; i += changeY) {
+            tiles.setElement(Tile.createAirTile(onWhat), end.x, i);
+            tiles.setElementIf(Tile.createWallTile(onWhat), wallPlacePredicate, end.x - 1, i);
+            tiles.setElementIf(Tile.createWallTile(onWhat), wallPlacePredicate, end.x + 1, i);
         }
 
-        final int pivotX = end.getX();
-        final int pivotY = start.getY();
+        final int pivotX = end.x;
+        final int pivotY = start.y;
         for(IntPoint s : pointSurroundings) {
-            tiles.setElementIf(Tile.createWallTile(onWhat), wallPlacePredicate, pivotX + s.getX(), pivotY + s.getY());
+            tiles.setElementIf(Tile.createWallTile(onWhat), wallPlacePredicate, pivotX + s.x, pivotY + s.y);
         }
     }
 

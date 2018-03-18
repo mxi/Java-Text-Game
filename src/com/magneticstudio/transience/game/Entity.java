@@ -1,9 +1,6 @@
 package com.magneticstudio.transience.game;
 
-import com.magneticstudio.transience.ui.CharacterCell;
-import com.magneticstudio.transience.ui.Displayable;
-import com.magneticstudio.transience.ui.Res;
-import com.magneticstudio.transience.ui.GraphicalElement;
+import com.magneticstudio.transience.ui.*;
 import com.magneticstudio.transience.util.FlowPosition;
 import com.magneticstudio.transience.util.IntPoint;
 import org.newdawn.slick.Color;
@@ -34,6 +31,7 @@ public abstract class Entity implements Displayable {
                 Res.USE_DEFAULT
             ), 'O'
         );
+        position.setTransitionTime(GameKeyboard.KEY_COOLDOWN_TIME);
     }
 
     /**
@@ -116,8 +114,8 @@ public abstract class Entity implements Displayable {
      * @param vec Movement vector.
      */
     public void move(IntPoint vec) {
-        setX(position.getTargetX() + vec.getX());
-        setY(position.getTargetY() + vec.getY());
+        setX(position.getTargetX() + vec.x);
+        setY(position.getTargetY() + vec.y);
     }
 
     /**

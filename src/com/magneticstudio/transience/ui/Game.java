@@ -1,5 +1,6 @@
 package com.magneticstudio.transience.ui;
 
+import com.magneticstudio.transience.game.Player;
 import com.magneticstudio.transience.game.TileSet;
 import com.magneticstudio.transience.game.TileSetGenerator;
 import com.magneticstudio.transience.util.RadialVignetteGenerator;
@@ -73,8 +74,6 @@ public class Game extends BasicGame {
 
         MenuKeyboard.HOLD_TIME = 500;
         MenuKeyboard.CONSECUTIVE_HOLD_PRESS = 25;
-
-        GameKeyboard.KEY_COOLDOWN_TIME = 105;
     }
 
     /**
@@ -89,7 +88,6 @@ public class Game extends BasicGame {
             return;
 
         GameKeyboard.poll();
-
 
         background.update();
         tileSet.update(elapsed);
@@ -118,6 +116,10 @@ public class Game extends BasicGame {
         if(showFps) {
             fpsNotification.drawString(FPS_SHOW_X, FPS_SHOW_Y, Integer.toString(gc.getFPS()));
         }
+
+        //graphics.setColor(Color.cyan);
+        //graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
+        //graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
     }
 
     /**
@@ -128,15 +130,20 @@ public class Game extends BasicGame {
     private void setupGraphics() throws SlickException {
         fpsNotification = Res.loadFont("Consolas.ttf", new Color(255, 100, 100, 175), 16, Res.USE_DEFAULT, Res.USE_DEFAULT);
 
-        background = new Background(RadialVignetteGenerator.createBackgroundForGame(new Color(60, 125, 60, 150), true));
-        background.setRoamSpace(500);
-
         TileSetGenerator tsGenerator = new TileSetGenerator();
+        tsGenerator.setSize(TileSet.MEDIUM);
         tsGenerator.setRoomMinWidth(6);
         tsGenerator.setRoomMinHeight(6);
         tsGenerator.setRoomMaxWidth(12);
         tsGenerator.setRoomMaxHeight(12);
         tsGenerator.setRoomClusterSize(TileSetGenerator.ROOM_CLUSTER_SIMPLE);
         tileSet = tsGenerator.generate(30, 30);
+
+        background = new Background(RadialVignetteGenerator.createBackgroundForGame(new Color(125, 60, 60, 150), true));
+        background.setMode(Background.Mode.FLOW_POSITION_TRACK);
+        background.setInversed(true);
+        background.setRoamSpace(500);
+
+        tileSet.getEntities().getPlayer().getPosition().addListener(background);
     }
 }

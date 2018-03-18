@@ -12,7 +12,7 @@ import org.lwjgl.input.Keyboard;
  */
 public class GameKeyboard {
 
-    public static int KEY_COOLDOWN_TIME = 100; // Time in milliseconds before another key can be pressed.
+    public static final int KEY_COOLDOWN_TIME = 100; // Time in milliseconds before another key can be pressed.
     private static int KEY = -1; // The key that has triggered the latest event.
     private static boolean isPressed = false; // Whether the 'key' is pressed.
     private static long lastEventTime = System.currentTimeMillis(); // The time of the last key ever pressed.
