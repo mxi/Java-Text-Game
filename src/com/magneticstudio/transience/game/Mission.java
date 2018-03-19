@@ -24,8 +24,7 @@ public class Mission implements LogicalElement {
      */
     public Mission() {
         entities = new ArrayList<>();
-        tileSet = new TileSet(TileSet.MEDIUM, 40, 40);
-        tileSet.setPixelsPerTile(32);
+        tileSet = new TileSet(40, 40);
         tileSet.getPosition().setTransitionTime(85);
     }
 

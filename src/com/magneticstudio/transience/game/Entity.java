@@ -1,6 +1,7 @@
 package com.magneticstudio.transience.game;
 
 import com.magneticstudio.transience.ui.*;
+import com.magneticstudio.transience.util.FloatPoint;
 import com.magneticstudio.transience.util.FlowPosition;
 import com.magneticstudio.transience.util.IntPoint;
 import org.newdawn.slick.Color;

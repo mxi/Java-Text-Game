@@ -25,7 +25,7 @@ public class Player extends Entity {
     public Player(TileSet onTileSet) {
         super(onTileSet);
         CharacterCell representation = (CharacterCell) getRepresentation();
-        representation.setColor(new Color(0, 160, 50, 255));
+        representation.setColor(new Color(255, 255, 50, 255));
         representation.setCharacter('@');
         getPosition().setTransitionTime(GameKeyboard.KEY_COOLDOWN_TIME);
     }

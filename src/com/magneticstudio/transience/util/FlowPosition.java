@@ -79,16 +79,8 @@ public class FlowPosition implements LogicalElement {
      * @param y The Y value.
      * @return Whether the positions are equal.
      */
-    public boolean equalsTo(float x, float y) {
+    public boolean equalsTo(int x, int y) {
         return towardsX == x && towardsY == y;
-    }
-
-    /**
-     * Gets the position that this motion tends towards.
-     * @return The position that the motion tends towards.
-     */
-    public FloatPoint getFloatPoint() {
-        return new FloatPoint(towardsX, towardsY);
     }
 
     /**
@@ -104,7 +96,7 @@ public class FlowPosition implements LogicalElement {
      * @param dest The destination of this motion.
      */
     public void setTargetPosition(FloatPoint dest) {
-        setTargetPosition((int) dest.getX(), (int) dest.getY());
+        setTargetPosition((int) dest.x, (int) dest.y);
     }
 
     /**
@@ -219,7 +211,7 @@ public class FlowPosition implements LogicalElement {
      * if it's not moving.
      * @param newTime The new time in milliseconds for transitioning.
      */
-    public void setTransitionTime(float newTime) {
+    public void setTransitionTime(int newTime) {
         if(towardsX == nowX && towardsY == nowY)
             timeMillis = Math.max(newTime, 1);
     }

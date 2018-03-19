@@ -117,9 +117,9 @@ public class Game extends BasicGame {
             fpsNotification.drawString(FPS_SHOW_X, FPS_SHOW_Y, Integer.toString(gc.getFPS()));
         }
 
-        //graphics.setColor(Color.cyan);
-        //graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
-        //graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
+        graphics.setColor(Color.cyan);
+        graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
+        graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
     }
 
     /**
@@ -131,7 +131,6 @@ public class Game extends BasicGame {
         fpsNotification = Res.loadFont("Consolas.ttf", new Color(255, 100, 100, 175), 16, Res.USE_DEFAULT, Res.USE_DEFAULT);
 
         TileSetGenerator tsGenerator = new TileSetGenerator();
-        tsGenerator.setSize(TileSet.MEDIUM);
         tsGenerator.setRoomMinWidth(6);
         tsGenerator.setRoomMinHeight(6);
         tsGenerator.setRoomMaxWidth(12);
@@ -141,8 +140,8 @@ public class Game extends BasicGame {
 
         background = new Background(RadialVignetteGenerator.createBackgroundForGame(new Color(125, 60, 60, 150), true));
         background.setMode(Background.Mode.FLOW_POSITION_TRACK);
-        background.setInversed(true);
-        background.setRoamSpace(500);
+        background.setInverse(true);
+        background.setRoamSpace(1000);
 
         tileSet.getEntities().getPlayer().getPosition().addListener(background);
     }

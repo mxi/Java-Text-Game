@@ -32,7 +32,7 @@ public class Background implements FlowPosition.Listener {
     private float x; // The x disposition of this background.
     private float y; // The y disposition of this background.
     private int roamSpace; // The amount of space this background has to roam.
-    private boolean inversed = false; // Whether the movement of the background is opposite of anchors.
+    private boolean inverse = false; // Whether the movement of the background is opposite of anchors.
 
     /**
      * Creates a new background object with the default
@@ -89,10 +89,10 @@ public class Background implements FlowPosition.Listener {
      * Sets whether the background will move in the
      * opposite direction, and away from the anchor
      * (aka. Mouse cursor or entity position).
-     * @param v Whether the background is inversed.
+     * @param v Whether the background is inverse.
      */
-    public void setInversed(boolean v) {
-        inversed = v;
+    public void setInverse(boolean v) {
+        inverse = v;
     }
 
     /**
@@ -105,8 +105,8 @@ public class Background implements FlowPosition.Listener {
         float x = bgMode == Mode.MOUSE_TRACK ? MenuMouse.getX() : horizontalAnchor;
         float y = bgMode == Mode.MOUSE_TRACK ? MenuMouse.getY() : verticalAnchor;
 
-        this.x = inversed ? (w - x) / w * roamSpace : x / w * roamSpace;
-        this.y = inversed ? y / h * roamSpace : (h - y) / h * roamSpace;
+        this.x = inverse ? (w - x) / w * roamSpace : x / w * roamSpace;
+        this.y = inverse ? y / h * roamSpace : (h - y) / h * roamSpace;
     }
 
     /**

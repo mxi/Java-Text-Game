@@ -35,7 +35,7 @@ public class Tile implements Displayable {
     public static Tile createVoidTile(TileSet parent) {
         UnicodeFont font = parent.getFont();
         font = Res.modifyFont(font, Color.gray, Res.USE_DEFAULT, Res.USE_DEFAULT, Res.USE_DEFAULT);
-        return new Tile(new CharacterCell(font, ' '), Type.VOID);
+        return new Tile(new CharacterCell(font, '~'), Type.VOID);
     }
 
     public static Tile createWallTile(TileSet parent) {

@@ -23,7 +23,6 @@ public class TileSetGenerator {
     private static final int ABSOLUTE_MIN_ROOM_WIDTH = 3; // Absolute minimum room width.
     private static final int ABSOLUTE_MIN_ROOM_HEIGHT = 3; // Absolute minimum room height.
 
-    private int tsSize = TileSet.MEDIUM; // Size of the tile set.
     private int tsTransitionTime = 85; // Time it takes to complete a movement on the tile set.
     private int tsRoomClusterSize = 3; // The intricacy of the room clusters.
     private int roomMinWidth = 4; // The minimum width of a room.
@@ -47,14 +46,6 @@ public class TileSetGenerator {
      */
     public void setTransitionTime(int tTime) {
         tsTransitionTime = tTime;
-    }
-
-    /**
-     * Sets the new size of the tile set.
-     * @param nSize New size of the tile set.
-     */
-    public void setSize(int nSize) {
-        tsSize = nSize;
     }
 
     /**
@@ -120,7 +111,7 @@ public class TileSetGenerator {
         if(height < roomMaxHeight)
             roomMaxHeight = height;
 
-        TileSet tileSet = new TileSet(tsSize, width, height);
+        TileSet tileSet = new TileSet(width, height);
         tileSet.getPosition().setTransitionTime(tsTransitionTime);
         tileSet.setPixelPerfect();
 

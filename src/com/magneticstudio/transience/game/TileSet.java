@@ -15,11 +15,9 @@ import org.newdawn.slick.*;
  */
 public class TileSet implements LogicalElement {
 
-    private static final float FONT_PIXEL_RATIO = 12.5f / 11f;
-
-    public static final int SMALL = 8; // The size of a small tile set (pixels per tile).
-    public static final int MEDIUM = 24; // The size of medium tile set (pixels per tile).
-    public static final int LARGE = 64; // The size of a large tile set (pixels per tile).
+    private static final int PIXELS_PER_TILE = 64;
+    private static final int FINE_ADJUSTMENT = PIXELS_PER_TILE / 2;
+    private static final int TILE_FONT_SIZE = 56;
 
     private ArrayList2D<Tile> tiles = new ArrayList2D<>(); // The 2d array of tiles.
     private EntityCollection entities = new EntityCollection(this); // The collection of entities.
@@ -27,23 +25,22 @@ public class TileSet implements LogicalElement {
     private UnicodeFont font; // The font used to render the individual tiles.
     private TileSetGenerator generator; // The generator used to create this tile set.
 
-    private int pixelsPerTile = 32; // Amount of pixels (width and height) a tile takes up.
-    private float finePixelOffsetX = 0; // The fine pixel offset horizontally.
-    private float finePixelOffsetY = 0; // The fine pixel offset vertically.
+    private Image canvas; // The image object used to render tile set on.
+    private Graphics canvasGraphics; // The graphics object doing to the rendering.
+
+    private float canvasScale = 1f; // The scale of the canvas.
 
      /**
       * Creates a new TileSet object with
       * the specified dimensions.
-      * @param ppt Specifies the pixels per tile.
       * @param width The amount of tiles on the x axis.
       * @param height The amount of tiles on the y axis.
       */
-    public TileSet(int ppt, int width, int height) {
-        pixelsPerTile = ppt < 8 ? 8 : ppt > 128 ? 128 : ppt;
+    public TileSet(int width, int height) {
         font = Res.loadFont(
                 "Consolas.ttf",
                 Color.white,
-                (int) (pixelsPerTile * FONT_PIXEL_RATIO),
+                TILE_FONT_SIZE,
                 Res.USE_DEFAULT,
                 Res.USE_DEFAULT
         );
@@ -142,8 +139,8 @@ public class TileSet implements LogicalElement {
      * @param y The Y value of the location of the tile.
      */
     public void centerOn(int x, int y) {
-        position.setTargetX( -Game.activeGame.getResolutionWidth() / pixelsPerTile / 2 + x );
-        position.setTargetY( -Game.activeGame.getResolutionHeight() / pixelsPerTile / 2 + y );
+        position.setTargetX( (int) -(Game.activeGame.getResolutionWidth() / (2 * PIXELS_PER_TILE * canvasScale)) + x );
+        position.setTargetY( (int) -(Game.activeGame.getResolutionHeight() / (2 * PIXELS_PER_TILE * canvasScale)) + y );
     }
 
     /**
@@ -154,43 +151,17 @@ public class TileSet implements LogicalElement {
     public void setPixelPerfect() {
         float w = Game.activeGame.getResolutionWidth();
         float h = Game.activeGame.getResolutionHeight();
-        float p = pixelsPerTile;
+        float p = PIXELS_PER_TILE;
         float n = (float) Math.floor(h / 2 / p);
-        finePixelOffsetY = (-2f * p * n - p + h) * .5f;
-        finePixelOffsetX = (w % pixelsPerTile) / 2;
     }
 
     /**
-     * Gets the amount of pixels (width and height)
-     * each tile takes up.
-     * @return Pixels per tile.
-     */
-    public int getPixelsPerTile() {
-        return pixelsPerTile;
-    }
-
-    /**
-     * Sets the amount of pixels (width and height)
-     * each tile takes up.
-     * @param pixelsPerTile Pixels per tile.
-     */
-    public void setPixelsPerTile(int pixelsPerTile) {
-        this.pixelsPerTile = Math.min(Math.max(pixelsPerTile, 8), 128);
-        adjustGraphicalElements();
-    }
-
-    /**
-     * Goes through all of the tiles and entities and modifies
-     * each graphical element to have fixed dimensions equal to that
-     * of the pixels per tile of this tile set.
+     * Adjusts the dimensions of graphical elements in
+     * this tile set.
      */
     public void adjustGraphicalElements() {
-        font = Res.modifyFont(font, null, (int) (this.pixelsPerTile * FONT_PIXEL_RATIO), Res.USE_DEFAULT, Res.USE_DEFAULT);
-        tiles.forEach(t -> {
-            t.getRepresentation().setDimensions(this.pixelsPerTile, this.pixelsPerTile);
-            t.setFont(font);
-        });
-        entities.forEach((f, e) -> e.getRepresentation().setDimensions(this.pixelsPerTile, this.pixelsPerTile));
+        tiles.forEach(t -> t.getRepresentation().setDimensions(PIXELS_PER_TILE, PIXELS_PER_TILE));
+        entities.forEach((f, e) -> e.getRepresentation().setDimensions(PIXELS_PER_TILE, PIXELS_PER_TILE));
     }
 
     /**
@@ -200,15 +171,6 @@ public class TileSet implements LogicalElement {
      */
     public UnicodeFont getFont() {
         return font;
-    }
-
-    /**
-     * Gets the font size for the current
-     * dimensions of each tile of the tile set.
-     * @return The font size for each tile.
-     */
-    public int getFontSize() {
-        return pixelsPerTile * 10 / 11;
     }
 
     /**
@@ -229,35 +191,14 @@ public class TileSet implements LogicalElement {
     }
 
     /**
-     * Gets the X value of the position of
-     * the tile set to be rendered on.
-     * @param baseX The base X of a tile (location in the tiles array list)
-     * @return The render X value.
-     */
-    private float getRenderX(float baseX) {
-        return (pixelsPerTile * baseX) - (position.getIntermediateX() * pixelsPerTile) + finePixelOffsetX;
-    }
-
-    /**
-     * Gets the Y value of the position of
-     * the tile set to be rendered on.
-     * @param baseY The base Y of a tile (location in the tiles array list)
-     * @return The render Y value.
-     */
-    private float getRenderY(float baseY) {
-        return (pixelsPerTile * baseY) - (position.getIntermediateY() * pixelsPerTile) + finePixelOffsetY;
-    }
-
-    private Image canvas; // The image object used to render tile set on.
-    private Graphics canvasGraphics; // The graphics object doing to the rendering.
-
-    /**
      * Renders the tile set onto the screen.
      * @param graphics The graphics object used to render anything on the main screen.
      */
     public void render(Graphics graphics) throws SlickException {
-        if(canvas == null) {
-            canvas = new Image(Game.activeGame.getResolutionWidth(), Game.activeGame.getResolutionHeight());
+        if(canvas == null
+           || canvas.getWidth() / PIXELS_PER_TILE != tiles.getWidth()
+           || canvas.getHeight() / PIXELS_PER_TILE != tiles.getHeight()) {
+            canvas = new Image(tiles.getWidth() * PIXELS_PER_TILE, tiles.getHeight() * PIXELS_PER_TILE);
             canvasGraphics = canvas.getGraphics();
         }
 
@@ -267,37 +208,41 @@ public class TileSet implements LogicalElement {
             if(!willTileBeVisibleY(iy))
                 continue;
 
-            float renderY = getRenderY(iy);
+            float renderY = iy * PIXELS_PER_TILE;
             for(int ix = 0; ix < tiles.getWidth(); ix++) {
                 if(!willTileBeVisibleX(ix))
                     continue;
 
-                float renderX = getRenderX(ix);
+                float renderX = ix * PIXELS_PER_TILE;
                 tiles.getElement(ix, iy).render(
-                        canvasGraphics,
-                        renderX,
-                        renderY,
-                        true
+                    canvasGraphics,
+                    renderX,
+                    renderY,
+                    true
                 );
 
                 //For debug:
                 //canvasGraphics.setColor(Color.red);
-                //canvasGraphics.drawRect(renderX, renderY, pixelsPerTile, pixelsPerTile);
+                //canvasGraphics.drawRect(renderX, renderY, PIXELS_PER_TILE, PIXELS_PER_TILE);
             }
         }
 
         entities.forEach((f, e) -> {
             FlowPosition entPos = e.getPosition();
-            float x = getRenderX(entPos.getIntermediateX());
-            float y = getRenderY(entPos.getIntermediateY());
+            float x = entPos.getIntermediateX() * PIXELS_PER_TILE;
+            float y = entPos.getIntermediateY() * PIXELS_PER_TILE;
             canvasGraphics.setDrawMode(Graphics.MODE_COLOR_MULTIPLY);
             canvasGraphics.setColor(new Color(0f, 0f, 0f, 0f));
-            canvasGraphics.fillRect(x + 1, y + 1, pixelsPerTile - 2, pixelsPerTile - 2);
+            canvasGraphics.fillRect(x, y, PIXELS_PER_TILE, PIXELS_PER_TILE);
             canvasGraphics.setDrawMode(Graphics.MODE_ADD);
             e.render(canvasGraphics, x, y, true);
         });
 
-        graphics.drawImage(canvas, 0, 0);
+        graphics.drawImage(
+            canvas.getScaledCopy(canvasScale),
+            (-position.getIntermediateX() * PIXELS_PER_TILE * canvasScale) - (FINE_ADJUSTMENT * canvasScale),
+            (-position.getIntermediateY() * PIXELS_PER_TILE * canvasScale)
+        );
     }
 
     /**
@@ -325,8 +270,8 @@ public class TileSet implements LogicalElement {
      * @return Whether that column would be visible or not.
      */
     private boolean willTileBeVisibleX(int x) {
-        return (x - position.getIntermediateX()) * pixelsPerTile + finePixelOffsetX >= -pixelsPerTile
-                && (x - position.getIntermediateX()) * pixelsPerTile + finePixelOffsetX < Game.activeGame.getResolutionWidth();
+        // TODO: REWRITE VISIBILITY FUNCTION
+        return true;
     }
 
     /**
@@ -336,7 +281,7 @@ public class TileSet implements LogicalElement {
      * @return Whether that row would be visible or not.
      */
     private boolean willTileBeVisibleY(int y) {
-        return (y - position.getIntermediateY()) * pixelsPerTile + finePixelOffsetY >= -pixelsPerTile
-                && (y - position.getIntermediateY()) * pixelsPerTile + finePixelOffsetY < Game.activeGame.getResolutionHeight();
+        // TODO: REWRITE VISIBILITY FUNCTION
+        return true;
     }
 }

@@ -1,5 +1,7 @@
 package com.magneticstudio.transience.ui;
 
+import com.magneticstudio.transience.util.FloatDimension;
+import com.magneticstudio.transience.util.FloatPoint;
 import com.magneticstudio.transience.util.IntDimension;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
