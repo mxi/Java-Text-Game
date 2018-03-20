@@ -113,7 +113,6 @@ public class TileSetGenerator {
 
         TileSet tileSet = new TileSet(width, height);
         tileSet.getPosition().setTransitionTime(tsTransitionTime);
-        tileSet.setPixelPerfect();
 
         final int generationAttempts = 250_000; // Number of attempts to create non-overlapping rooms.
         for(int i = 0; i < generationAttempts; i++) {

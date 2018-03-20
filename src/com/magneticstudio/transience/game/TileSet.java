@@ -16,8 +16,10 @@ import org.newdawn.slick.*;
 public class TileSet implements LogicalElement {
 
     private static final int PIXELS_PER_TILE = 64;
-    private static final int FINE_ADJUSTMENT = PIXELS_PER_TILE / 2;
+    private static final int CENTER_ADJUSTMENT = PIXELS_PER_TILE / 2;
     private static final int TILE_FONT_SIZE = 56;
+    private static final float CANVAS_SCALE_MAX = 2f; // The maximum canvas scale.
+    private static final float CANVAS_SCALE_MIN = .25f; // The minimum canvas scale.
 
     private ArrayList2D<Tile> tiles = new ArrayList2D<>(); // The 2d array of tiles.
     private EntityCollection entities = new EntityCollection(this); // The collection of entities.
@@ -28,7 +30,9 @@ public class TileSet implements LogicalElement {
     private Image canvas; // The image object used to render tile set on.
     private Graphics canvasGraphics; // The graphics object doing to the rendering.
 
-    private float canvasScale = 1f; // The scale of the canvas.
+    private float canvasScale = .5f; // The scale of the canvas.
+    private float scaleMod = 0f; // The amount to modify the scale by.
+    private int scaleModTimeRemain = 0; // The time remaining to scale the tile set.
 
      /**
       * Creates a new TileSet object with
@@ -48,6 +52,34 @@ public class TileSet implements LogicalElement {
         tiles.fill(Tile.createVoidTile(this));
         tiles.setLocked(true);
         generator = null;
+    }
+
+    /**
+     * Gets the scale of this tile set.
+     * @return Tile set scale.
+     */
+    public float getScale() {
+        return canvasScale;
+    }
+
+    /**
+     * Sets the scale of this tile set.
+     * @param nScale The new scale for this tile set.
+     */
+    public void setScale(float nScale) {
+        canvasScale = Math.max(Math.min(CANVAS_SCALE_MAX, nScale), CANVAS_SCALE_MIN);
+    }
+
+    /**
+     * Zooms in/out in the provided time.
+     * @param nScale The new scale of the tile set.
+     * @param time The time limit to reach the new scale.
+     */
+    public void setScale(float nScale, int time) {
+        if(time <= 0 || nScale < CANVAS_SCALE_MIN || nScale > CANVAS_SCALE_MAX)
+            return;
+        scaleMod = (nScale - canvasScale) / time;
+        scaleModTimeRemain = time;
     }
 
     // The limit on iterations for searching for a specific tile.
@@ -134,25 +166,13 @@ public class TileSet implements LogicalElement {
     }
 
     /**
-     * Centers on the specified tile.
+     * Focuses on the specified tile.
      * @param x The X value of the location of the tile.
      * @param y The Y value of the location of the tile.
      */
-    public void centerOn(int x, int y) {
-        position.setTargetX( (int) -(Game.activeGame.getResolutionWidth() / (2 * PIXELS_PER_TILE * canvasScale)) + x );
-        position.setTargetY( (int) -(Game.activeGame.getResolutionHeight() / (2 * PIXELS_PER_TILE * canvasScale)) + y );
-    }
-
-    /**
-     * Creates fine adjustments to perfectly
-     * center each tile with its designated
-     * square; location.
-     */
-    public void setPixelPerfect() {
-        float w = Game.activeGame.getResolutionWidth();
-        float h = Game.activeGame.getResolutionHeight();
-        float p = PIXELS_PER_TILE;
-        float n = (float) Math.floor(h / 2 / p);
+    public void focusOn(int x, int y) {
+        position.setTargetX( -x );
+        position.setTargetY( -y );
     }
 
     /**
@@ -188,6 +208,68 @@ public class TileSet implements LogicalElement {
      */
     public ArrayList2D<Tile> getTiles() {
         return tiles;
+    }
+
+    /**
+     * Gets the pixel X of the center of the tile X
+     * relative to the main rendering buffer (graphics
+     * object passed to the render method in this tile set).
+     * @param tileX The column number of the target tile to get render X of.
+     * @return The pixel X of the center of the tile on the main rendering buffer.
+     */
+    private float getScreenTileRenderX(int tileX) {
+        return getScreenCanvasRenderX() + (tileX * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
+    }
+
+    /**
+     * Gets the pixel Y of the center of the tile Y
+     * relative to the main rendering buffer (graphics
+     * object passed to the render method in this tile set).
+     * @param tileY The row number of the target tile to get render Y of.
+     * @return The pixel Y of the center of the tile on the main rendering buffer.
+     */
+    private float getScreenTileRenderY(int tileY) {
+        return getScreenCanvasRenderY() + (tileY * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
+    }
+
+    /**
+     * Gets the pixel X of the center of
+     * the tile X.
+     * @param tileX The tile X (tile on which column)
+     * @return The X value of the center of the tile when rendered onto the canvas.
+     */
+    private float getCanvasTileRenderX(int tileX) {
+        return (tileX * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
+    }
+
+    /**
+     * Gets the pixel Y of the center of
+     * the tile Y.
+     * @param tileY The tile X (tile on which row)
+     * @return The Y value of the center of the tile when rendered onto the canvas.
+     */
+    private float getCanvasTileRenderY(int tileY) {
+        return (tileY * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
+    }
+
+    /**
+     * Gets the X value of the render position on screen
+     * for the canvas of this tile set.
+     * @return Render X value of tile set canvas.
+     */
+    private float getScreenCanvasRenderX() {
+        return (Game.activeGame.getResolutionWidth() / 2) - (CENTER_ADJUSTMENT * canvasScale)
+                + (position.getIntermediateX() * PIXELS_PER_TILE * canvasScale);
+    }
+
+    /**
+     * Gets the Y value of the render position on screen
+     * for the canvas of this tile set.
+     * @return Render Y value of tile set canvas.
+     */
+    private float getScreenCanvasRenderY() {
+        return (Game.activeGame.getResolutionHeight() / 2) - (CENTER_ADJUSTMENT * canvasScale)
+                + (position.getIntermediateY() * PIXELS_PER_TILE * canvasScale);
     }
 
     /**
@@ -240,8 +322,8 @@ public class TileSet implements LogicalElement {
 
         graphics.drawImage(
             canvas.getScaledCopy(canvasScale),
-            (-position.getIntermediateX() * PIXELS_PER_TILE * canvasScale) - (FINE_ADJUSTMENT * canvasScale),
-            (-position.getIntermediateY() * PIXELS_PER_TILE * canvasScale)
+            getScreenCanvasRenderX(),
+            getScreenCanvasRenderY()
         );
     }
 
@@ -258,7 +340,12 @@ public class TileSet implements LogicalElement {
         });
         if(entities.getPlayer() != null) {
             FlowPosition playerPosition = entities.getPlayer().getPosition();
-            centerOn(playerPosition.getTargetX(), playerPosition.getTargetY());
+            focusOn(playerPosition.getTargetX(), playerPosition.getTargetY());
+        }
+        if(scaleModTimeRemain > 0) {
+            canvasScale += scaleModTimeRemain - milliseconds < 0 ?
+                scaleMod * scaleModTimeRemain : scaleMod * milliseconds;
+            scaleModTimeRemain -= milliseconds;
         }
         position.update(milliseconds);
     }
@@ -270,8 +357,8 @@ public class TileSet implements LogicalElement {
      * @return Whether that column would be visible or not.
      */
     private boolean willTileBeVisibleX(int x) {
-        // TODO: REWRITE VISIBILITY FUNCTION
-        return true;
+        float translatedX = getScreenCanvasRenderX() + (x * PIXELS_PER_TILE * canvasScale);
+        return translatedX > (-PIXELS_PER_TILE * canvasScale) && translatedX < Game.activeGame.getResolutionWidth();
     }
 
     /**
@@ -281,7 +368,7 @@ public class TileSet implements LogicalElement {
      * @return Whether that row would be visible or not.
      */
     private boolean willTileBeVisibleY(int y) {
-        // TODO: REWRITE VISIBILITY FUNCTION
-        return true;
+        float translatedY = getScreenCanvasRenderY() + (y * PIXELS_PER_TILE * canvasScale);
+        return translatedY > (-PIXELS_PER_TILE * canvasScale) && translatedY < Game.activeGame.getResolutionHeight();
     }
 }

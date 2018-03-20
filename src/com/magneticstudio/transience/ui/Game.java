@@ -1,15 +1,12 @@
 package com.magneticstudio.transience.ui;
 
-import com.magneticstudio.transience.game.Player;
 import com.magneticstudio.transience.game.TileSet;
 import com.magneticstudio.transience.game.TileSetGenerator;
 import com.magneticstudio.transience.util.RadialVignetteGenerator;
-import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -117,9 +114,9 @@ public class Game extends BasicGame {
             fpsNotification.drawString(FPS_SHOW_X, FPS_SHOW_Y, Integer.toString(gc.getFPS()));
         }
 
-        graphics.setColor(Color.cyan);
-        graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
-        graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
+        //graphics.setColor(Color.cyan);
+        //graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
+        //graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
     }
 
     /**

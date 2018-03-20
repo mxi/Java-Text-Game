@@ -4,6 +4,8 @@ import com.magneticstudio.transience.ui.Game;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 
+import java.awt.*;
+
 /**
  * This class is designed to test the class
  * "Game" in the source code package.
@@ -19,7 +21,8 @@ public final class GameTest {
     public static void main(String[] args) throws SlickException, NoSuchFieldException, IllegalAccessException {
         Game game = new Game("Test");
 
-        AppGameContainer container = new AppGameContainer(game, 1280, 720, false);
+        Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
+        AppGameContainer container = new AppGameContainer(game, (int) resolution.getWidth(), (int) resolution.getHeight(), true);
         container.setIcons(new String[] {
                 "resources/logos/magnetic-studio-temp-icon-16.png",
                 "resources/logos/magnetic-studio-temp-icon-32.png"
