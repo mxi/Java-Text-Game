@@ -1,7 +1,6 @@
 package com.magneticstudio.transience.game;
 
 import com.magneticstudio.transience.ui.*;
-import com.magneticstudio.transience.util.FloatPoint;
 import com.magneticstudio.transience.util.FlowPosition;
 import com.magneticstudio.transience.util.IntPoint;
 import org.newdawn.slick.Color;
@@ -13,7 +12,7 @@ import org.newdawn.slick.Graphics;
  *
  * @author Max
  */
-public abstract class Entity implements Displayable {
+public class Entity implements Displayable {
 
     private GraphicalElement representation; // The representation of this entity.
     private FlowPosition position = new FlowPosition(0, 0); // The position of this entity.
@@ -134,13 +133,6 @@ public abstract class Entity implements Displayable {
     public void updatePosition(int milliseconds) {
         position.update(milliseconds);
     }
-
-    /**
-     * Updates the entity object.
-     * @param tsLocated The tile set this entity is located on.
-     * @param milliseconds The time in milliseconds since the last update.
-     */
-    public abstract void entityUpdate(TileSet tsLocated, int milliseconds);
 
     /**
      * Renders this entity onto the screen.

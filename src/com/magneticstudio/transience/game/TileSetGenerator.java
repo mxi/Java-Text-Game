@@ -130,7 +130,7 @@ public class TileSetGenerator {
         }
 
         if(autoPlayerSpawn)
-            tileSet.getEntities().spawnPlayer();
+            tileSet.getEntities().spawnPlayer(tileSet);
 
         tileSet.adjustGraphicalElements();
 

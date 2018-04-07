@@ -35,8 +35,7 @@ public class Player extends Entity {
      * @param tsLocated The tile set this entity is located on.
      * @param milliseconds The time in milliseconds since the last update.
      */
-    @Override
-    public void entityUpdate(TileSet tsLocated, int milliseconds) {
+    public void update(TileSet tsLocated, int milliseconds) {
         int newX = getX();
         int newY = getY();
         if(GameKeyboard.isTapped(KEY_GO_UP))
@@ -58,8 +57,10 @@ public class Player extends Entity {
 
         if(newX != getX() || newY != getY()) {
             Tile toMoveTo = tsLocated.getTiles().getElement(newX, newY);
-            if(toMoveTo != null && toMoveTo.isTraversable())
+            if(toMoveTo != null && toMoveTo.isTraversable()) {
                 setPosition(newX, newY);
+                tsLocated.runAi();
+            }
         }
     }
 }
