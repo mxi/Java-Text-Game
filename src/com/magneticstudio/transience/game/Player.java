@@ -3,6 +3,7 @@ package com.magneticstudio.transience.game;
 import com.magneticstudio.transience.ui.CharacterCell;
 import com.magneticstudio.transience.ui.GameKeyboard;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 /**
@@ -17,6 +18,10 @@ public class Player extends Entity {
     private static final int KEY_GO_LEFT = Input.KEY_A;
     private static final int KEY_GO_RIGHT = Input.KEY_D;
     private static final int KEY_GO_DOWN = Input.KEY_S;
+
+    // inv slot 1
+    // inv slot 2
+    // inv slot 3
 
     /**
      * Creates a new player object.
@@ -62,5 +67,18 @@ public class Player extends Entity {
                 tsLocated.runAi();
             }
         }
+    }
+
+    /**
+     * Renders this player (and other things) onto the screen.
+     * @param graphics The graphics object used to render anything on the main screen.
+     * @param x The X value of the position that this object is supposed to be rendered at.
+     * @param y The Y value of the position that this object is supposed to be rendered at.
+     * @param centerSurround Whether or not the x and y are based around the center of the element.
+     */
+    @Override
+    public void render(Graphics graphics, float x, float y, boolean centerSurround) {
+        getRepresentation().render(graphics, x, y, centerSurround);
+
     }
 }

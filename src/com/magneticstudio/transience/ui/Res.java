@@ -1,9 +1,12 @@
 package com.magneticstudio.transience.ui;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.*;
 import org.newdawn.slick.font.effects.ColorEffect;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.List;
 
 /**
  * This class is a "redesign" of the previous
@@ -85,6 +88,41 @@ public class Res {
             return font;
         }
         catch(SlickException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Loads an image from the specified location.
+     * The Slick2D image must be loaded by using
+     * Java's ImageIO class to read the file and
+     * copy it over to a Slick2D image because
+     * after the game has started rendering, Images
+     * don't load properly.
+     * @param location The location to load the image from.
+     * @return The loaded image.
+     */
+    public static Image loadImage(String location) {
+        try {
+            BufferedImage loaded = ImageIO.read(new File(location));
+            Image image = new Image(loaded.getWidth(), loaded.getHeight());
+            Graphics graphics = image.getGraphics();
+            graphics.setAntiAlias(false);
+            for(int x = 0; x < loaded.getWidth(); x++) {
+                for(int y = 0; y < loaded.getHeight(); y++) {
+                    int argb = loaded.getRGB(x, y);
+                    graphics.setColor(new Color(
+                        (argb >> 16) & 0xFF,
+                        (argb >> 8)  & 0xFF,
+                        (argb >> 4)  & 0xFF,
+                        (argb >> 24) & 0xFF
+                    ));
+                    graphics.fillRect(x, y, 1, 1);
+                }
+            }
+            return image;
+        }
+        catch(Exception e) {
             return null;
         }
     }

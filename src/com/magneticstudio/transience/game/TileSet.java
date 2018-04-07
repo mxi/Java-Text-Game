@@ -382,6 +382,9 @@ public class TileSet implements LogicalElement {
             focusOn(playerPosition.getTargetX(), playerPosition.getTargetY());
         }
 
+        if(entities.getPlayer() != null)
+            entities.getPlayer().update(this, milliseconds);
+
         runAi = false;
 
         // Scaling and transformations:

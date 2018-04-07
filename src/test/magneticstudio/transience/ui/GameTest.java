@@ -1,5 +1,7 @@
 package test.magneticstudio.transience.ui;
 
+import com.magneticstudio.transience.game.InventoryStack;
+import com.magneticstudio.transience.game.Item;
 import com.magneticstudio.transience.ui.Game;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
@@ -21,6 +23,8 @@ public final class GameTest {
     public static void main(String[] args) throws SlickException, NoSuchFieldException, IllegalAccessException {
         Game game = new Game("Test");
 
+        InventoryStack<Item> items = new InventoryStack<>();
+
         Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
         AppGameContainer container = new AppGameContainer(game, (int) resolution.getWidth(), (int) resolution.getHeight(), true);
         container.setIcons(new String[] {
@@ -29,7 +33,7 @@ public final class GameTest {
         });
         container.setVerbose(false);
         container.setShowFPS(false);
-        container.setVSync(false);
+        container.setVSync(true);
         container.start();
     }
 }
