@@ -31,7 +31,7 @@ public class Map implements MapInterface {
 	private float lightSourceRadius = 4.5f; // Light source radius
 	//private List<Hallway> hallways;
 
-	private class Room
+	public class Room
 	{
 		private int Xsize = MainGame.random.nextInt(9) + 7;
 		private int Ysize = MainGame.random.nextInt(9) + 7;
@@ -145,6 +145,7 @@ public class Map implements MapInterface {
 				limit = rooms.size();
 			}
 		}
+		System.out.println(rooms.get(rooms.size() - 1).X);
 		
 		//HallwayBuild2(rooms);
 		HallwayBuild2(rooms);

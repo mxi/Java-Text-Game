@@ -2,7 +2,6 @@ package newGame;
 
 import java.util.Random;
 
-import newGame.Animations.Animations;
 import newGame.Entities.Character;
 import newGame.Entities.CharacterType;
 import newGame.Entities.Shield;
@@ -10,7 +9,6 @@ import newGame.Entities.Monsters.Archer;
 import newGame.Entities.Monsters.Goblin;
 import newGame.Entities.Monsters.HobGoblin;
 import newGame.Entities.Monsters.Monster;
-import newGame.Entities.Monsters.Sniper;
 import newGame.Entities.Orbs.ExpOrb;
 import newGame.Entities.Orbs.HealthOrb;
 import newGame.Entities.Weapons.Knife;
@@ -20,7 +18,7 @@ import newGame.Entities.Weapons.ShortBow;
 import newGame.Mapping.Map;
 import newGame.Mapping.MapInterface;
 import newGame.Mapping.Tile;
-import newGame.menus.*;
+import newGame.menus.Menu;
 import sz.csi.ConsoleSystemInterface;
 import sz.csi.wswing.WSwingConsoleInterface;
 
