@@ -29,7 +29,7 @@ public final class GameTest {
         });
         container.setVerbose(false);
         container.setShowFPS(false);
-        container.setVSync(true);
+        container.setVSync(false);
         container.start();
     }
 }

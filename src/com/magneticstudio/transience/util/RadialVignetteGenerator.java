@@ -24,14 +24,15 @@ public class RadialVignetteGenerator implements ImageGenerator {
     public static Image createBackgroundForGame(Color bgColor, boolean inverted)
         throws SlickException {
         RadialVignetteGenerator generator = new RadialVignetteGenerator();
-        generator.setImageWidth(Game.activeGame.getResolutionWidth());
-        generator.setImageHeight(Game.activeGame.getResolutionHeight());
+        generator.setImageWidth(Game.activeGame.getResolutionWidth() / 4);
+        generator.setImageHeight(Game.activeGame.getResolutionHeight() / 4);
         generator.setCenterX(generator.getImageWidth() / 2);
         generator.setCenterY(generator.getImageHeight() / 2);
         generator.setRadius(generator.getImageHeight());
         generator.setSoftness(1.0f);
         generator.setColor(bgColor);
         generator.setInverted(inverted);
+        generator.setUpscale(4f);
         return generator.generate();
     }
 

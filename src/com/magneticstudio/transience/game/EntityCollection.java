@@ -13,30 +13,24 @@ import java.util.*;
  */
 public class EntityCollection {
 
-    private TileSet containingTileSet; // The containing tile set of this entity collection.
-    private Map<Faction, List<Entity>> coreCollection = new HashMap<>(); // The underlying structure of the collection of entities.
-    private Faction playerFaction; // The faction the player is a part of.
+    private List<Entity> entities; // The list of entities located in this collection.
     private Player player; // The actual player of this entity collection.
 
     /**
      * Creates a new entity collection object
      * and sets everything to default.
      */
-    public EntityCollection(TileSet container) {
-        for(Faction f : Faction.values()) {
-            this.coreCollection.put(f, new ArrayList<>());
-        }
-        this.containingTileSet = container;
-        this.playerFaction = Faction.NONE;
+    public EntityCollection() {
+        entities = new ArrayList<>();
     }
 
     /**
      * Creates the player object.
      */
-    public void spawnPlayer() {
+    public void spawnPlayer(TileSet ts) {
         if(player == null)
-            player = new Player(containingTileSet);
-        IntPoint air = containingTileSet.randomPositionOn(Tile.Type.AIR);
+            player = new Player(ts);
+        IntPoint air = ts.randomPositionOn(Tile.Type.AIR);
         player.setPosition(air.x, air.y);
     }
 
@@ -49,38 +43,23 @@ public class EntityCollection {
     }
 
     /**
-     * Gets the faction the player is a part of.
-     * @return The faction that the player is a part of.
+     * Returns the list of all entities in this array list.
+     * @return The list of entities in this collection.
      */
-    public Faction getPlayerFaction() {
-        return playerFaction;
+    public List<Entity> getEntities() {
+        return entities;
     }
 
     /**
-     * Returns the list of entities present in this collection
-     * from the specified faction. The factions don't include the
-     * player.
-     * @param f The faction to list the entities of.
-     * @return The list of entities from that faction in this collection.
-     */
-    public List<Entity> getEntities(Faction f) {
-        return coreCollection.get(f);
-    }
-
-    /**
-     * Goes through all of the entities in
-     * this collection and performs something
-     * on each individual entity.
-     * @param e The forEach interface used to process each entity.
+     * Goes through all of the entities and performs some
+     * action on each individual entity.
+     * @param e The ForEach object used to perform an action on an entity.
      */
     public void forEach(ForEach e) {
-        for(Map.Entry<Faction, List<Entity>> entry : coreCollection.entrySet()) {
-            Faction faction = entry.getKey();
-            for(Entity ind : entry.getValue())
-                e.onEntity(faction, ind);
-        }
+        for(Entity entity : entities)
+            e.onEntity(entity);
         if(player != null)
-            e.onEntity(playerFaction, player);
+            e.onEntity(player);
     }
 
     /**
@@ -91,9 +70,8 @@ public class EntityCollection {
     public interface ForEach {
         /**
          * Function that runs for an individual entity.
-         * @param f The faction that this entity is a part of.
          * @param e The entity this function should process.
          */
-        void onEntity(Faction f, Entity e);
+        void onEntity(Entity e);
     }
 }
