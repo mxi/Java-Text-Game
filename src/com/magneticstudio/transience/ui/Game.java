@@ -3,6 +3,7 @@ package com.magneticstudio.transience.ui;
 import com.magneticstudio.transience.game.TileSet;
 import com.magneticstudio.transience.game.TileSetGenerator;
 import com.magneticstudio.transience.util.RadialVignetteGenerator;
+import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -31,6 +32,8 @@ public class Game extends BasicGame {
 
     private TileSet tileSet;
     private Background background;
+
+    private Sprite sprite;
 
     /**
      * Creates a new Game object with the
@@ -71,7 +74,12 @@ public class Game extends BasicGame {
 
         MenuKeyboard.HOLD_TIME = 500;
         MenuKeyboard.CONSECUTIVE_HOLD_PRESS = 25;
+
+        sprite = new Sprite(new Image("resources/textures/fx/heavy-explosion.png"), 100, 100, 120);
+        sprite.setDimensions(75, 75);
     }
+
+    private boolean updateTileSet = true;
 
     /**
      * Function gets called every 1000 milliseconds to update the game.
@@ -86,8 +94,15 @@ public class Game extends BasicGame {
 
         GameKeyboard.poll();
 
+        if(Keyboard.isKeyDown(Input.KEY_I))
+            updateTileSet = false;
+        else if(Keyboard.isKeyDown(Input.KEY_O))
+            updateTileSet = true;
+
         background.update();
-        tileSet.update(elapsed);
+
+        if(updateTileSet)
+            tileSet.update(elapsed);
     }
 
     private static final int FPS_SHOW_X = 5; // The X location of the fps counter.
@@ -117,6 +132,8 @@ public class Game extends BasicGame {
         //graphics.setColor(Color.cyan);
         //graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
         //graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
+
+        sprite.render(graphics, tileSet.getScreenTileRenderX(10), tileSet.getScreenTileRenderY(10), false);
     }
 
     /**

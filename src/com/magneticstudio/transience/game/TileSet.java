@@ -26,7 +26,6 @@ public class TileSet implements LogicalElement {
     private static final float SHAKE_FREQUENCY_MIN = 2f; // The minimum frequency of the shake.
     private static final float SHAKE_INTENSITY_MAX = 16f; // The maximum shake intensity/amplitude.
     private static final float SHAKE_INTENSITY_MIN = 2f; // The minimum shake intensity/amplitude.
-    private static final float SHAKE_INTENSITY_X_RATIO = .5f; // The ratio of the shake on the horizontal.
     private static final float SHAKE_INTENSITY_Y_RATIO = 1f; // The ratio of the shake on the vertical.
 
     private ArrayList2D<Tile> tiles = new ArrayList2D<>(); // The 2d array of tiles.
@@ -243,7 +242,7 @@ public class TileSet implements LogicalElement {
      * @param tileX The column number of the target tile to get render X of.
      * @return The pixel X of the center of the tile on the main rendering buffer.
      */
-    private float getScreenTileRenderX(int tileX) {
+    public float getScreenTileRenderX(int tileX) {
         return getScreenCanvasRenderX() + (tileX * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
     }
 
@@ -254,8 +253,9 @@ public class TileSet implements LogicalElement {
      * @param tileY The row number of the target tile to get render Y of.
      * @return The pixel Y of the center of the tile on the main rendering buffer.
      */
-    private float getScreenTileRenderY(int tileY) {
-        return getScreenCanvasRenderY() + (tileY * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
+    public float getScreenTileRenderY(int tileY) {
+        return getScreenCanvasRenderY() + (tileY * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale)
+                + (float) Math.sin(shakeIntensity * shakeFreq) * shakeIntensity * SHAKE_INTENSITY_Y_RATIO;
     }
 
     /**
@@ -264,7 +264,7 @@ public class TileSet implements LogicalElement {
      * @param tileX The tile X (tile on which column)
      * @return The X value of the center of the tile when rendered onto the canvas.
      */
-    private float getCanvasTileRenderX(int tileX) {
+    public float getCanvasTileRenderX(int tileX) {
         return (tileX * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
     }
 
@@ -274,7 +274,7 @@ public class TileSet implements LogicalElement {
      * @param tileY The tile X (tile on which row)
      * @return The Y value of the center of the tile when rendered onto the canvas.
      */
-    private float getCanvasTileRenderY(int tileY) {
+    public float getCanvasTileRenderY(int tileY) {
         return (tileY * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
     }
 
@@ -283,7 +283,7 @@ public class TileSet implements LogicalElement {
      * for the canvas of this tile set.
      * @return Render X value of tile set canvas.
      */
-    private float getScreenCanvasRenderX() {
+    public float getScreenCanvasRenderX() {
         return (Game.activeGame.getResolutionWidth() / 2) - (CENTER_ADJUSTMENT * canvasScale)
                 + (position.getIntermediateX() * PIXELS_PER_TILE * canvasScale);
     }
@@ -293,9 +293,21 @@ public class TileSet implements LogicalElement {
      * for the canvas of this tile set.
      * @return Render Y value of tile set canvas.
      */
-    private float getScreenCanvasRenderY() {
+    public float getScreenCanvasRenderY() {
         return (Game.activeGame.getResolutionHeight() / 2) - (CENTER_ADJUSTMENT * canvasScale)
                 + (position.getIntermediateY() * PIXELS_PER_TILE * canvasScale);
+    }
+
+    /**
+     * Goes through the non-player entities
+     * in the entity collection and runs their
+     * AI.
+     */
+    public void runAi() {
+        entities.forEachNonPlayer((e, f) -> {
+            //if(e instanceof Enemy)
+            //    ((Enemy)e).runAi(this);
+        });
     }
 
     /**
@@ -350,7 +362,7 @@ public class TileSet implements LogicalElement {
 
         graphics.drawImage(
             canvas.getScaledCopy(canvasScale),
-            getScreenCanvasRenderX() + (shakeOffset * SHAKE_INTENSITY_X_RATIO),
+            getScreenCanvasRenderX(),
             getScreenCanvasRenderY() + (shakeOffset * SHAKE_INTENSITY_Y_RATIO)
         );
     }

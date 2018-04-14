@@ -1,6 +1,5 @@
 package com.magneticstudio.transience.ui;
 
-import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Graphics;
 
 import java.util.ArrayList;
@@ -219,6 +218,48 @@ public abstract class UIMenu implements MenuKeyboardInterceptor, MenuMouseInterc
      */
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    /**
+     * Processes keyboard input from the MenuKeyboard class
+     * and its dispatch system.
+     * @param type The type of event.
+     * @param eventCharacter The key/character of the event.
+     */
+    @Override
+    public void onKeyEvent(KeyboardEventType type, Character eventCharacter) {
+        if(type == KeyboardEventType.KEY_PRESS && eventCharacter == 9) { // Toggle to next component.
+            setFocusedComponentNext();
+            return;
+        }
+
+        if(hasFocusedComponent() && (type == KeyboardEventType.KEY_PRESS || type == KeyboardEventType.KEY_HOLD) ) {
+            getFocusedComponent().interpretKey(type, eventCharacter);
+        }
+    }
+
+    /**
+     * Processes mouse input from the MenuMouse class
+     * and its dispatch system.
+     * @param type The type of event.
+     * @param eventButton The button of the event.
+     */
+    @Override
+    public void onMouseEvent(MouseEventType type, Integer eventButton) {
+        int mx = MenuMouse.getX() + getX();
+        int my = MenuMouse.getY() + getY();
+
+        if(!hasFocusedComponent() || focusedComponent != getComponentOn(mx, my)) {
+            setFocusedComponentOn(mx, my);
+            if(hasFocusedComponent())
+                getFocusedComponent().interpretMouse(type, eventButton);
+        }
+        else if(focusedComponent == getComponentOn(mx, my)) {
+            getFocusedComponent().interpretMouse(type, eventButton);
+        }
+        else {
+            focusedComponent = -1;
+        }
     }
 
     /**

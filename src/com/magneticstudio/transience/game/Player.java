@@ -24,9 +24,11 @@ public class Player extends Entity {
      */
     public Player(TileSet onTileSet) {
         super(onTileSet);
-        CharacterCell representation = (CharacterCell) getRepresentation();
-        representation.setColor(new Color(255, 255, 50, 255));
-        representation.setCharacter('@');
+        if(getRepresentation() instanceof CharacterCell) {
+            CharacterCell representation = (CharacterCell) getRepresentation();
+            representation.setColor(new Color(255, 255, 50, 255));
+            representation.setCharacter('@');
+        }
         getPosition().setTransitionTime(GameKeyboard.KEY_COOLDOWN_TIME);
     }
 
@@ -58,8 +60,10 @@ public class Player extends Entity {
 
         if(newX != getX() || newY != getY()) {
             Tile toMoveTo = tsLocated.getTiles().getElement(newX, newY);
-            if(toMoveTo != null && toMoveTo.isTraversable())
+            if(toMoveTo != null && toMoveTo.isTraversable()) {
                 setPosition(newX, newY);
+                tsLocated.runAi();
+            }
         }
     }
 }

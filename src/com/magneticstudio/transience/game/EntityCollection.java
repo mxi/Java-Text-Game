@@ -84,6 +84,21 @@ public class EntityCollection {
     }
 
     /**
+     * Goes through all of the entities in
+     * this collection excluding the player,
+     * and performs something on each individual
+     * entity.
+     * @param e The forEach interface used to process each entity.
+     */
+    public void forEachNonPlayer(ForEach e) {
+        for(Map.Entry<Faction, List<Entity>> entry : coreCollection.entrySet()) {
+            Faction faction = entry.getKey();
+            for(Entity ind : entry.getValue())
+                e.onEntity(faction, ind);
+        }
+    }
+
+    /**
      * This interface is used to go through each
      * entity in this collection to either render
      * or update them individually.

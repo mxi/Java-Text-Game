@@ -22,7 +22,7 @@ public final class GameTest {
         Game game = new Game("Test");
 
         Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
-        AppGameContainer container = new AppGameContainer(game, (int) resolution.getWidth(), (int) resolution.getHeight(), true);
+        AppGameContainer container = new AppGameContainer(game, (int) 1280, (int) 720, false);
         container.setIcons(new String[] {
                 "resources/logos/magnetic-studio-temp-icon-16.png",
                 "resources/logos/magnetic-studio-temp-icon-32.png"
