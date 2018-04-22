@@ -29,7 +29,7 @@ public class TileSet implements LogicalElement {
     private static final float SHAKE_INTENSITY_Y_RATIO = 1f; // The ratio of the shake on the vertical.
 
     private ArrayList2D<Tile> tiles = new ArrayList2D<>(); // The 2d array of tiles.
-    private EntityCollection entities = new EntityCollection(this); // The collection of entities.
+    private EntityCollection entities = new EntityCollection(); // The collection of entities.
     private FlowPosition position = new FlowPosition(); // The position of this tile set.
     private UnicodeFont font; // The font used to render the individual tiles.
     private TileSetGenerator generator; // The generator used to create this tile set.
@@ -46,6 +46,8 @@ public class TileSet implements LogicalElement {
     private float shakeIntensityMod = 0f; // The change per millisecond of the shake intensity.
     private int shakeTimeRemain = 0; // The time remaining for the shake.
 
+    private boolean runAi = false; // Whether to run the Ai on the next update.
+
      /**
       * Creates a new TileSet object with
       * the specified dimensions.
@@ -54,11 +56,11 @@ public class TileSet implements LogicalElement {
       */
     public TileSet(int width, int height) {
         font = Res.loadFont(
-                "Consolas.ttf",
-                Color.white,
-                TILE_FONT_SIZE,
-                Res.USE_DEFAULT,
-                Res.USE_DEFAULT
+            "Consolas.ttf",
+            Color.white,
+            TILE_FONT_SIZE,
+            Res.USE_DEFAULT,
+            Res.USE_DEFAULT
         );
         tiles.setDimensions(width, height);
         tiles.fill(Tile.createVoidTile(this));
@@ -206,7 +208,7 @@ public class TileSet implements LogicalElement {
      */
     public void adjustGraphicalElements() {
         tiles.forEach(t -> t.getRepresentation().setDimensions(PIXELS_PER_TILE, PIXELS_PER_TILE));
-        entities.forEach((f, e) -> e.getRepresentation().setDimensions(PIXELS_PER_TILE, PIXELS_PER_TILE));
+        entities.forEach(e -> e.getRepresentation().setDimensions(PIXELS_PER_TILE, PIXELS_PER_TILE));
     }
 
     /**
@@ -233,6 +235,14 @@ public class TileSet implements LogicalElement {
      */
     public ArrayList2D<Tile> getTiles() {
         return tiles;
+    }
+
+    /**
+     * Tells the entities in the entity collection
+     * to perform some action on next update.
+     */
+    public void runAi() {
+        runAi = true;
     }
 
     /**
@@ -299,18 +309,6 @@ public class TileSet implements LogicalElement {
     }
 
     /**
-     * Goes through the non-player entities
-     * in the entity collection and runs their
-     * AI.
-     */
-    public void runAi() {
-        entities.forEachNonPlayer((e, f) -> {
-            //if(e instanceof Enemy)
-            //    ((Enemy)e).runAi(this);
-        });
-    }
-
-    /**
      * Renders the tile set onto the screen.
      * @param graphics The graphics object used to render anything on the main screen.
      */
@@ -347,7 +345,7 @@ public class TileSet implements LogicalElement {
             }
         }
 
-        entities.forEach((f, e) -> {
+        entities.forEach(e -> {
             FlowPosition entPos = e.getPosition();
             float x = entPos.getIntermediateX() * PIXELS_PER_TILE;
             float y = entPos.getIntermediateY() * PIXELS_PER_TILE;
@@ -374,14 +372,22 @@ public class TileSet implements LogicalElement {
      */
     @Override
     public void update(int milliseconds) {
-        entities.forEach((f, e) -> {
-            e.entityUpdate(this, milliseconds);
+        // Entity updates.
+        entities.forEach(e -> {
             e.updatePosition(milliseconds);
+            if(runAi && e instanceof Enemy)
+                ((Enemy)e).runAi(this);
+            else
+                ((Player)e).update(this);
         });
         if(entities.getPlayer() != null) {
             FlowPosition playerPosition = entities.getPlayer().getPosition();
             focusOn(playerPosition.getTargetX(), playerPosition.getTargetY());
         }
+
+        runAi = false;
+
+        // Scaling and transformations:
         if(scaleModTimeRemain > 0) {
             canvasScale += scaleModTimeRemain - milliseconds < 0 ? scaleMod * scaleModTimeRemain : scaleMod * milliseconds;
             scaleModTimeRemain -= milliseconds;

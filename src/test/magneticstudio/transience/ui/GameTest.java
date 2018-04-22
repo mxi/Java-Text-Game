@@ -1,10 +1,12 @@
 package test.magneticstudio.transience.ui;
 
-import com.magneticstudio.transience.ui.Game;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 
-import java.awt.*;
+import com.magneticstudio.transience.ui.Game;
 
 /**
  * This class is designed to test the class
@@ -22,14 +24,14 @@ public final class GameTest {
         Game game = new Game("Test");
 
         Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
-        AppGameContainer container = new AppGameContainer(game, (int) 1280, (int) 720, false);
+        AppGameContainer container = new AppGameContainer(game, (int) resolution.getWidth(), (int) resolution.getHeight(), false);
         container.setIcons(new String[] {
                 "resources/logos/magnetic-studio-temp-icon-16.png",
                 "resources/logos/magnetic-studio-temp-icon-32.png"
         });
         container.setVerbose(false);
         container.setShowFPS(false);
-        container.setVSync(true);
+        container.setVSync(false);
         container.start();
     }
 }

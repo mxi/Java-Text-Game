@@ -3,5 +3,19 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="lib/libjcsi.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/ibxm.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/jinput.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/jnlp.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/jogg-0.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/jorbis-0.0.15.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/lwjgl_util_applet.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/lwjgl.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/natives-linux.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/natives-mac.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/natives-windows.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/slick-examples.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/slick.jar"/>
+	<classpathentry kind="lib" path="lib/slick2d/jars/tinylinepp.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

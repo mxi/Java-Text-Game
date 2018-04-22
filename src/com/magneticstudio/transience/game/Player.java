@@ -35,10 +35,8 @@ public class Player extends Entity {
     /**
      * Updates this player object.
      * @param tsLocated The tile set this entity is located on.
-     * @param milliseconds The time in milliseconds since the last update.
      */
-    @Override
-    public void entityUpdate(TileSet tsLocated, int milliseconds) {
+    public void update(TileSet tsLocated) {
         int newX = getX();
         int newY = getY();
         if(GameKeyboard.isTapped(KEY_GO_UP))
