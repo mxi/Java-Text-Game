@@ -54,7 +54,9 @@ public class Player extends Entity {
         else if(GameKeyboard.isTapped(Input.KEY_R))
             tsLocated.setScale(.5f, 500);
         else if(GameKeyboard.isTapped(Input.KEY_L))
-            tsLocated.shake(12f, 3f, 1000);
+            tsLocated.shake(50f, 3f, 2000);
+        else if(GameKeyboard.isTapped(Input.KEY_K))
+            tsLocated.getEnvironment().createHeavyExplosion(tsLocated, 0, 0);
 
         if(newX != getX() || newY != getY()) {
             Tile toMoveTo = tsLocated.getTiles().getElement(newX, newY);

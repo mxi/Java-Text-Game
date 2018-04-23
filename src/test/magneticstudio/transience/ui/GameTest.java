@@ -24,7 +24,8 @@ public final class GameTest {
         Game game = new Game("Test");
 
         Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
-        AppGameContainer container = new AppGameContainer(game, (int) resolution.getWidth(), (int) resolution.getHeight(), false);
+        AppGameContainer container = new AppGameContainer(game, (int) resolution.getWidth(), (int) resolution.getHeight(), true);
+        container.setMouseGrabbed(true);
         container.setIcons(new String[] {
                 "resources/logos/magnetic-studio-temp-icon-16.png",
                 "resources/logos/magnetic-studio-temp-icon-32.png"

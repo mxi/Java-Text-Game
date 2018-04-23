@@ -1,5 +1,6 @@
 package com.magneticstudio.transience.ui;
 
+import com.magneticstudio.transience.game.Environment;
 import com.magneticstudio.transience.game.TileSet;
 import com.magneticstudio.transience.game.TileSetGenerator;
 import com.magneticstudio.transience.util.RadialVignetteGenerator;
@@ -32,8 +33,6 @@ public class Game extends BasicGame {
 
     private TileSet tileSet;
     private Background background;
-
-    private Sprite sprite;
 
     /**
      * Creates a new Game object with the
@@ -72,11 +71,9 @@ public class Game extends BasicGame {
         resolutionWidth = gc.getWidth();
         resolutionHeight = gc.getHeight();
 
+        Environment.loadAssets();
         MenuKeyboard.HOLD_TIME = 500;
         MenuKeyboard.CONSECUTIVE_HOLD_PRESS = 25;
-
-        sprite = new Sprite(new Image("resources/textures/fx/heavy-explosion.png"), 100, 100, 120);
-        sprite.setDimensions(75, 75);
     }
 
     private boolean updateTileSet = true;
@@ -132,8 +129,6 @@ public class Game extends BasicGame {
         //graphics.setColor(Color.cyan);
         //graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
         //graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
-
-        sprite.render(graphics, tileSet.getScreenTileRenderX(10), tileSet.getScreenTileRenderY(10), false);
     }
 
     /**
