@@ -48,6 +48,14 @@ public class Background implements FlowPosition.Listener {
     }
 
     /**
+     * Gets the background image.
+     * @return The background image.
+     */
+    public Image getImage() {
+        return background;
+    }
+
+    /**
      * Gets the roam space of this background.
      * @return Roam space of this background.
      */

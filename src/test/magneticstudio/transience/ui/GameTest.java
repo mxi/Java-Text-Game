@@ -3,10 +3,12 @@ package test.magneticstudio.transience.ui;
 import com.magneticstudio.transience.game.InventoryStack;
 import com.magneticstudio.transience.game.Item;
 import com.magneticstudio.transience.ui.Game;
+
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
-
-import java.awt.*;
 
 /**
  * This class is designed to test the class
@@ -27,6 +29,7 @@ public final class GameTest {
 
         Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
         AppGameContainer container = new AppGameContainer(game, (int) resolution.getWidth(), (int) resolution.getHeight(), true);
+        container.setMouseGrabbed(false);
         container.setIcons(new String[] {
                 "resources/logos/magnetic-studio-temp-icon-16.png",
                 "resources/logos/magnetic-studio-temp-icon-32.png"

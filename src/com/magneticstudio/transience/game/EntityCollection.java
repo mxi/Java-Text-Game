@@ -43,6 +43,13 @@ public class EntityCollection {
     }
 
     /**
+     * Clears all entities besides the player.
+     */
+    public void purgeAllButPlayer() {
+        entities.clear();
+    }
+
+    /**
      * Returns the list of all entities in this array list.
      * @return The list of entities in this collection.
      */
@@ -60,6 +67,18 @@ public class EntityCollection {
             e.onEntity(entity);
         if(player != null)
             e.onEntity(player);
+    }
+
+    /**
+     * Goes through all of the entities in
+     * this collection excluding the player,
+     * and performs something on each individual
+     * entity.
+     * @param e The forEach interface used to process each entity.
+     */
+    public void forEachNonPlayer(ForEach e) {
+        for(Entity entity : entities)
+            e.onEntity(entity);
     }
 
     /**

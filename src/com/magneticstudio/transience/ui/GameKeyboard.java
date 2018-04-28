@@ -42,7 +42,16 @@ public class GameKeyboard {
      * @param key Key to check if tapped.
      * @return Whether the key is tapped.
      */
+    @Deprecated
     public static boolean isTapped(Integer key) {
         return isPressed && KEY == key;
+    }
+
+    /**
+     * Gets the tapped key.
+     * @return The tapped key.
+     */
+    public static int getTappedKey() {
+        return isPressed ? KEY : -1;
     }
 }

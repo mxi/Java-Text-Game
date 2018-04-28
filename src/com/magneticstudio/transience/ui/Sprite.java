@@ -1,6 +1,5 @@
 package com.magneticstudio.transience.ui;
 
-import com.magneticstudio.transience.util.FloatDimension;
 import com.magneticstudio.transience.util.IntDimension;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -13,15 +12,19 @@ import org.newdawn.slick.SpriteSheet;
  *
  * @author Max
  */
-public class Sprite implements GraphicalElement {
+public class Sprite implements GraphicalElement, Cloneable {
 
     private Image[] images; // The array of images produced by the spriteSheet object.
     private int currentFrame = 0; // The index of the current frame being rendered.
 
     private long lastFrame = 0; // The point in the last frame was rendered.
+    private float renderScale = 1f; // The scale at which frames render.
     private int frameRateWaitTime = 250; // The amount of time to wait before going to next frame.
     private int width; // The width of each frame.
     private int height; // The height of each frame.
+    private boolean runOnce = false; // Whether to run this sprite once.
+    private boolean running = true; // Whether the sprite is running.
+    private boolean finished = false; // Whether this sprite has finished at least once cycle of rendering.
 
     /**
      * Creates a new sprite object from
@@ -43,6 +46,31 @@ public class Sprite implements GraphicalElement {
                 images[frameLocation++] = spriteSheet.getSprite(x, y).getScaledCopy(width, height);
             }
         }
+    }
+
+    /**
+     * Sets the render scale of this sprite.
+     * @param renderScale The new render scale.
+     */
+    public void setRenderScale(float renderScale) {
+        this.renderScale = Math.max(Math.min(2f, renderScale), .25f);
+    }
+
+    /**
+     * Sets whether this sprite will run once or not.
+     * @param runOnceOrNot Whether to run this sprite once (one cycle of frames)
+     */
+    public void setRunOnce(boolean runOnceOrNot) {
+        runOnce = runOnceOrNot;
+    }
+
+    /**
+     * Gets whether this sprite has done at least
+     * once cycle of rendering.
+     * @return Whether this sprite has done at least one cycle of rendering.
+     */
+    public boolean isFinished() {
+        return finished;
     }
 
     /**
@@ -183,6 +211,15 @@ public class Sprite implements GraphicalElement {
         // Do nothing...
     }
 
+    @Override
+    public Sprite clone() {
+        try {
+            return (Sprite)super.clone();
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
+    }
+
     /**
      * Draws this sprite at a specified location.
      * (The location is oriented around the
@@ -194,10 +231,13 @@ public class Sprite implements GraphicalElement {
      */
     @Override
     public void render(Graphics graphics, float x, float y, boolean centerSurround) {
+        if(!running)
+            return;
+
         if(centerSurround)
-            graphics.drawImage(images[currentFrame], x - (width / 2), y - (height / 2));
+            graphics.drawImage(images[currentFrame].getScaledCopy(renderScale), x - (width * renderScale / 2), y - (height * renderScale / 2));
         else
-            graphics.drawImage(images[currentFrame], x, y);
+            graphics.drawImage(images[currentFrame].getScaledCopy(renderScale), x, y);
         next();
     }
 
@@ -212,8 +252,12 @@ public class Sprite implements GraphicalElement {
         long difference = now - lastFrame;
         if(difference >= frameRateWaitTime) {
             currentFrame++;
-            if(currentFrame == images.length)
+            if(currentFrame == images.length) {
+                if(runOnce)
+                    running = false;
                 currentFrame = 0;
+                finished = true;
+            }
 
             lastFrame = now;
         }

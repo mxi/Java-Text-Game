@@ -380,6 +380,16 @@ public class ArrayList2D<T> {
     }
 
     /**
+     * Places an element in specified coordinates.
+     * @param elem Element.
+     * @param location Coordinate.
+     * @return True if the element was successfully place in the specified coordinates.
+     */
+    public boolean setElement(T elem, IntPoint location) {
+        return setElement(elem, location.x, location.y);
+    }
+
+    /**
      * Places an element in the specified coordinates if a certain
      * condition is met.
      * @param elem The element to place in the specified location.
@@ -411,6 +421,18 @@ public class ArrayList2D<T> {
     }
 
     /**
+     * Places an element in the specified coordinates if a certain
+     * condition is met.
+     * @param elem The element to place in the specified location.
+     * @param pred The predicate to determine the condition.
+     * @param location Coordinate.
+     * @return Whether the element was successfully place in the specified location.
+     */
+    public boolean setElementIf(T elem, If<T> pred, IntPoint location) {
+        return setElementIf(elem, pred, location);
+    }
+
+    /**
      * Gets an elements in specified coordinates.
      * @param x X coordinate.
      * @param y Y coordinate.
@@ -421,6 +443,15 @@ public class ArrayList2D<T> {
             return null;
         }
         return list2d.get(y).get(x);
+    }
+
+    /**
+     * Gets an elements in specified coordinates.
+     * @param location Coordinate.
+     * @return Object in those coordinates.
+     */
+    public T getElement(IntPoint location) {
+        return getElement(location.x, location.y);
     }
 
     /**
@@ -435,6 +466,16 @@ public class ArrayList2D<T> {
             return true;
         }
         return list2d.get(y).get(x) == null;
+    }
+
+    /**
+     * Checks to see if specified coordinates point to an empty
+     * space in the 2d array.
+     * @param location Coordinate.
+     * @return True if the object in row.index(x) is null.
+     */
+    public boolean isEmpty(IntPoint location) {
+        return isEmpty(location.x, location.y);
     }
 
     /**

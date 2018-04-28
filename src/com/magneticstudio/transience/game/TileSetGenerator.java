@@ -30,6 +30,7 @@ public class TileSetGenerator {
     private int roomMinHeight = 4; // The minimum height of a room.
     private int roomMaxHeight = 12; // The maximum height of a room.
 
+    private boolean autoStairSpawn = true; // Automatically spawn stairs to go up and down.
     private boolean autoPlayerSpawn = true; // Automatically spawn the player.
 
     /**
@@ -99,6 +100,23 @@ public class TileSetGenerator {
     }
 
     /**
+     * Sets whether a stair will spawn in a newly generated tile set.
+     * @param v True to spawn a stair automatically; False to not.
+     */
+    public void setAutoStairSpawn(boolean v) {
+        autoStairSpawn = v;
+    }
+
+    /**
+     * Gets a random location inside of the
+     * tile set.
+     * @return A random location inside of the tile set (anything that is not void or wall)
+     */
+    public IntPoint randomLocationInside() {
+        return generatedRooms.get(Game.rng.nextInt(generatedRooms.size())).selectRandomLocationInside();
+    }
+
+    /**
      * Generates a new tile set.
      * @param width The width of the tile set.
      * @param height The height of the tile set.
@@ -112,6 +130,7 @@ public class TileSetGenerator {
             roomMaxHeight = height;
 
         TileSet tileSet = new TileSet(width, height);
+        tileSet.setGenerator(this);
         tileSet.getPosition().setTransitionTime(tsTransitionTime);
 
         final int generationAttempts = 250_000; // Number of attempts to create non-overlapping rooms.
@@ -132,9 +151,47 @@ public class TileSetGenerator {
         if(autoPlayerSpawn)
             tileSet.getEntities().spawnPlayer(tileSet);
 
+        if(autoStairSpawn)
+            tileSet.getTiles().setElement(Tile.createStairTile(tileSet), randomLocationInside());
+
         tileSet.adjustGraphicalElements();
 
         return tileSet;
+    }
+
+    /**
+     * Regenerates the tile set.
+     * @param tileSet The tile set to regenerate.
+     */
+    public void regenerate(TileSet tileSet) {
+        generatedRooms.clear();
+
+        tileSet.getTiles().fill(Tile.createVoidTile(tileSet));
+        Player saved = tileSet.getEntities().getPlayer();
+        tileSet.getEntities().purgeAllButPlayer();
+
+        final int generationAttempts = 250_000; // Number of attempts to create non-overlapping rooms.
+        for(int i = 0; i < generationAttempts; i++) {
+            generateRoom(tileSet);
+        }
+
+        if(generatedRooms.size() >= 2) {
+            for(int i = 0; i < generatedRooms.size() - 1; i++) {
+                Room toLinkWithOthers = generatedRooms.get(i);
+                for(int j = i + 1; j < generatedRooms.size(); j += tsRoomClusterSize) {
+                    Room next = generatedRooms.get(j);
+                    linkRooms(tileSet, toLinkWithOthers, next);
+                }
+            }
+        }
+
+        if(autoPlayerSpawn)
+            saved.getPosition().forcePosition(randomLocationInside());
+
+        if(autoStairSpawn)
+            tileSet.getTiles().setElement(Tile.createStairTile(tileSet), randomLocationInside());
+
+        tileSet.adjustGraphicalElements();
     }
 
     /**
@@ -217,6 +274,22 @@ public class TileSetGenerator {
         private int y;
         private int width;
         private int height;
+
+        /**
+         * Creates a new Room with the specified endpoints
+         * of the area.
+         * @param x1 The x value of the location of the first point.
+         * @param y1 The y value of the location of the first point.
+         * @param x2 The x value of the location of the second point.
+         * @param y2 The y value of the location of the second point.
+         * @param dummy Ignore, this is just to differentiate between x, y, w, h and this constructor.
+         */
+        public Room(int x1, int y1, int x2, int y2, byte dummy) {
+            x = Math.min(x1, x2);
+            y = Math.min(y1, y2);
+            width = Math.abs(x2 - x1);
+            height = Math.abs(y2 - y1);
+        }
 
         /**
          * Creates a new room object.

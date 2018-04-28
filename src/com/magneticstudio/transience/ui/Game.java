@@ -1,8 +1,10 @@
 package com.magneticstudio.transience.ui;
 
+import com.magneticstudio.transience.game.Environment;
 import com.magneticstudio.transience.game.TileSet;
 import com.magneticstudio.transience.game.TileSetGenerator;
 import com.magneticstudio.transience.util.RadialVignetteGenerator;
+import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -27,7 +29,13 @@ public class Game extends BasicGame {
     private boolean showFps = true; // Whether to show the fps count to the user.
     private int resolutionWidth = 1280; // The width of the window.
     private int resolutionHeight = 720; // The height of the window.
-    private boolean graphicsSetup = false; // Checks whether the graphics have been set up.
+    private boolean graphicsSetup = false; // Tells whether the graphics have been setup.
+
+    private boolean disableInputWhileFading = false; // Whether to disable input while fading.
+    private float opacity = 1f; // The opacity of the screen.
+    private float modOpacity = 0f; // The opacity modifier.
+    private Runnable onFadedOut; // Function that runs when everything has faded out.
+    private Runnable onFadedIn; // Function that runs when everything has faded in.
 
     private TileSet tileSet;
     private Background background;
@@ -41,6 +49,55 @@ public class Game extends BasicGame {
         super(title);
         if(activeGame == null)
             activeGame = this;
+    }
+
+    private static final int FADE_TIME_MIN = 50;
+    private static final int FADE_TIME_MAX = 5000;
+
+    /**
+     * Sets whether to disable input while fading.
+     * @param value True to cut input from the user when fading.
+     */
+    public void disableInputUpdatesWhileFading(boolean value) {
+        disableInputWhileFading = value;
+    }
+
+    /**
+     * Sets a "one time run" function that runs when the game has faded in.
+     * @param runnable The runnable to run actions when faded in.
+     */
+    public void setOnFadedIn(Runnable runnable) {
+        onFadedIn = runnable;
+    }
+
+    /**
+     * Sets a "one time run" function that runs when the game has faded out.
+     * @param runnable The runnable to run actions when faded out.
+     */
+    public void setOnFadedOut(Runnable runnable) {
+        onFadedOut = runnable;
+    }
+
+    /**
+     * Fades out in the given amount of time.
+     * @param milliseconds The amount of time given to fade out (change opacity to 0).
+     */
+    public void fadeOut(int milliseconds) {
+        if(modOpacity != 0) // Currently fading in or out.
+            return;
+
+        modOpacity = -1f / (float) Math.max(Math.min(FADE_TIME_MAX, milliseconds), FADE_TIME_MIN);
+    }
+
+    /**
+     * Fades in in the given amount of time.
+     * @param milliseconds The amount of time given to fade in (change opacity to 1).
+     */
+    public void fadeIn(int milliseconds) {
+        if(modOpacity != 0) // Currently fading in or out.
+            return;
+
+        modOpacity = 1f / (float) Math.max(Math.min(FADE_TIME_MAX, milliseconds), FADE_TIME_MIN);
     }
 
     /**
@@ -69,6 +126,7 @@ public class Game extends BasicGame {
         resolutionWidth = gc.getWidth();
         resolutionHeight = gc.getHeight();
 
+        Environment.loadAssets();
         MenuKeyboard.HOLD_TIME = 500;
         MenuKeyboard.CONSECUTIVE_HOLD_PRESS = 25;
     }
@@ -81,10 +139,37 @@ public class Game extends BasicGame {
      */
     @Override
     public void update(GameContainer gc, int elapsed) throws SlickException {
-        if(!graphicsSetup) // Don't update anything until the graphics are setup.
+        if(!graphicsSetup)
             return;
 
-        GameKeyboard.poll();
+        if(modOpacity != 0) {
+            opacity += modOpacity * elapsed;
+            if(opacity <= 0) {
+                modOpacity = 0;
+                opacity = 0;
+                if(onFadedOut != null)
+                    onFadedOut.run();
+                onFadedOut = null;
+            }
+            else if(opacity >= 1f) {
+                modOpacity = 0;
+                opacity = 1f;
+                if(onFadedIn != null)
+                    onFadedIn.run();
+                onFadedIn = null;
+            }
+
+            if(!disableInputWhileFading) {
+                GameKeyboard.poll();
+                MenuKeyboard.poll();
+                MenuMouse.poll();
+            }
+        }
+        else {
+            GameKeyboard.poll();
+            MenuKeyboard.poll();
+            MenuMouse.poll();
+        }
 
         background.update();
         tileSet.update(elapsed);
@@ -114,6 +199,12 @@ public class Game extends BasicGame {
             fpsNotification.drawString(FPS_SHOW_X, FPS_SHOW_Y, Integer.toString(gc.getFPS()));
         }
 
+        // Renders fade ins and outs.
+        if(opacity != 1) {
+            graphics.setColor(new Color(0f, 0f, 0f, 1f - opacity));
+            graphics.fillRect(0, 0, gc.getWidth(), gc.getHeight());
+        }
+
         //graphics.setColor(Color.cyan);
         //graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
         //graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
@@ -133,9 +224,9 @@ public class Game extends BasicGame {
         tsGenerator.setRoomMaxWidth(12);
         tsGenerator.setRoomMaxHeight(12);
         tsGenerator.setRoomClusterSize(TileSetGenerator.ROOM_CLUSTER_SIMPLE);
-        tileSet = tsGenerator.generate(30, 30);
+        tileSet = tsGenerator.generate(20, 20);
 
-        background = new Background(RadialVignetteGenerator.createBackgroundForGame(new Color(125, 60, 60, 150), true));
+        background = new Background(RadialVignetteGenerator.createBackgroundForGame(new Color(00, 120, 120, 150), true));
         background.setMode(Background.Mode.FLOW_POSITION_TRACK);
         background.setInverse(true);
         background.setRoamSpace(1000);

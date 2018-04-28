@@ -1,6 +1,7 @@
 package com.magneticstudio.transience.game;
 
 import com.magneticstudio.transience.ui.CharacterCell;
+import com.magneticstudio.transience.ui.Game;
 import com.magneticstudio.transience.ui.GameKeyboard;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -18,6 +19,7 @@ public class Player extends Entity {
     private static final int KEY_GO_LEFT = Input.KEY_A;
     private static final int KEY_GO_RIGHT = Input.KEY_D;
     private static final int KEY_GO_DOWN = Input.KEY_S;
+    private static final int KEY_INTERACT_WITH_TILE = Input.KEY_ENTER;
 
     // inv slot 1
     // inv slot 2
@@ -29,36 +31,30 @@ public class Player extends Entity {
      */
     public Player(TileSet onTileSet) {
         super(onTileSet);
-        CharacterCell representation = (CharacterCell) getRepresentation();
-        representation.setColor(new Color(255, 255, 50, 255));
-        representation.setCharacter('@');
+        if(getRepresentation() instanceof CharacterCell) {
+            CharacterCell representation = (CharacterCell) getRepresentation();
+            representation.setColor(new Color(255, 255, 50, 255));
+            representation.setCharacter('@');
+        }
         getPosition().setTransitionTime(GameKeyboard.KEY_COOLDOWN_TIME);
     }
 
     /**
      * Updates this player object.
      * @param tsLocated The tile set this entity is located on.
-     * @param milliseconds The time in milliseconds since the last update.
      */
-    public void update(TileSet tsLocated, int milliseconds) {
+    public void update(TileSet tsLocated) {
         int newX = getX();
         int newY = getY();
-        if(GameKeyboard.isTapped(KEY_GO_UP))
-            newY--;
-        else if(GameKeyboard.isTapped(KEY_GO_LEFT))
-            newX--;
-        else if(GameKeyboard.isTapped(KEY_GO_RIGHT))
-            newX++;
-        else if(GameKeyboard.isTapped(KEY_GO_DOWN))
-            newY++;
-        else if(GameKeyboard.isTapped(Input.KEY_Z))
-            tsLocated.setScale(.25f, 500);
-        else if(GameKeyboard.isTapped(Input.KEY_U))
-            tsLocated.setScale(1f, 500);
-        else if(GameKeyboard.isTapped(Input.KEY_R))
-            tsLocated.setScale(.5f, 500);
-        else if(GameKeyboard.isTapped(Input.KEY_L))
-            tsLocated.shake(12f, 3f, 1000);
+        switch(GameKeyboard.getTappedKey()) {
+            case KEY_GO_UP:              newY--; break;
+            case KEY_GO_DOWN:            newY++; break;
+            case KEY_GO_LEFT:            newX--; break;
+            case KEY_GO_RIGHT:           newX++; break;
+            case Input.KEY_F:            Game.activeGame.fadeOut(250); break;
+            case Input.KEY_G:            Game.activeGame.fadeIn(250); break;
+            case KEY_INTERACT_WITH_TILE: interactWithTile(tsLocated, getX(), getY()); break;
+        }
 
         if(newX != getX() || newY != getY()) {
             Tile toMoveTo = tsLocated.getTiles().getElement(newX, newY);
@@ -66,6 +62,23 @@ public class Player extends Entity {
                 setPosition(newX, newY);
                 tsLocated.runAi();
             }
+        }
+    }
+
+    /**
+     * Interacts with a given tile.
+     * @param ts The tile set the tile is located on.
+     * @param tx The row the tile is located on.
+     * @param ty The column the tile is located on.
+     */
+    private void interactWithTile(TileSet ts, int tx, int ty) {
+        if(ts.getTiles().getElement(tx, ty).getTileType() == Tile.Type.STAIR) {
+            Game.activeGame.disableInputUpdatesWhileFading(true);
+            Game.activeGame.setOnFadedOut(() -> {
+                ts.getGenerator().regenerate(ts);
+                Game.activeGame.fadeIn(500);
+            });
+            Game.activeGame.fadeOut(1000);
         }
     }
 
@@ -79,6 +92,5 @@ public class Player extends Entity {
     @Override
     public void render(Graphics graphics, float x, float y, boolean centerSurround) {
         getRepresentation().render(graphics, x, y, centerSurround);
-
     }
 }

@@ -15,7 +15,7 @@ public class Tile implements Displayable {
 
     // Enumeration of types of tiles.
     public enum Type {
-        AIR, VOID, WALL
+        STAIR, AIR, VOID, WALL
     }
 
     /**
@@ -41,6 +41,12 @@ public class Tile implements Displayable {
     public static Tile createWallTile(TileSet parent) {
         Tile tile = new Tile(new CharacterCell(parent.getFont(), 'X'), Type.WALL);
         tile.setTraversable(false);
+        return tile;
+    }
+
+    public static Tile createStairTile(TileSet parent) {
+        Tile tile = new Tile(new CharacterCell(parent.getFont(), '/'), Type.STAIR);
+        tile.setTraversable(true);
         return tile;
     }
 

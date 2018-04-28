@@ -15,6 +15,7 @@ import org.newdawn.slick.*;
  */
 public class TileSet implements LogicalElement {
 
+    // Static settings.
     private static final int PIXELS_PER_TILE = 64;
     private static final int CENTER_ADJUSTMENT = PIXELS_PER_TILE / 2;
     private static final int TILE_FONT_SIZE = 56;
@@ -22,18 +23,20 @@ public class TileSet implements LogicalElement {
     private static final float CANVAS_SCALE_MAX = 2f; // The maximum canvas scale.
     private static final float CANVAS_SCALE_MIN = .25f; // The minimum canvas scale.
 
-    private static final float SHAKE_FREQUENCY_MAX = 16f; // The maximum frequency of a shake.
-    private static final float SHAKE_FREQUENCY_MIN = 2f; // The minimum frequency of the shake.
+    private static final float SHAKE_FREQUENCY_MAX = 10f; // The maximum frequency of a shake.
+    private static final float SHAKE_FREQUENCY_MIN = 1f; // The minimum frequency of the shake.
     private static final float SHAKE_INTENSITY_MAX = 16f; // The maximum shake intensity/amplitude.
     private static final float SHAKE_INTENSITY_MIN = 2f; // The minimum shake intensity/amplitude.
-    private static final float SHAKE_INTENSITY_Y_RATIO = 1f; // The ratio of the shake on the vertical.
 
+    // Anything related to the current tile set (the object; not static things) below
     private ArrayList2D<Tile> tiles = new ArrayList2D<>(); // The 2d array of tiles.
     private EntityCollection entities = new EntityCollection(); // The collection of entities.
+    private Environment environment = new Environment(); // The environment for this tile set.
     private FlowPosition position = new FlowPosition(); // The position of this tile set.
     private UnicodeFont font; // The font used to render the individual tiles.
     private TileSetGenerator generator; // The generator used to create this tile set.
 
+    // Graphics
     private Image canvas; // The image object used to render tile set on.
     private Graphics canvasGraphics; // The graphics object doing to the rendering.
 
@@ -44,8 +47,10 @@ public class TileSet implements LogicalElement {
     private float shakeIntensity = 0f; // The current amplitude of the sin shake.
     private float shakeFreq = 0f; // The shake frequency of the current shake.
     private float shakeIntensityMod = 0f; // The change per millisecond of the shake intensity.
+    private float shakeIndex = 0f; // The value used for sin()
     private int shakeTimeRemain = 0; // The time remaining for the shake.
 
+    // Game/ai
     private boolean runAi = false; // Whether to run the Ai on the next update.
 
      /**
@@ -95,6 +100,7 @@ public class TileSet implements LogicalElement {
         shakeFreq = Math.max(Math.min(SHAKE_FREQUENCY_MAX, freq), SHAKE_FREQUENCY_MIN);
         shakeIntensityMod = amplitude / time;
         shakeTimeRemain = time;
+        shakeIndex = 0;
     }
 
     /**
@@ -118,6 +124,7 @@ public class TileSet implements LogicalElement {
      * @param on The tile to get the random position on.
      * @return The location of the randomly selected tile.
      */
+    @Deprecated
     public IntPoint randomPositionOn(Tile.Type on) {
         for(int i = 0; i < RANDOM_POSITION_SEARCH_LIMIT; i++) {
             int x = Game.rng.nextInt(tiles.getWidth());
@@ -127,6 +134,14 @@ public class TileSet implements LogicalElement {
                 return new IntPoint(x, y);
         }
         return new IntPoint(0, 0);
+    }
+
+    /**
+     * Sets the generator.
+     * @param generator The generator used to create this tile set.
+     */
+    public void setGenerator(TileSetGenerator generator) {
+        this.generator = generator;
     }
 
     /**
@@ -238,6 +253,14 @@ public class TileSet implements LogicalElement {
     }
 
     /**
+     * Gets the environment of this tile set.
+     * @return The tile set environment.
+     */
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    /**
      * Tells the entities in the entity collection
      * to perform some action on next update.
      */
@@ -252,7 +275,7 @@ public class TileSet implements LogicalElement {
      * @param tileX The column number of the target tile to get render X of.
      * @return The pixel X of the center of the tile on the main rendering buffer.
      */
-    private float getScreenTileRenderX(int tileX) {
+    public float getScreenTileRenderX(int tileX) {
         return getScreenCanvasRenderX() + (tileX * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
     }
 
@@ -263,8 +286,9 @@ public class TileSet implements LogicalElement {
      * @param tileY The row number of the target tile to get render Y of.
      * @return The pixel Y of the center of the tile on the main rendering buffer.
      */
-    private float getScreenTileRenderY(int tileY) {
-        return getScreenCanvasRenderY() + (tileY * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
+    public float getScreenTileRenderY(int tileY) {
+        return getScreenCanvasRenderY() + (tileY * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale)
+                + (float) Math.sin((shakeIndex / (2 * Math.PI)) * shakeFreq) * canvasScale * shakeIntensity;
     }
 
     /**
@@ -273,7 +297,7 @@ public class TileSet implements LogicalElement {
      * @param tileX The tile X (tile on which column)
      * @return The X value of the center of the tile when rendered onto the canvas.
      */
-    private float getCanvasTileRenderX(int tileX) {
+    public float getCanvasTileRenderX(int tileX) {
         return (tileX * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
     }
 
@@ -283,7 +307,7 @@ public class TileSet implements LogicalElement {
      * @param tileY The tile X (tile on which row)
      * @return The Y value of the center of the tile when rendered onto the canvas.
      */
-    private float getCanvasTileRenderY(int tileY) {
+    public float getCanvasTileRenderY(int tileY) {
         return (tileY * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
     }
 
@@ -292,7 +316,7 @@ public class TileSet implements LogicalElement {
      * for the canvas of this tile set.
      * @return Render X value of tile set canvas.
      */
-    private float getScreenCanvasRenderX() {
+    public float getScreenCanvasRenderX() {
         return (Game.activeGame.getResolutionWidth() / 2) - (CENTER_ADJUSTMENT * canvasScale)
                 + (position.getIntermediateX() * PIXELS_PER_TILE * canvasScale);
     }
@@ -302,7 +326,7 @@ public class TileSet implements LogicalElement {
      * for the canvas of this tile set.
      * @return Render Y value of tile set canvas.
      */
-    private float getScreenCanvasRenderY() {
+    public float getScreenCanvasRenderY() {
         return (Game.activeGame.getResolutionHeight() / 2) - (CENTER_ADJUSTMENT * canvasScale)
                 + (position.getIntermediateY() * PIXELS_PER_TILE * canvasScale);
     }
@@ -355,13 +379,14 @@ public class TileSet implements LogicalElement {
             e.render(canvasGraphics, x, y, true);
         });
 
-        float shakeOffset = (float) Math.sin(shakeIntensity * shakeFreq) * shakeIntensity;
+        float shakeOffset = canvasScale * (float) Math.sin((shakeIndex / (2 * Math.PI)) * shakeFreq) * shakeIntensity;
 
         graphics.drawImage(
             canvas.getScaledCopy(canvasScale),
             getScreenCanvasRenderX(),
-            getScreenCanvasRenderY() + (shakeOffset * SHAKE_INTENSITY_Y_RATIO)
+            getScreenCanvasRenderY() + (shakeOffset)
         );
+        environment.render(this, graphics);
     }
 
     /**
@@ -376,14 +401,13 @@ public class TileSet implements LogicalElement {
             e.updatePosition(milliseconds);
             if(runAi && e instanceof Enemy)
                 ((Enemy)e).runAi(this);
+            else
+                ((Player)e).update(this);
         });
         if(entities.getPlayer() != null) {
             FlowPosition playerPosition = entities.getPlayer().getPosition();
             focusOn(playerPosition.getTargetX(), playerPosition.getTargetY());
         }
-
-        if(entities.getPlayer() != null)
-            entities.getPlayer().update(this, milliseconds);
 
         runAi = false;
 
@@ -393,7 +417,8 @@ public class TileSet implements LogicalElement {
             scaleModTimeRemain -= milliseconds;
         }
         if(shakeTimeRemain > 0) {
-            shakeIntensity -= shakeTimeRemain - milliseconds < 0 ? shakeIntensity : (shakeIntensityMod * milliseconds);
+            shakeIndex += (float) milliseconds / 10;
+            shakeIntensity -= shakeIntensityMod * milliseconds > shakeIntensity ? shakeIntensity : (shakeIntensityMod * milliseconds);
             shakeTimeRemain -= milliseconds;
         }
         position.update(milliseconds);

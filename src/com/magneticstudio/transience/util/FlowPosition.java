@@ -92,6 +92,31 @@ public class FlowPosition implements LogicalElement {
     }
 
     /**
+     * Forcefully sets the position (avoid animation).
+     * @param x The x.
+     * @param y The y.
+     */
+    public void forcePosition(int x, int y) {
+        towardsX = x;
+        towardsY = y;
+        nowX = x;
+        nowY = y;
+        listeners.forEach(l -> {
+            l.horizontalChange(nowX);
+            l.verticalChange(nowY);
+        });
+    }
+
+    /**
+     * Forces this entity onto the specified
+     * location. Avoids any animation.
+     * @param location The new location.
+     */
+    public void forcePosition(IntPoint location) {
+        forcePosition(location.x, location.y);
+    }
+
+    /**
      * Sets the position that this motion tends towards.
      * @param dest The destination of this motion.
      */
