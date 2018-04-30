@@ -196,9 +196,12 @@ public final class CharacterCell implements GraphicalElement {
      */
     @Override
     public void render(Graphics graphics, float x, float y, boolean centerSurround) {
-        float rx = centerSurround ? x + (width / 2) - (font.getWidth(character) / 2) : x;
-        float ry = centerSurround ? y + (height / 2) - (font.getHeight(character) / 2) + VERTICAL_ADJUST : y;
-
-        font.drawString(rx, ry, character);
+        float textRenderX = x + (width / 2) - (font.getWidth(character) / 2);
+        float textRenderY = y + (height / 2) - (font.getHeight(character) / 2) + VERTICAL_ADJUST;
+        if(centerSurround) {
+            textRenderX -= (width / 2);
+            textRenderY -= (height / 2);
+        }
+        font.drawString(textRenderX, textRenderY, character);
     }
 }

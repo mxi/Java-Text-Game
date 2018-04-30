@@ -3,9 +3,13 @@ package com.magneticstudio.transience.game;
 import com.magneticstudio.transience.ui.CharacterCell;
 import com.magneticstudio.transience.ui.Game;
 import com.magneticstudio.transience.ui.GameKeyboard;
+import com.magneticstudio.transience.util.FlowPosition;
+import com.magneticstudio.transience.util.IntPoint;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.geom.Curve;
+import org.newdawn.slick.geom.Vector2f;
 
 /**
  * This class is the actual player class that the user
@@ -40,6 +44,14 @@ public class Player extends Entity {
     }
 
     /**
+     * Renders the hud for this player's stats.
+     * @param mainGraphics The main graphics buffer provided by Slick2d.
+     */
+    public void renderHud(Graphics mainGraphics) {
+        HudRenderer.renderHealth(mainGraphics, getHealth() - 75, getMaxHealth());
+    }
+
+    /**
      * Updates this player object.
      * @param tsLocated The tile set this entity is located on.
      */
@@ -53,6 +65,8 @@ public class Player extends Entity {
             case KEY_GO_RIGHT:           newX++; break;
             case Input.KEY_F:            Game.activeGame.fadeOut(250); break;
             case Input.KEY_G:            Game.activeGame.fadeIn(250); break;
+            case Input.KEY_H:            Game.activeGame.setVignetteScale(.25f, 500); break;
+            case Input.KEY_J:            Game.activeGame.setVignetteScale(3f, 500); break;
             case KEY_INTERACT_WITH_TILE: interactWithTile(tsLocated, getX(), getY()); break;
         }
 
@@ -76,21 +90,16 @@ public class Player extends Entity {
             Game.activeGame.disableInputUpdatesWhileFading(true);
             Game.activeGame.setOnFadedOut(() -> {
                 ts.getGenerator().regenerate(ts);
+                Player player = ts.getEntities().getPlayer();
+                if(player != null) {
+                    IntPoint position = player.getPosition().getIntPoint();
+                    ts.getPosition().forcePosition(-position.x, -position.y);
+                }
+                ts.setScale(.5f, 500);
                 Game.activeGame.fadeIn(500);
             });
+            ts.setScale(.05f, 1000);
             Game.activeGame.fadeOut(1000);
         }
-    }
-
-    /**
-     * Renders this player (and other things) onto the screen.
-     * @param graphics The graphics object used to render anything on the main screen.
-     * @param x The X value of the position that this object is supposed to be rendered at.
-     * @param y The Y value of the position that this object is supposed to be rendered at.
-     * @param centerSurround Whether or not the x and y are based around the center of the element.
-     */
-    @Override
-    public void render(Graphics graphics, float x, float y, boolean centerSurround) {
-        getRepresentation().render(graphics, x, y, centerSurround);
     }
 }

@@ -24,7 +24,9 @@ public class Tile implements Displayable {
      * @return A new air tile.
      */
     public static Tile createAirTile(TileSet parent) {
-        return new Tile(new CharacterCell(parent.getFont(), '.'), Type.AIR);
+        Tile air = new Tile(new CharacterCell(parent.getFont(), '.'), Type.AIR);
+        air.setCanContainItems(true);
+        return air;
     }
 
     /**
@@ -52,8 +54,10 @@ public class Tile implements Displayable {
 
     private Type tileType; // The type of tile this is.
     private GraphicalElement representation; // The graphical representation of the tile.
+    private InventoryStack<Item> inventoryStack; // The inventory stack of this tile.
     private boolean visible = true; // Whether this tile is visible (will be rendered).
     private boolean traversable = true; // Whether an entity can be located on this tile from movement.
+    private boolean canContainItems = false; // Whether this tile can contain item stacks.
 
     /**
      * Creates a new Tile object with
@@ -80,6 +84,38 @@ public class Tile implements Displayable {
      */
     public Type getTileType() {
         return tileType;
+    }
+
+    /**
+     * Whether this tile can contain items.
+     * @return Whether this tile can contain items.
+     */
+    public boolean canContainItems() {
+        return canContainItems;
+    }
+
+    /**
+     * Sets whether this tile can contain items.
+     * @param v Whether this tile can contain items.
+     */
+    public void setCanContainItems(boolean v) {
+        canContainItems = v;
+    }
+
+    /**
+     * Gets the inventory stack of this tile.
+     * @return The inventory stack of this tile.
+     */
+    public InventoryStack<Item> getInventoryStack() {
+        return inventoryStack;
+    }
+
+    /**
+     * Sets the item stack of this tile.
+     * @param itemStack The new item stack of this tile.
+     */
+    public void setInventoryStack(InventoryStack<Item> itemStack) {
+        inventoryStack = itemStack;
     }
 
     /**
@@ -157,6 +193,9 @@ public class Tile implements Displayable {
     public void render(Graphics graphics, float x, float y, boolean centerSurround) {
         if(!visible)
             return;
-        representation.render(graphics, x, y, centerSurround);
+        if(canContainItems && inventoryStack != null && inventoryStack.getItemCount() > 0)
+            inventoryStack.render(graphics, x, y, centerSurround);
+        else
+            representation.render(graphics, x, y, centerSurround);
     }
 }

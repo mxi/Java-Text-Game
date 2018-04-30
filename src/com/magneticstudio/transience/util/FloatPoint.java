@@ -85,6 +85,16 @@ public class FloatPoint {
     }
 
     /**
+     * Rotates this point around the origin
+     * with the given angle in radians.
+     * @param radians The angle in radians.
+     */
+    public void rotate(float radians) {
+        x = (float) ((Math.cos(radians) * x) + (-Math.sin(radians) * y));
+        y = (float) ((Math.sin(radians) * x) + ( Math.cos(radians) * y));
+    }
+
+    /**
      * Gets a string representation of this object.
      * @return String representation of this object.
      */

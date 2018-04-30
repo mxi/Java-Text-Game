@@ -1,5 +1,9 @@
 package com.magneticstudio.transience.game;
 
+import com.magneticstudio.transience.ui.Displayable;
+import com.magneticstudio.transience.ui.Game;
+import org.newdawn.slick.Graphics;
+
 import java.util.Stack;
 
 /**
@@ -8,7 +12,7 @@ import java.util.Stack;
  *
  * @author Max
  */
-public class InventoryStack<T extends Item> {
+public class InventoryStack<T extends Item> implements Displayable {
 
     /**
      * Creates a new weapon inventory stack.
@@ -19,8 +23,13 @@ public class InventoryStack<T extends Item> {
         return new InventoryStack<>(1);
     }
 
+    private static final float WAVE_INTENSITY = 10f; // Intensity of the floating item.
+    private static final int VERTICAL_ADJUSTMENT = 10; // The adjustment for item rendering.
+
     private int capacity = 16; // The capacity this inventory stack.
     private Stack<T> items = new Stack<>(); // The list of items in this stack.
+    private double sinParameter = 0;
+    private long lastRenderTime = System.currentTimeMillis() + Game.rng.nextInt(1000);
 
     /**
      * Creates a new default inventory stack.
@@ -92,5 +101,26 @@ public class InventoryStack<T extends Item> {
     public void pop() {
         if(items.size() != 0)
             items.pop();
+    }
+
+    /**
+     * Renders a preview of this inventory stack.
+     * @param graphics The graphics used for drawing on main screen.
+     * @param x The X value of the position that this object is supposed to be rendered at.
+     * @param y The Y value of the position that this object is supposed to be rendered at.
+     * @param centerSurround Whether or not the x and y are based around the center of the element.
+     */
+    @Override
+    public void render(Graphics graphics, float x, float y, boolean centerSurround) {
+        if(items.size() == 0)
+            return;
+
+        boolean tempAntiAlias = graphics.isAntiAlias();
+        graphics.setAntiAlias(false);
+        sinParameter += (float) (System.currentTimeMillis() - lastRenderTime) / 250f;
+        float yOffset = (float) Math.sin(sinParameter) * WAVE_INTENSITY;
+        items.peek().render(graphics, x, y + yOffset + VERTICAL_ADJUSTMENT, centerSurround);
+        lastRenderTime = System.currentTimeMillis();
+        graphics.setAntiAlias(tempAntiAlias);
     }
 }

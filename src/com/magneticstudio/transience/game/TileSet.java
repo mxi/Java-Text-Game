@@ -16,12 +16,12 @@ import org.newdawn.slick.*;
 public class TileSet implements LogicalElement {
 
     // Static settings.
-    private static final int PIXELS_PER_TILE = 64;
-    private static final int CENTER_ADJUSTMENT = PIXELS_PER_TILE / 2;
-    private static final int TILE_FONT_SIZE = 56;
+    public static final int PIXELS_PER_TILE = 64;
+    public static final int CENTER_ADJUSTMENT = PIXELS_PER_TILE / 2;
+    public static final int TILE_FONT_SIZE = 56;
 
-    private static final float CANVAS_SCALE_MAX = 2f; // The maximum canvas scale.
-    private static final float CANVAS_SCALE_MIN = .25f; // The minimum canvas scale.
+    private static final float CANVAS_SCALE_MAX = 1f; // The maximum canvas scale.
+    private static final float CANVAS_SCALE_MIN = .01f; // The minimum canvas scale.
 
     private static final float SHAKE_FREQUENCY_MAX = 10f; // The maximum frequency of a shake.
     private static final float SHAKE_FREQUENCY_MIN = 1f; // The minimum frequency of the shake.
@@ -87,6 +87,14 @@ public class TileSet implements LogicalElement {
      */
     public void setScale(float nScale) {
         canvasScale = Math.max(Math.min(CANVAS_SCALE_MAX, nScale), CANVAS_SCALE_MIN);
+    }
+
+    /**
+     * Gets the pixels per individual tile.
+     * @return Pixels per individual tile.
+     */
+    public int getPixelsPerTile() {
+        return (int) (PIXELS_PER_TILE * canvasScale);
     }
 
     /**
@@ -354,15 +362,18 @@ public class TileSet implements LogicalElement {
                 if(!willTileBeVisibleX(ix))
                     continue;
 
+                Tile t = tiles.getElement(ix, iy);
+                if(t.getTileType() == Tile.Type.VOID)
+                    continue;
+
                 float renderX = ix * PIXELS_PER_TILE;
-                tiles.getElement(ix, iy).render(
+                t.render(
                     canvasGraphics,
                     renderX,
                     renderY,
-                    true
+                    false
                 );
 
-                //For debug:
                 //canvasGraphics.setColor(Color.red);
                 //canvasGraphics.drawRect(renderX, renderY, PIXELS_PER_TILE, PIXELS_PER_TILE);
             }
@@ -376,7 +387,7 @@ public class TileSet implements LogicalElement {
             canvasGraphics.setColor(new Color(0f, 0f, 0f, 0f));
             canvasGraphics.fillRect(x, y, PIXELS_PER_TILE, PIXELS_PER_TILE);
             canvasGraphics.setDrawMode(Graphics.MODE_ADD);
-            e.render(canvasGraphics, x, y, true);
+            e.render(canvasGraphics, x, y, false);
         });
 
         float shakeOffset = canvasScale * (float) Math.sin((shakeIndex / (2 * Math.PI)) * shakeFreq) * shakeIntensity;
@@ -387,6 +398,16 @@ public class TileSet implements LogicalElement {
             getScreenCanvasRenderY() + (shakeOffset)
         );
         environment.render(this, graphics);
+    }
+
+    /**
+     * This function renders things on top
+     * of what the main Game class renders.
+     * @param graphics The graphics from Slick2d.
+     */
+    public void postRender(Graphics graphics) {
+        if(entities.getPlayer() != null)
+            entities.getPlayer().renderHud(graphics);
     }
 
     /**

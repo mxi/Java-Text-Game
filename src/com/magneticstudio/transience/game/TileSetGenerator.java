@@ -1,8 +1,11 @@
 package com.magneticstudio.transience.game;
 
 import com.magneticstudio.transience.ui.Game;
+import com.magneticstudio.transience.ui.Res;
+import com.magneticstudio.transience.ui.Sprite;
 import com.magneticstudio.transience.util.ArrayList2D;
 import com.magneticstudio.transience.util.IntPoint;
+import org.newdawn.slick.Image;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,7 @@ public class TileSetGenerator {
 
     private boolean autoStairSpawn = true; // Automatically spawn stairs to go up and down.
     private boolean autoPlayerSpawn = true; // Automatically spawn the player.
+    private boolean autoLootScatter = true; // Automatically spawn items in the tile set.
 
     /**
      * Creates a new instance of the TileSetGenerator
@@ -151,8 +155,32 @@ public class TileSetGenerator {
         if(autoPlayerSpawn)
             tileSet.getEntities().spawnPlayer(tileSet);
 
-        if(autoStairSpawn)
+        Player player = tileSet.getEntities().getPlayer();
+        if(autoStairSpawn && player != null) {
+            IntPoint playerLocation = player.getPosition().getIntPoint();
+            IntPoint random;
+            do {
+                random = randomLocationInside();
+            }
+            while(random.isEquivalentTo(playerLocation));
+            tileSet.getTiles().setElement(Tile.createStairTile(tileSet), random);
+        }
+        else if(autoStairSpawn) {
             tileSet.getTiles().setElement(Tile.createStairTile(tileSet), randomLocationInside());
+        }
+
+        if(autoLootScatter) {
+            for(int i = 0; i < 10; i++) {
+                Tile t = tileSet.getTiles().getElement(randomLocationInside());
+                if(t.canContainItems()) {
+                    InventoryStack<Item> item = new InventoryStack<>(1);
+                    Image image = Res.loadImage("resources/textures/items/Null Item.png").getScaledCopy(TileSet.PIXELS_PER_TILE, TileSet.PIXELS_PER_TILE);
+                    Sprite sprite = new Sprite(image, image.getWidth(), image.getHeight(), 60);
+                    item.push(new Item(sprite));
+                    t.setInventoryStack(item);
+                }
+            }
+        }
 
         tileSet.adjustGraphicalElements();
 
@@ -185,11 +213,22 @@ public class TileSetGenerator {
             }
         }
 
-        if(autoPlayerSpawn)
+        if(autoPlayerSpawn && saved != null)
             saved.getPosition().forcePosition(randomLocationInside());
 
-        if(autoStairSpawn)
+        Player player = tileSet.getEntities().getPlayer();
+        if(autoStairSpawn && player != null) {
+            IntPoint playerLocation = player.getPosition().getIntPoint();
+            IntPoint random;
+            do {
+                random = randomLocationInside();
+            }
+            while(random.isEquivalentTo(playerLocation));
+            tileSet.getTiles().setElement(Tile.createStairTile(tileSet), random);
+        }
+        else if(autoStairSpawn) {
             tileSet.getTiles().setElement(Tile.createStairTile(tileSet), randomLocationInside());
+        }
 
         tileSet.adjustGraphicalElements();
     }
@@ -232,8 +271,8 @@ public class TileSetGenerator {
         new IntPoint(-1,  0),
         new IntPoint( 1,  0),
         new IntPoint(-1,  1),
-        new IntPoint(-1,  1),
-        new IntPoint(-1,  1),
+        new IntPoint( 0,  1),
+        new IntPoint( 1,  1),
     };
 
     /**

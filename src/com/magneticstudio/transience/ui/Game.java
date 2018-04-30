@@ -25,6 +25,12 @@ public class Game extends BasicGame {
     public static Game activeGame = null; // The game currently being played.
 
     // --- WINDOW/GRAPHICS INFORMATION
+    private Image vignette;
+    private float vignetteScale = 1f;
+    private float vignetteTarget = 0f;
+    private float vignetteScaleMod = 0f;
+    private boolean showVignette = false;
+
     private UnicodeFont fpsNotification;
     private boolean showFps = true; // Whether to show the fps count to the user.
     private int resolutionWidth = 1280; // The width of the window.
@@ -101,6 +107,25 @@ public class Game extends BasicGame {
     }
 
     /**
+     * Whether to show the vignette.
+     * @param v Whether to show the vignette or not.
+     */
+    public void setShowVignette(boolean v) {
+        showVignette = v;
+    }
+
+    /**
+     * Sets the scale of the vignette in the specified amount of time.
+     * @param scale The new scale.
+     * @param milliseconds The time in milliseconds to achieve the scale.
+     */
+    public void setVignetteScale(float scale, int milliseconds) {
+        vignetteTarget = Math.max(Math.min(scale, 3f), 0.25f);
+        vignetteScaleMod = (vignetteTarget - vignetteScale) / (float) milliseconds;
+        System.out.println(vignetteScaleMod);
+    }
+
+    /**
      * Gets the resolution width.
      * @return Resolution width.
      */
@@ -142,6 +167,19 @@ public class Game extends BasicGame {
         if(!graphicsSetup)
             return;
 
+        handleNumberAnimationsAndStuff(gc, elapsed);
+
+        background.update();
+        tileSet.update(elapsed);
+    }
+
+    /**
+     * Handles numerical animations for fades
+     * and vignette.
+     * @param gc The game container.
+     * @param elapsed The elapsed time.
+     */
+    private void handleNumberAnimationsAndStuff(GameContainer gc, int elapsed) {
         if(modOpacity != 0) {
             opacity += modOpacity * elapsed;
             if(opacity <= 0) {
@@ -171,9 +209,16 @@ public class Game extends BasicGame {
             MenuMouse.poll();
         }
 
-        background.update();
-        tileSet.update(elapsed);
+        if(vignetteScaleMod != 0) {
+            vignetteScale += vignetteScaleMod * elapsed;
+            if((vignetteScaleMod < 0 && vignetteScale < vignetteTarget)
+               || (vignetteScaleMod > 0 && vignetteScale > vignetteTarget)) {
+                vignetteScale = vignetteTarget;
+                vignetteScaleMod = 0f;
+            }
+        }
     }
+private int counter = 0;
 
     private static final int FPS_SHOW_X = 5; // The X location of the fps counter.
     private static final int FPS_SHOW_Y = 5; // The Y location of the fps counter.
@@ -187,6 +232,7 @@ public class Game extends BasicGame {
      */
     @Override
     public void render(GameContainer gc, Graphics graphics) throws SlickException {
+        graphics.setAntiAlias(true);
         if(!graphicsSetup) {
             setupGraphics();
             graphicsSetup = true;
@@ -195,19 +241,38 @@ public class Game extends BasicGame {
         background.render(graphics);
         tileSet.render(graphics);
 
-        if(showFps) {
-            fpsNotification.drawString(FPS_SHOW_X, FPS_SHOW_Y, Integer.toString(gc.getFPS()));
-        }
-
         // Renders fade ins and outs.
         if(opacity != 1) {
             graphics.setColor(new Color(0f, 0f, 0f, 1f - opacity));
             graphics.fillRect(0, 0, gc.getWidth(), gc.getHeight());
         }
 
-        //graphics.setColor(Color.cyan);
-        //graphics.drawLine(resolutionWidth / 2, 0, resolutionWidth / 2, resolutionHeight);
-        //graphics.drawLine(0, resolutionHeight / 2, resolutionWidth, resolutionHeight / 2);
+        // Renders the main vignette
+        if(showVignette) {
+            Image vignetteImage = vignetteScale != 1f ? vignette.getScaledCopy(vignetteScale) : vignette;
+            int vx = (resolutionWidth / 2) - (vignetteImage.getWidth() / 2);
+            int vy = (resolutionHeight / 2) - (vignetteImage.getHeight() / 2);
+            graphics.drawImage(
+                 vignetteImage,
+                 vx,
+                 vy
+            );
+            graphics.setColor(Color.black);
+            if(vx > 0) {
+                graphics.fillRect(0, 0, vx, resolutionHeight);
+                graphics.fillRect(resolutionWidth - vx, 0, vx, resolutionHeight);
+            }
+            if(vy > 0) {
+                graphics.fillRect(vx, 0, resolutionWidth - (vx * 2), vy);
+                graphics.fillRect(vx, resolutionHeight - vy, resolutionWidth - (vx * 2), vy);
+            }
+        }
+
+        if(showFps) {
+            fpsNotification.drawString(FPS_SHOW_X, FPS_SHOW_Y, Integer.toString(gc.getFPS()));
+        }
+
+        tileSet.postRender(graphics);
     }
 
     /**
@@ -218,13 +283,23 @@ public class Game extends BasicGame {
     private void setupGraphics() throws SlickException {
         fpsNotification = Res.loadFont("Consolas.ttf", new Color(255, 100, 100, 175), 16, Res.USE_DEFAULT, Res.USE_DEFAULT);
 
+        RadialVignetteGenerator vignetteGenerator = new RadialVignetteGenerator();
+        vignetteGenerator.setImageWidth(600);
+        vignetteGenerator.setImageWidth(600);
+        vignetteGenerator.setSoftness(1f);
+        vignetteGenerator.setRadius(300);
+        vignetteGenerator.setCenterX(300);
+        vignetteGenerator.setCenterY(300);
+        vignetteGenerator.setColor(Color.black);
+        vignette = vignetteGenerator.generate();
+
         TileSetGenerator tsGenerator = new TileSetGenerator();
         tsGenerator.setRoomMinWidth(6);
         tsGenerator.setRoomMinHeight(6);
         tsGenerator.setRoomMaxWidth(12);
         tsGenerator.setRoomMaxHeight(12);
         tsGenerator.setRoomClusterSize(TileSetGenerator.ROOM_CLUSTER_SIMPLE);
-        tileSet = tsGenerator.generate(20, 20);
+        tileSet = tsGenerator.generate(30, 30);
 
         background = new Background(RadialVignetteGenerator.createBackgroundForGame(new Color(00, 120, 120, 150), true));
         background.setMode(Background.Mode.FLOW_POSITION_TRACK);

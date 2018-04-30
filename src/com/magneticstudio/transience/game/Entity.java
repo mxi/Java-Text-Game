@@ -12,10 +12,13 @@ import org.newdawn.slick.Graphics;
  *
  * @author Max
  */
-public class Entity implements Displayable {
+public class Entity {
 
     private GraphicalElement representation; // The representation of this entity.
     private FlowPosition position = new FlowPosition(0, 0); // The position of this entity.
+
+    private int maxHealth = 100; // The maximum health for this entity.
+    private int health = 100; // The health of this entity.
 
     /**
      * Creates a new Entity object.
@@ -40,6 +43,38 @@ public class Entity implements Displayable {
      */
     public GraphicalElement getRepresentation() {
         return representation;
+    }
+
+    /**
+     * Gets the maximum health of this entity.
+     * @return Maximum health of the entity.
+     */
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    /**
+     * Sets the max health of this entity.
+     * @param mHealth New max health of this entity.
+     */
+    public void setMaxHealth(int mHealth) {
+        maxHealth = Math.max(1, mHealth);
+    }
+
+    /**
+     * Gets the health of this entity.
+     * @return The entities health.
+     */
+    public int getHealth() {
+        return health;
+    }
+
+    /**
+     * Sets the health of this entity.
+     * @param nHealth The new health of this entity.
+     */
+    public void setHealth(int nHealth) {
+        health = Math.max(Math.min(maxHealth, nHealth), 0);
     }
 
     /**
@@ -141,7 +176,6 @@ public class Entity implements Displayable {
      * @param y The Y value of the position that this object is supposed to be rendered at.
      * @param centerSurround Whether or not the x and y are based around the center of the element.
      */
-    @Override
     public void render(Graphics graphics, float x, float y, boolean centerSurround) {
         representation.render(graphics, x, y, centerSurround);
     }
