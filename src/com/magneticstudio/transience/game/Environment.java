@@ -47,7 +47,6 @@ public class Environment {
      */
     public void createHeavyExplosion(TileSet t, int x, int y) {
         Effect explosion = new Effect();
-        t.shake(30f, 2.5f, 1500);
         explosion.animation = HEAVY_EXPLOSION.clone();
         explosion.tileLocation = new IntPoint(x, y);
         effects.add(explosion);
@@ -69,7 +68,7 @@ public class Environment {
             }
             IntPoint loc = e.tileLocation;
             e.animation.setRenderScale(ts.getScale());
-            e.animation.render(g, ts.getScreenTileRenderX(loc.x), ts.getScreenTileRenderY(loc.y), true);
+            e.animation.render(g, ts.tileToDisplayLocationX(loc.x), ts.tileToDisplayLocationY(loc.y), true);
         }
     }
 

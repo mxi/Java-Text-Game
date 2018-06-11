@@ -3,9 +3,7 @@ package com.magneticstudio.transience.game;
 import com.magneticstudio.transience.ui.Game;
 import com.magneticstudio.transience.ui.Res;
 import com.magneticstudio.transience.ui.LogicalElement;
-import com.magneticstudio.transience.util.ArrayList2D;
-import com.magneticstudio.transience.util.FlowPosition;
-import com.magneticstudio.transience.util.IntPoint;
+import com.magneticstudio.transience.util.*;
 import org.newdawn.slick.*;
 
 /**
@@ -15,7 +13,6 @@ import org.newdawn.slick.*;
  */
 public class TileSet implements LogicalElement {
 
-    // Static settings.
     public static final int PIXELS_PER_TILE = 64;
     public static final int CENTER_ADJUSTMENT = PIXELS_PER_TILE / 2;
     public static final int TILE_FONT_SIZE = 56;
@@ -23,32 +20,25 @@ public class TileSet implements LogicalElement {
     private static final float CANVAS_SCALE_MAX = 1f; // The maximum canvas scale.
     private static final float CANVAS_SCALE_MIN = .01f; // The minimum canvas scale.
 
-    private static final float SHAKE_FREQUENCY_MAX = 10f; // The maximum frequency of a shake.
-    private static final float SHAKE_FREQUENCY_MIN = 1f; // The minimum frequency of the shake.
-    private static final float SHAKE_INTENSITY_MAX = 16f; // The maximum shake intensity/amplitude.
-    private static final float SHAKE_INTENSITY_MIN = 2f; // The minimum shake intensity/amplitude.
-
     // Anything related to the current tile set (the object; not static things) below
     private ArrayList2D<Tile> tiles = new ArrayList2D<>(); // The 2d array of tiles.
-    private EntityCollection entities = new EntityCollection(); // The collection of entities.
-    private Environment environment = new Environment(); // The environment for this tile set.
     private FlowPosition position = new FlowPosition(); // The position of this tile set.
-    private UnicodeFont font; // The font used to render the individual tiles.
+
+    private Environment environment = new Environment(); // The environment for this tile set.
+    private EntityCollection entities = new EntityCollection(); // The collection of entities.
+
     private TileSetGenerator generator; // The generator used to create this tile set.
+    private UnicodeFont font; // The font used to render the individual tiles.
 
     // Graphics
     private Image canvas; // The image object used to render tile set on.
     private Graphics canvasGraphics; // The graphics object doing to the rendering.
 
-    private float canvasScale = .5f; // The scale of the canvas.
+    private Shake shaker; // The shaker for the tile set.
+
+    private float canvasScale = 1f; // The scale of the canvas.
     private float scaleMod = 0f; // The amount to modify the scale by.
     private int scaleModTimeRemain = 0; // The time remaining to scale the tile set.
-
-    private float shakeIntensity = 0f; // The current amplitude of the sin shake.
-    private float shakeFreq = 0f; // The shake frequency of the current shake.
-    private float shakeIntensityMod = 0f; // The change per millisecond of the shake intensity.
-    private float shakeIndex = 0f; // The value used for sin()
-    private int shakeTimeRemain = 0; // The time remaining for the shake.
 
     // Game/ai
     private boolean runAi = false; // Whether to run the Ai on the next update.
@@ -70,7 +60,16 @@ public class TileSet implements LogicalElement {
         tiles.setDimensions(width, height);
         tiles.fill(Tile.createVoidTile(this));
         tiles.setLocked(true);
+        shaker = new Shake();
         generator = null;
+    }
+
+    /**
+     * Gets the object responsible for shaking this tile set.
+     * @return The shaker.
+     */
+    public Shake getShaker() {
+        return shaker;
     }
 
     /**
@@ -95,20 +94,6 @@ public class TileSet implements LogicalElement {
      */
     public int getPixelsPerTile() {
         return (int) (PIXELS_PER_TILE * canvasScale);
-    }
-
-    /**
-     * Shakes the tile set.
-     * @param amplitude The amplitude of the shake => sin(x) * amplitude
-     * @param freq The frequency of the shake => sin(x * freq)
-     * @param time The time to shake the tile set for.
-     */
-    public void shake(float amplitude, float freq, int time) {
-        shakeIntensity = Math.max(Math.min(SHAKE_INTENSITY_MAX, amplitude), SHAKE_INTENSITY_MIN);
-        shakeFreq = Math.max(Math.min(SHAKE_FREQUENCY_MAX, freq), SHAKE_FREQUENCY_MIN);
-        shakeIntensityMod = amplitude / time;
-        shakeTimeRemain = time;
-        shakeIndex = 0;
     }
 
     /**
@@ -277,54 +262,11 @@ public class TileSet implements LogicalElement {
     }
 
     /**
-     * Gets the pixel X of the center of the tile X
-     * relative to the main rendering buffer (graphics
-     * object passed to the render method in this tile set).
-     * @param tileX The column number of the target tile to get render X of.
-     * @return The pixel X of the center of the tile on the main rendering buffer.
-     */
-    public float getScreenTileRenderX(int tileX) {
-        return getScreenCanvasRenderX() + (tileX * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
-    }
-
-    /**
-     * Gets the pixel Y of the center of the tile Y
-     * relative to the main rendering buffer (graphics
-     * object passed to the render method in this tile set).
-     * @param tileY The row number of the target tile to get render Y of.
-     * @return The pixel Y of the center of the tile on the main rendering buffer.
-     */
-    public float getScreenTileRenderY(int tileY) {
-        return getScreenCanvasRenderY() + (tileY * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale)
-                + (float) Math.sin((shakeIndex / (2 * Math.PI)) * shakeFreq) * canvasScale * shakeIntensity;
-    }
-
-    /**
-     * Gets the pixel X of the center of
-     * the tile X.
-     * @param tileX The tile X (tile on which column)
-     * @return The X value of the center of the tile when rendered onto the canvas.
-     */
-    public float getCanvasTileRenderX(int tileX) {
-        return (tileX * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
-    }
-
-    /**
-     * Gets the pixel Y of the center of
-     * the tile Y.
-     * @param tileY The tile X (tile on which row)
-     * @return The Y value of the center of the tile when rendered onto the canvas.
-     */
-    public float getCanvasTileRenderY(int tileY) {
-        return (tileY * PIXELS_PER_TILE * canvasScale) + (CENTER_ADJUSTMENT * canvasScale);
-    }
-
-    /**
      * Gets the X value of the render position on screen
      * for the canvas of this tile set.
      * @return Render X value of tile set canvas.
      */
-    public float getScreenCanvasRenderX() {
+    public float getCanvasX() {
         return (Game.activeGame.getResolutionWidth() / 2) - (CENTER_ADJUSTMENT * canvasScale)
                 + (position.getIntermediateX() * PIXELS_PER_TILE * canvasScale);
     }
@@ -334,9 +276,72 @@ public class TileSet implements LogicalElement {
      * for the canvas of this tile set.
      * @return Render Y value of tile set canvas.
      */
-    public float getScreenCanvasRenderY() {
+    public float getCanvasY() {
         return (Game.activeGame.getResolutionHeight() / 2) - (CENTER_ADJUSTMENT * canvasScale)
                 + (position.getIntermediateY() * PIXELS_PER_TILE * canvasScale);
+    }
+
+    /**
+     * Gets the x value of the location of a tile on the canvas.
+     * @param tileX The column of tiles referring to.
+     * @return The x value of the location of a tile on the canvas.
+     */
+    public int tileToCanvasX(int tileX) {
+        return (tileX * PIXELS_PER_TILE);
+    }
+
+    /**
+     * Gets the y value of the location of a tile on the canvas.
+     * @param tileY The column of tiles referring to.
+     * @return The y value of the location of a tile on the canvas.
+     */
+    public int tileToCanvasY(int tileY) {
+        return (tileY * PIXELS_PER_TILE);
+    }
+
+    /**
+     * Gets the location of a tile on the canvas.
+     * @param tileX X value of the tile.
+     * @param tileY Y value of the tile.
+     * @return The location of the tile on the canvas.
+     */
+    public IntPoint tileToCanvasCoordinates(int tileX, int tileY) {
+        return new IntPoint(
+            tileToCanvasX(tileX),
+            tileToCanvasY(tileY)
+        );
+    }
+
+    /**
+     * Gets the pixel's x on which the column of tiles lie on the screen.
+     * @param tileX The column to get the pixel x of.
+     * @return The x location of the tile on the screen.
+     */
+    public float tileToDisplayLocationX(int tileX) {
+        return getCanvasX() + (tileX * PIXELS_PER_TILE * canvasScale) + shaker.getHorizontalOffset();
+    }
+
+    /**
+     * Gets the pixel's y on which the row of tiles lie on the screen.
+     * @param tileY The row to get the pixel y of.
+     * @return The y location of the tile on the screen.
+     */
+    public float tileToDisplayLocationY(int tileY) {
+        return getCanvasY() + (tileY * PIXELS_PER_TILE * canvasScale) + shaker.getVerticalOffset();
+    }
+
+    /**
+     * Gets the location of the pixel a tile will be rendered on
+     * (upper left corner).
+     * @param tileX The tile located on this x.
+     * @param tileY The tile located on this y.
+     * @return The pixel on which the tile is rendered on.
+     */
+    public FloatPoint tileToDisplayCoordinates(int tileX, int tileY) {
+        return new FloatPoint(
+            tileToDisplayLocationX(tileX),
+            tileToDisplayLocationY(tileY)
+        );
     }
 
     /**
@@ -373,9 +378,6 @@ public class TileSet implements LogicalElement {
                     renderY,
                     false
                 );
-
-                //canvasGraphics.setColor(Color.red);
-                //canvasGraphics.drawRect(renderX, renderY, PIXELS_PER_TILE, PIXELS_PER_TILE);
             }
         }
 
@@ -390,12 +392,18 @@ public class TileSet implements LogicalElement {
             e.render(canvasGraphics, x, y, false);
         });
 
-        float shakeOffset = canvasScale * (float) Math.sin((shakeIndex / (2 * Math.PI)) * shakeFreq) * shakeIntensity;
+        Image preprocessedCanvas = canvas.getScaledCopy(canvasScale);
+        if(entities.getPlayer() != null) {
+            FlowPosition playerPos = entities.getPlayer().getPosition();
+            IntPoint playerLoc = tileToCanvasCoordinates(playerPos.getTargetX(), playerPos.getTargetY());
+            preprocessedCanvas.setCenterOfRotation(playerLoc.x * canvasScale, playerLoc.y * canvasScale);
+        }
+        preprocessedCanvas.rotate(shaker.getRotationOffset());
 
         graphics.drawImage(
-            canvas.getScaledCopy(canvasScale),
-            getScreenCanvasRenderX(),
-            getScreenCanvasRenderY() + (shakeOffset)
+            preprocessedCanvas,
+            getCanvasX() + shaker.getHorizontalOffset(),
+            getCanvasY() + shaker.getVerticalOffset()
         );
         environment.render(this, graphics);
     }
@@ -420,11 +428,17 @@ public class TileSet implements LogicalElement {
         // Entity updates.
         entities.forEach(e -> {
             e.updatePosition(milliseconds);
-            if(runAi && e instanceof Enemy)
-                ((Enemy)e).runAi(this);
-            else
+            if(e instanceof Enemy) {
+                Enemy cast = (Enemy) e;
+                if(runAi)
+                    cast.runAi(this);
+
+            }
+            else {
                 ((Player)e).update(this);
+            }
         });
+
         if(entities.getPlayer() != null) {
             FlowPosition playerPosition = entities.getPlayer().getPosition();
             focusOn(playerPosition.getTargetX(), playerPosition.getTargetY());
@@ -437,11 +451,7 @@ public class TileSet implements LogicalElement {
             canvasScale += scaleModTimeRemain - milliseconds < 0 ? scaleMod * scaleModTimeRemain : scaleMod * milliseconds;
             scaleModTimeRemain -= milliseconds;
         }
-        if(shakeTimeRemain > 0) {
-            shakeIndex += (float) milliseconds / 10;
-            shakeIntensity -= shakeIntensityMod * milliseconds > shakeIntensity ? shakeIntensity : (shakeIntensityMod * milliseconds);
-            shakeTimeRemain -= milliseconds;
-        }
+        shaker.update(milliseconds);
         position.update(milliseconds);
     }
 
@@ -452,8 +462,8 @@ public class TileSet implements LogicalElement {
      * @return Whether that column would be visible or not.
      */
     private boolean willTileBeVisibleX(int x) {
-        float translatedX = getScreenCanvasRenderX() + (x * PIXELS_PER_TILE * canvasScale);
-        return translatedX > (-PIXELS_PER_TILE * canvasScale) && translatedX < Game.activeGame.getResolutionWidth();
+        float tileX = tileToDisplayLocationX(x);
+        return tileX > (-PIXELS_PER_TILE * canvasScale) && tileX < Game.activeGame.getResolutionWidth();
     }
 
     /**
@@ -463,7 +473,7 @@ public class TileSet implements LogicalElement {
      * @return Whether that row would be visible or not.
      */
     private boolean willTileBeVisibleY(int y) {
-        float translatedY = getScreenCanvasRenderY() + (y * PIXELS_PER_TILE * canvasScale);
-        return translatedY > (-PIXELS_PER_TILE * canvasScale) && translatedY < Game.activeGame.getResolutionHeight();
+        float tileY = tileToDisplayLocationY(y);
+        return tileY > (-PIXELS_PER_TILE * canvasScale) && tileY < Game.activeGame.getResolutionHeight();
     }
 }

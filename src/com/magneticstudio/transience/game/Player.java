@@ -3,13 +3,10 @@ package com.magneticstudio.transience.game;
 import com.magneticstudio.transience.ui.CharacterCell;
 import com.magneticstudio.transience.ui.Game;
 import com.magneticstudio.transience.ui.GameKeyboard;
-import com.magneticstudio.transience.util.FlowPosition;
 import com.magneticstudio.transience.util.IntPoint;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.geom.Curve;
-import org.newdawn.slick.geom.Vector2f;
 
 /**
  * This class is the actual player class that the user
@@ -48,7 +45,7 @@ public class Player extends Entity {
      * @param mainGraphics The main graphics buffer provided by Slick2d.
      */
     public void renderHud(Graphics mainGraphics) {
-        HudRenderer.renderHealth(mainGraphics, getHealth() - 75, getMaxHealth());
+
     }
 
     /**
@@ -63,6 +60,7 @@ public class Player extends Entity {
             case KEY_GO_DOWN:            newY++; break;
             case KEY_GO_LEFT:            newX--; break;
             case KEY_GO_RIGHT:           newX++; break;
+            case Input.KEY_P:            tsLocated.getShaker().start(10f, 4f, 5000); break;
             case Input.KEY_F:            Game.activeGame.fadeOut(250); break;
             case Input.KEY_G:            Game.activeGame.fadeIn(250); break;
             case Input.KEY_H:            Game.activeGame.setVignetteScale(.25f, 500); break;

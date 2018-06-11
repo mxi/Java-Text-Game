@@ -63,10 +63,10 @@ public class EntityCollection {
      * @param e The ForEach object used to perform an action on an entity.
      */
     public void forEach(ForEach e) {
-        for(Entity entity : entities)
-            e.onEntity(entity);
         if(player != null)
             e.onEntity(player);
+        for(Entity entity : entities)
+            e.onEntity(entity);
     }
 
     /**

@@ -29,7 +29,7 @@ public class Game extends BasicGame {
     private float vignetteScale = 1f;
     private float vignetteTarget = 0f;
     private float vignetteScaleMod = 0f;
-    private boolean showVignette = false;
+    private boolean showVignette = true;
 
     private UnicodeFont fpsNotification;
     private boolean showFps = true; // Whether to show the fps count to the user.
