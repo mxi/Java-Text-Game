@@ -25,10 +25,8 @@ public final class GameTest {
     public static void main(String[] args) throws SlickException, NoSuchFieldException, IllegalAccessException {
         Game game = new Game("Test");
 
-        InventoryStack<Item> items = new InventoryStack<>();
-
         Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
-        AppGameContainer container = new AppGameContainer(game, (int) resolution.getWidth(), (int) resolution.getHeight(), true);
+        AppGameContainer container = new AppGameContainer(game, 960, 640, false);
         container.setMouseGrabbed(false);
         container.setIcons(new String[] {
                 "resources/logos/magnetic-studio-temp-icon-16.png",
