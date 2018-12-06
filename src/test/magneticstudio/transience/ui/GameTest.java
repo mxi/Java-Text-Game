@@ -22,7 +22,9 @@ public final class GameTest {
      * Main entry point of the program.
      * @param args Arguments from command-line.
      */
-    public static void main(String[] args) throws SlickException, NoSuchFieldException, IllegalAccessException {
+    public static void main(String[] args)
+            throws SlickException, NoSuchFieldException, IllegalAccessException
+    {
         Game game = new Game("Test");
 
         Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
