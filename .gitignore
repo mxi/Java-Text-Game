@@ -15,3 +15,5 @@ classes/
 cpp/glew/*
 cpp/glfw/*
 cpp/glm/*
+cpp/*
+cpp_/*
