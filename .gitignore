@@ -12,3 +12,6 @@ src/libjcsi.jar
 .idea/*
 Ideas.txt
 classes/
+cpp/glew/*
+cpp/glfw/*
+cpp/glm/*

@@ -1,51 +1,30 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "jtg.h"
+#include "logging.h"
+#include "resources.h"
 
-#include <cstdio>
-
-int main(
-    int argc, 
-    char* argv[])
+static void Create_Global_Logging_System()
 {
+    using namespace jtg::log;
 
-    if (!glfwInit())
-    {
-        std::perror("FAILURE TO INIT GLFW");
-        return 1;
-    }
-    
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_CORE_PROFILE, GLFW_TRUE);
+    Create_Internal_Log_Bus(MAX_CHANNELS);
+    Add_Std_Out();
+    // @TODO(max): Add log file: Add_Std_Other(file);
+}
 
-    GLFWwindow* window = glfwCreateWindow(960, 640, "W2", nullptr, nullptr);
+static void Create_Global_Resource_System()
+{
+    using namespace jtg::res;
 
-    if (window == nullptr)
-    {
-        std::perror("GLFW WINDOW CREATION FAILED!");
-        return 1;
-    }
+    Set_Base_Dir("D:/Common/JavaProjects/Java-Text-Game/cpp/debug_mode_log_output");
+}
 
-    glfwMakeContextCurrent(window);
+int main(void)
+{
+    // Sets up the logger and resource management system.
+    Create_Global_Logging_System();
+    Create_Global_Resource_System();
 
-    if (glewInit() != GLEW_OK)
-    {
-        std::perror("GLEW INIT FAILED!");
-        return 1;
-    }
+    jtg::Start_Game();
 
-    while (!glfwWindowShouldClose(window))
-    {
-        glfwPollEvents();
-
-        glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        glfwSwapBuffers(window);
-    }
-
-    glfwTerminate();
-
-    std::getchar();
     return 0;
 }
