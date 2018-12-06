@@ -17,3 +17,7 @@ cpp/glfw/*
 cpp/glm/*
 cpp/*
 cpp_/*
+_.classpath
+_.project
+font_.scb
+Transience_.iml
