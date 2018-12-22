@@ -19,6 +19,5 @@ fun testGLError() {
 }
 
 fun main(args: Array<String>) {
-    //testLogging()
-    //testGLError()
+
 }

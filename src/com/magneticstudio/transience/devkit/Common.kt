@@ -1,6 +1,5 @@
 /**
- * A collection of common extension functions of the java/kotlin
- * standard library.
+ * A collection of useful and utility functions.
  *
  * @author Max
  * @since 1.1
@@ -187,6 +186,7 @@ fun closeLogStreams() {
 }
 
 typealias GLException = RuntimeException
+typealias TexException = RuntimeException
 typealias GLErrorFlags = List<Int>?
 
 // GL Error reporting methods:
@@ -209,6 +209,19 @@ inline fun reportGLError(message: String, exception: Boolean) {
     logErr("GL Report: $message")
     if (allowReportsToThrow && exception)
         throw GLException("GL Report: $message")
+}
+
+/**
+ * Reports an error when performing operations on a texture.
+ * Very similar to reportGLError()
+ *
+ * @param message The message of the error.
+ * @param exception Whether the error is worthy of an exception.
+ */
+inline fun reportTextureError(message: String, exception: Boolean) {
+    logErr("Texture Report: $message")
+    if (allowReportsToThrow && exception)
+        throw TexException("Texture Report: $message")
 }
 
 /**

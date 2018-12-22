@@ -1,5 +1,5 @@
 /**
- * A plethora of extension and utility functions.
+ * OpenGL shader abstraction.
  *
  * @author Max
  * @since 1.1
@@ -63,7 +63,7 @@ class Shader private constructor(
     companion object Factory {
 
         // The directory of the shaders where the parent directory is src/
-        val SHADER_JAR_LOCAITON = "shaders"
+        val SHADER_JAR_LOCATION = "shaders"
 
         private fun translateShaderTypeToString(type: Int): String = when (type) {
             GL_VERTEX_SHADER -> "GL_VERTEX_SHADER"
@@ -105,9 +105,9 @@ class Shader private constructor(
          *             of the directory to find the shaders within.
          */
         fun loadFromJar(name: String): Shader {
-            val vs = openJarResource("$SHADER_JAR_LOCAITON/$name/vertex.glsl")
-            val gs = openJarResource("$SHADER_JAR_LOCAITON/$name/geometry.glsl")
-            val fs = openJarResource("$SHADER_JAR_LOCAITON/$name/fragment.glsl")
+            val vs = openJarResource("$SHADER_JAR_LOCATION/$name/vertex.glsl")
+            val gs = openJarResource("$SHADER_JAR_LOCATION/$name/geometry.glsl")
+            val fs = openJarResource("$SHADER_JAR_LOCATION/$name/fragment.glsl")
 
             // NOTE(max): readAll() extension function is null-safe so it doesn't matter if the
             // streams are null.
@@ -126,4 +126,10 @@ class Shader private constructor(
      * NOTE(max): This does not check if the program was linked successfully.
      */
     fun bind(): Unit = glUseProgram(program)
+
+    /**
+     * Unbinds the current program (or any program for that matter)
+     * from the GPU.
+     */
+    fun unbind(): Unit = glUseProgram(0)
 }

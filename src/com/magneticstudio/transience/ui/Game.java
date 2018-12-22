@@ -5,11 +5,21 @@ import com.magneticstudio.transience.game.Environment;
 import com.magneticstudio.transience.game.TileSet;
 import com.magneticstudio.transience.game.TileSetGenerator;
 import com.magneticstudio.transience.util.RadialVignetteGenerator;
+import org.lwjgl.BufferUtils;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.Random;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 /**
  * This class simply extends the BasicGame class
@@ -142,7 +152,9 @@ public class Game extends BasicGame {
         return resolutionHeight;
     }
 
-    private Shader testShader;
+    private Shader triangleShader;
+    private int vertexArr;
+    private int vertexBuff;
 
     /**
      * Functions gets called when the game is ready to begin.
@@ -151,8 +163,33 @@ public class Game extends BasicGame {
      */
     @Override
     public void init(GameContainer gc) throws SlickException {
-        testShader = Shader.Factory.loadFromJar("test");
-        System.out.println("Is shader valid: " + testShader.isShaderValid());
+        triangleShader = Shader.Factory.loadFromJar("test");
+
+        FloatBuffer vertexData = BufferUtils.createFloatBuffer(3 * 3);
+        vertexData.put(new float[] {
+           -0.5f, -0.5f, 0.0f,
+            0.0f,  0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f
+        });
+        vertexData.flip();
+
+        vertexArr = glGenVertexArrays();
+        glBindVertexArray(vertexArr);
+
+        vertexBuff = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuff);
+        glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+        glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+        int error = 0;
+        while ((error = glGetError()) != GL_NO_ERROR) {
+            System.out.println("Err: " + error);
+        }
 
         resolutionWidth = gc.getWidth();
         resolutionHeight = gc.getHeight();
@@ -278,6 +315,18 @@ public class Game extends BasicGame {
         }
 
         tileSet.postRender(graphics);
+
+        triangleShader.bind();
+
+        glBindVertexArray(vertexArr);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        int error = 0;
+        while ((error = glGetError()) != GL_NO_ERROR) {
+            System.out.println("Err: " + error);
+        }
+
+        triangleShader.unbind();
     }
 
     /**
