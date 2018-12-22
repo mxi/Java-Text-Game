@@ -1,10 +1,10 @@
 package com.magneticstudio.transience.ui;
 
-import com.magneticstudio.transience.devkit.Shader;
 import com.magneticstudio.transience.game.Environment;
 import com.magneticstudio.transience.game.TileSet;
 import com.magneticstudio.transience.game.TileSetGenerator;
 import com.magneticstudio.transience.util.RadialVignetteGenerator;
+import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -130,7 +130,6 @@ public class Game extends BasicGame {
      * @return Resolution width.
      */
     public int getResolutionWidth() {
-
         return resolutionWidth;
     }
 
@@ -142,8 +141,6 @@ public class Game extends BasicGame {
         return resolutionHeight;
     }
 
-    private Shader testShader;
-
     /**
      * Functions gets called when the game is ready to begin.
      * @param gc The container of this game.
@@ -151,9 +148,6 @@ public class Game extends BasicGame {
      */
     @Override
     public void init(GameContainer gc) throws SlickException {
-        testShader = Shader.Factory.loadFromJar("test");
-        System.out.println("Is shader valid: " + testShader.isShaderValid());
-
         resolutionWidth = gc.getWidth();
         resolutionHeight = gc.getHeight();
 
@@ -224,6 +218,7 @@ public class Game extends BasicGame {
             }
         }
     }
+private int counter = 0;
 
     private static final int FPS_SHOW_X = 5; // The X location of the fps counter.
     private static final int FPS_SHOW_Y = 5; // The Y location of the fps counter.

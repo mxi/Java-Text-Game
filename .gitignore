@@ -1,23 +1,10 @@
-Java Text Game.iml
-Java-Text-Game.iml
-Roguelike.iml
-.metadata/*
-src/.metadata/*
-src/game/.metadata/*
-out/*
-src/libjcsi.jar
 .idea/*
-/bin/
 .settings/*
-.idea/*
-Ideas.txt
-classes/
-cpp/glew/*
-cpp/glfw/*
-cpp/glm/*
-cpp/*
+out/*
+bin/*
 cpp_/*
 _.classpath
 _.project
 font_.scb
+Transience.iml
 Transience_.iml
