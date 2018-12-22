@@ -1,7 +1,5 @@
 package test.magneticstudio.transience.ui;
 
-import com.magneticstudio.transience.game.InventoryStack;
-import com.magneticstudio.transience.game.Item;
 import com.magneticstudio.transience.ui.Game;
 
 import java.awt.Dimension;
