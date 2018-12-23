@@ -58,6 +58,8 @@ class Shader private constructor(
         geometry?.let {
             glDeleteShader(geometry as Int)
         }
+
+        collectGLErrors().reportThemBy(WRITING_TO_LOGS and THROWING_EXCEPTION)
     }
 
     companion object Factory {
@@ -86,8 +88,6 @@ class Shader private constructor(
                 reportGLError("Compilation of ${translateShaderTypeToString(type)} failed: $message", allowThrowOnError)
                 return null
             }
-
-            collectGLErrors().reportThemBy(WRITING_TO_LOGS and THROWING_EXCEPTION)
 
             return shader
         }
@@ -132,4 +132,10 @@ class Shader private constructor(
      * from the GPU.
      */
     fun unbind(): Unit = glUseProgram(0)
+
+    /**
+     * Sets a texture's "slot" as the integer for the OpenGL sampler2D
+     * type so that the sampler can use the texture.
+     */
+    fun uniformTex2D(name: String, tex2: Texture2) = glUniform1i(glGetUniformLocation(program, name), tex2.slot)
 }

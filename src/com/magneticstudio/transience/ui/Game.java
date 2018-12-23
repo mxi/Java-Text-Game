@@ -1,6 +1,8 @@
 package com.magneticstudio.transience.ui;
 
+import com.magneticstudio.transience.devkit.CommonKt;
 import com.magneticstudio.transience.devkit.Shader;
+import com.magneticstudio.transience.devkit.Texture2;
 import com.magneticstudio.transience.game.Environment;
 import com.magneticstudio.transience.game.TileSet;
 import com.magneticstudio.transience.game.TileSetGenerator;
@@ -153,8 +155,11 @@ public class Game extends BasicGame {
     }
 
     private Shader triangleShader;
+    private Texture2 woodTexture;
+
     private int vertexArr;
     private int vertexBuff;
+    private int vertexElems;
 
     /**
      * Functions gets called when the game is ready to begin.
@@ -164,14 +169,22 @@ public class Game extends BasicGame {
     @Override
     public void init(GameContainer gc) throws SlickException {
         triangleShader = Shader.Factory.loadFromJar("test");
+        woodTexture = Texture2.Factory.loadFromJar("wood.jpg", "test");
 
-        FloatBuffer vertexData = BufferUtils.createFloatBuffer(3 * 3);
+        FloatBuffer vertexData = BufferUtils.createFloatBuffer((3 * 3) + (3 * 2));
         vertexData.put(new float[] {
-           -0.5f, -0.5f, 0.0f,
-            0.0f,  0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f
+           // Positions:        // Texture Coords:
+           -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
+            0.0f,  0.5f, 0.0f,  0.5f, 1.0f,
+            0.5f, -0.5f, 0.0f,  1.0f, 0.0f
         });
         vertexData.flip();
+
+        ByteBuffer vertexElements = BufferUtils.createByteBuffer(3);
+        vertexElements.put(new byte[] {
+            0, 1, 2
+        });
+        vertexElements.flip();
 
         vertexArr = glGenVertexArrays();
         glBindVertexArray(vertexArr);
@@ -180,16 +193,19 @@ public class Game extends BasicGame {
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuff);
         glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+        vertexElems = glGenBuffers();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexElems);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, vertexElements, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, Float.BYTES * 5, 0);
         glEnableVertexAttribArray(0);
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, Float.BYTES * 5, Float.BYTES * 3);
+        glEnableVertexAttribArray(1);
 
-        int error = 0;
-        while ((error = glGetError()) != GL_NO_ERROR) {
-            System.out.println("Err: " + error);
-        }
+        glBindVertexArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
         resolutionWidth = gc.getWidth();
         resolutionHeight = gc.getHeight();
@@ -317,9 +333,12 @@ public class Game extends BasicGame {
         tileSet.postRender(graphics);
 
         triangleShader.bind();
+        woodTexture.bind();
+
+        triangleShader.uniformTex2D("U_Tex", woodTexture);
 
         glBindVertexArray(vertexArr);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, 0);
 
         int error = 0;
         while ((error = glGetError()) != GL_NO_ERROR) {
@@ -327,6 +346,7 @@ public class Game extends BasicGame {
         }
 
         triangleShader.unbind();
+        woodTexture.unbind();
     }
 
     /**

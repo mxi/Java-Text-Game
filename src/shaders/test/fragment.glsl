@@ -1,7 +1,11 @@
 #version 330 core
 
+in vec2 Vert_Tex_Coord;
+
 out vec4 FinalColor;
 
+uniform sampler2D U_Tex;
+
 void main() {
-    FinalColor = vec4(0.2f, 0.8f, 1.0f, 1.0f);
+    FinalColor = texture(U_Tex, Vert_Tex_Coord);
 }
