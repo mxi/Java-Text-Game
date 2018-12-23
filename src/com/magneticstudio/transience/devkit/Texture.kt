@@ -17,15 +17,21 @@ import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
 // Thanks to Romain Guy for the idea:
-inline val Int.rgba_red get() = (this shr 24) and 0xFF
-inline val Int.rgba_green get() = (this shr 16) and 0xFF
-inline val Int.rgba_blue get() = (this shr 8) and 0xFF
-inline val Int.rgba_alpha get() = (this) and 0xFF
+//
+//inline val Int.rgba_red get() = (this shr 24) and 0xFF
+//inline val Int.rgba_green get() = (this shr 16) and 0xFF
+//inline val Int.rgba_blue get() = (this shr 8) and 0xFF
+//inline val Int.rgba_alpha get() = (this) and 0xFF
+//
+//inline val Int.abgr_red get() = (this) and 0xFF
+//inline val Int.abgr_green get() = (this shr 8) and 0xFF
+//inline val Int.abgr_blue get() = (this shr 16) and 0xFF
+//inline val Int.abgr_alpha get() = (this shr 24) and 0xFF
 
-inline val Int.abgr_red get() = (this) and 0xFF
-inline val Int.abgr_green get() = (this shr 8) and 0xFF
-inline val Int.abgr_blue get() = (this shr 16) and 0xFF
-inline val Int.abgr_alpha get() = (this shr 24) and 0xFF
+inline val Int.argb_red_b   get(): Byte = ((this shr 16) and 0xFF).toByte()
+inline val Int.argb_green_b get(): Byte = ((this shr 8)  and 0xFF).toByte()
+inline val Int.argb_blue_b  get(): Byte = ((this)        and 0xFF).toByte()
+inline val Int.argb_alpha_b get(): Byte = ((this shr 24) and 0xFF).toByte()
 
 // NOTE(max): If needed bump and gloss maps will be added later.
 // NOTE(max): The data is expected to be in BGRA / BGR format.
@@ -78,8 +84,13 @@ class Texture2 private constructor(
          * which is why we have to reverse the bytes in the integers near the end of the function.
          *
          * The final result is a texture object containing an OpenGL handle for the texture.
+         *
+         * @param file The name of the file (for example "wood.jpg")
+         * @param subdir If the file is contained in a subdirectory of src/textures/... then it can
+         * be specified here.
+         * @param flipVertically Whether to flip the image vertically when loading.
          */
-        fun loadFromJar(file: String, subdir: String?): Texture2 {
+        fun loadFromJar(file: String, subdir: String?, flipVertically: Boolean = true): Texture2 {
             val texIS = when (subdir) {
                 null -> openJarResource("$TEXTURE_JAR_LOCATION/$file")
                 else -> openJarResource("$TEXTURE_JAR_LOCATION/$subdir/$file")
@@ -88,35 +99,32 @@ class Texture2 private constructor(
             if (texIS == null)
                 reportTextureError("Failed to open JAR texture resource.", true)
 
-            val componentsPerPixel = 4;
-
             // NOTE(max): The buffered image stores the image data as ABGR
             val loaded = ImageIO.read(texIS)
-            val hasAlpha = loaded.alphaRaster != null
-            val data = (loaded.raster.dataBuffer as DataBufferByte).data
 
-            val imgBuffer = BufferUtils.createByteBuffer(loaded.width * loaded.height * componentsPerPixel)
-            if (hasAlpha) {
-                for (i in 0 until data.size step 4) {
-                    val a = data[i]
-                    val b = data[i + 1]
-                    val g = data[i + 2]
-                    val r = data[i + 3]
-                    imgBuffer.put(r);
-                    imgBuffer.put(g);
-                    imgBuffer.put(b);
-                    imgBuffer.put(a);
-                }
-            }
-            else {
-                for (i in 0 until data.size step 3) {
-                    val b = data[i]
-                    val g = data[i + 1]
-                    val r = data[i + 2]
-                    imgBuffer.put(r);
-                    imgBuffer.put(g);
-                    imgBuffer.put(b);
-                    imgBuffer.put(0xFF.toByte());
+            if (loaded == null)
+                reportTextureError("javax.imageio.ImageIO.read(texIS) failed to read image (unrecognized)", true)
+
+            val hasAlpha = loaded.colorModel.hasAlpha()
+
+            // @HACK(max): Assumption: the number of components is 4 if it has alpha or 3 if it doesn't.
+            // this may be a problem later on, just note that.
+            val imgBuffer = BufferUtils.createByteBuffer(loaded.width * loaded.height * 4)
+
+            for (y in
+                if (flipVertically)
+                    (loaded.height - 1 downTo 0)
+                else
+                    (0 until loaded.height))
+            {
+                for (x in 0 until loaded.width) {
+                    // NOTE(max): According to the documentation BufferedImage.getRGB() returns
+                    // an ARGB format integer.
+                    val argb: Int = loaded.getRGB(x, y)
+                    imgBuffer.put(argb.argb_red_b)
+                    imgBuffer.put(argb.argb_green_b)
+                    imgBuffer.put(argb.argb_blue_b)
+                    imgBuffer.put(argb.argb_alpha_b)
                 }
             }
             imgBuffer.flip()

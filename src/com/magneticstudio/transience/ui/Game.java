@@ -169,7 +169,7 @@ public class Game extends BasicGame {
     @Override
     public void init(GameContainer gc) throws SlickException {
         triangleShader = Shader.Factory.loadFromJar("test");
-        woodTexture = Texture2.Factory.loadFromJar("wood.jpg", "test");
+        woodTexture = Texture2.Factory.loadFromJar("mario.png", "test", false);
 
         FloatBuffer vertexData = BufferUtils.createFloatBuffer((3 * 3) + (3 * 2));
         vertexData.put(new float[] {
