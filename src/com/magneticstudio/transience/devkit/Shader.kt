@@ -18,7 +18,8 @@ class Shader private constructor(
      geometrySource: String?,
      fragmentSource: String?)
 {
-    private var program: Int
+    var program: Int
+        private set
 
     init {
         if (vertexSource == null || fragmentSource == null)
@@ -137,5 +138,12 @@ class Shader private constructor(
      * Sets a texture's "slot" as the integer for the OpenGL sampler2D
      * type so that the sampler can use the texture.
      */
-    fun uniformTex2D(name: String, tex2: Texture2) = glUniform1i(glGetUniformLocation(program, name), tex2.slot)
+    inline fun uniformTex2D(name: String, tex2: Texture2)
+            = glUniform1i(glGetUniformLocation(program, name), tex2.slot)
+
+    /**
+     * Sets a 4x4 matrix in this shader.
+     */
+    inline fun uniformMat4f(name: String, mat4: Mat4)
+            = glUniformMatrix4(glGetUniformLocation(program, name), false, mat4.getShaderBuffer())
 }

@@ -1,6 +1,7 @@
 package com.magneticstudio.transience.ui;
 
 import com.magneticstudio.transience.devkit.CommonKt;
+import com.magneticstudio.transience.devkit.Mat4;
 import com.magneticstudio.transience.devkit.Shader;
 import com.magneticstudio.transience.devkit.Texture2;
 import com.magneticstudio.transience.game.Environment;
@@ -156,6 +157,7 @@ public class Game extends BasicGame {
 
     private Shader triangleShader;
     private Texture2 woodTexture;
+    private Mat4 projection;
 
     private int vertexArr;
     private int vertexBuff;
@@ -169,14 +171,21 @@ public class Game extends BasicGame {
     @Override
     public void init(GameContainer gc) throws SlickException {
         triangleShader = Shader.Factory.loadFromJar("test");
-        woodTexture = Texture2.Factory.loadFromJar("mario.png", "test", false);
+        woodTexture = Texture2.Factory.loadFromJar("mario.png", "test", true);
+        projection = Mat4.Factory.orthographic(0, 960, 640, 0, 1, -1);
 
         FloatBuffer vertexData = BufferUtils.createFloatBuffer((3 * 3) + (3 * 2));
-        vertexData.put(new float[] {
+        /*vertexData.put(new float[] {
            // Positions:        // Texture Coords:
            -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
             0.0f,  0.5f, 0.0f,  0.5f, 1.0f,
             0.5f, -0.5f, 0.0f,  1.0f, 0.0f
+        });*/
+        vertexData.put(new float[] {
+                // Positions:        // Texture Coords:
+                 200f, 400f, 0.0f,  0.0f, 0.0f,
+                 400f, 200f, 0.0f,  0.5f, 1.0f,
+                 600f, 400f, 0.0f,  1.0f, 0.0f
         });
         vertexData.flip();
 
@@ -336,6 +345,7 @@ public class Game extends BasicGame {
         woodTexture.bind();
 
         triangleShader.uniformTex2D("U_Tex", woodTexture);
+        triangleShader.uniformMat4f("Cpu_Projection", projection);
 
         glBindVertexArray(vertexArr);
         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, 0);

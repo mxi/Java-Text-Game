@@ -185,15 +185,25 @@ fun closeLogStreams() {
     for (stream in logStreams) stream.close()
 }
 
-typealias GLException = RuntimeException
-typealias TexException = RuntimeException
-typealias GLErrorFlags = List<Int>?
-
 // GL Error reporting methods:
 const val WRITING_TO_LOGS = 0b0011
 const val THROWING_EXCEPTION = 0b0110
 
 var allowReportsToThrow = true
+
+/**
+ * The master error reporting functions
+ *
+ * @param heading The heading for the error that specifies what the type of error it is
+ * @param message The message of the error
+ * @param exception Whether the error is worthy of an exception.
+ */
+inline fun masterReportError(heading: String, message: String, exception: Boolean) {
+    val formattedString = "$heading: $message"
+    logErr(formattedString)
+    if (allowReportsToThrow && exception)
+        throw RuntimeException(formattedString)
+}
 
 /**
  * Reports a GL error.
@@ -205,11 +215,8 @@ var allowReportsToThrow = true
  * @param message The message of the error.
  * @param exception Whether the error is worthy of an exception.
  */
-inline fun reportGLError(message: String, exception: Boolean) {
-    logErr("GL Report: $message")
-    if (allowReportsToThrow && exception)
-        throw GLException("GL Report: $message")
-}
+inline fun reportGLError(message: String, exception: Boolean)
+    = masterReportError("GL Error", message, exception)
 
 /**
  * Reports an error when performing operations on a texture.
@@ -218,11 +225,20 @@ inline fun reportGLError(message: String, exception: Boolean) {
  * @param message The message of the error.
  * @param exception Whether the error is worthy of an exception.
  */
-inline fun reportTextureError(message: String, exception: Boolean) {
-    logErr("Texture Report: $message")
-    if (allowReportsToThrow && exception)
-        throw TexException("Texture Report: $message")
-}
+inline fun reportTextureError(message: String, exception: Boolean)
+    = masterReportError("Texture Error", message, exception)
+
+/**
+ * Reports an error when performing arithmetic calculations
+ * on the CPU.
+ *
+ * @param message The message of the error
+ * @param exception Whether the error is worthy of an exception.
+ */
+inline fun reportMathError(message: String, exception: Boolean)
+    = masterReportError("Math Error", message, exception)
+
+typealias GLErrorFlags = List<Int>?
 
 /**
  * Reports all errors collected from collectGLErrors() by
@@ -267,7 +283,7 @@ fun GLErrorFlags.reportThemBy(reportMethod: Int) {
             }
             errorsToString.append(", ")
         }
-        throw GLException("OpenGL Error(s): $errorsToString")
+        throw RuntimeException("OpenGL Error(s): $errorsToString")
     }
 
     when (reportMethod) {
